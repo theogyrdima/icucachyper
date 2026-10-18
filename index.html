@@ -9,6 +9,17 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Глобальный перехватчик авторизации Telegram (доступен до загрузки модулей) -->
+  <script>
+    window.onTelegramAuth = function(user) {
+      if (window.__handleTelegramLogin) {
+        window.__handleTelegramLogin(user);
+      } else {
+        window.__pendingTelegramUser = user;
+      }
+    };
+  </script>
+
   <!-- Официальный скрипт Google Identity Services (OAuth 2.0) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -80,8 +91,8 @@
 
     .tech-panel {
       background: var(--bg-panel);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border-tech);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(99, 102, 241, 0.08);
     }
@@ -238,8 +249,8 @@
   <div id="particles-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
   <div id="toast-layer" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-1.5 w-[92vw] max-w-md"></div>
 
-  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB -->
-  <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB (ЛЕГКОЕ РАЗМЫТИЕ ФОНА) -->
+  <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-[2px] flex items-center justify-center p-4 transition-opacity duration-300">
     <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
       <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
         <div id="loader-spinner" class="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
@@ -269,9 +280,9 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ (TELEGRAM & GOOGLE OAUTH) -->
-  <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-indigo-400/50 space-y-4 shadow-[0_0_50px_rgba(99,102,241,0.25)]">
+  <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ (БЕЗ ДУБЛИРУЮЩИХСЯ КНОПОК И БЕЗ СИЛЬНОГО РАЗМЫТИЯ) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-[2px] flex items-center justify-center p-4">
+    <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-indigo-400/50 space-y-4 shadow-[0_0_45px_rgba(0,0,0,0.75)]">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div>
           <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">ОБЛАЧНАЯ СИНХРОНИЗАЦИЯ // 5 СЕК</div>
@@ -284,33 +295,31 @@
         Войдите через <b>Telegram</b> или <b>Google</b>, чтобы ваш прогресс, фазы и скины автоматически сохранялись каждые 5 секунд и синхронизировались между компьютером и телефоном.
       </p>
 
-      <!-- Кнопки быстрого входа -->
-      <div class="space-y-2.5">
-        <!-- Telegram Login -->
-        <button type="button" id="btn-login-telegram" class="w-full py-3 px-4 rounded-xl bg-[#24A1DE] hover:bg-[#208bbf] text-white font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-lg">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
-          <span>ВОЙТИ ЧЕРЕЗ TELEGRAM</span>
-        </button>
+      <!-- Единые официальные виджеты входа без дубликатов -->
+      <div class="space-y-3 py-3 flex flex-col items-center justify-center bg-slate-950/60 rounded-xl border border-slate-800/90 p-4">
+        <!-- Единственная кнопка Telegram (Официальный виджет icucacidbot) -->
+        <div id="telegram-widget-container" class="min-h-[42px] flex items-center justify-center w-full">
+          <span class="text-[10px] text-cyan-300 animate-pulse">Загрузка кнопки Telegram (@icucacidbot)...</span>
+        </div>
 
-        <!-- Контейнер для официального Telegram Login Widget -->
-        <div id="telegram-widget-container" class="flex justify-center"></div>
+        <div class="w-full flex items-center gap-2">
+          <div class="h-[1px] flex-1 bg-slate-800"></div>
+          <span class="text-[9px] text-slate-500 font-bold uppercase">ИЛИ</span>
+          <div class="h-[1px] flex-1 bg-slate-800"></div>
+        </div>
 
-        <!-- Google OAuth Login -->
-        <button type="button" id="btn-login-google" class="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-lg">
-          <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/><path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 20.9 7.4 24 12 24z"/></svg>
-          <span>ВОЙТИ ЧЕРЕЗ GOOGLE</span>
-        </button>
-
-        <!-- Контейнер для кнопки Google Identity Services -->
-        <div id="google-gsi-button" class="flex justify-center"></div>
+        <!-- Единственная кнопка Google (Официальный виджет Google Identity) -->
+        <div id="google-gsi-button" class="min-h-[42px] flex items-center justify-center w-full">
+          <span class="text-[10px] text-indigo-300 animate-pulse">Загрузка кнопки Google...</span>
+        </div>
       </div>
 
-      <!-- Быстрая привязка по единому Cloud ID / Telegram ID (работает даже до настройки домена) -->
-      <div class="pt-3 border-t border-slate-800 space-y-2">
-        <div class="text-[9px] font-bold text-indigo-300 uppercase">ИЛИ ВХОД ПО TELEGRAM / CLOUD ID (ДЛЯ МГНОВЕННОЙ СИНХРОНИЗАЦИИ):</div>
+      <!-- Быстрый резервный вход по никнейму / ID -->
+      <div class="pt-2 border-t border-slate-800 space-y-2">
+        <div class="text-[9px] font-bold text-indigo-300 uppercase">ИЛИ БЫСТРЫЙ ВХОД ПО НИКНЕЙМУ / CLOUD ID:</div>
         <div class="flex gap-1.5">
           <input id="input-custom-account-id" type="text" placeholder="Ваш @username или код аккаунта..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-[10px] text-white font-mono focus:outline-none focus:border-cyan-400" />
-          <button type="button" id="btn-link-account-id" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white uppercase shrink-0">
+          <button type="button" id="btn-link-account-id" class="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white uppercase shrink-0">
             ПРИВЯЗАТЬ
           </button>
         </div>
@@ -500,7 +509,7 @@
             </div>
           </div>
 
-          <!-- Кнопка сброса ракурса (кнопка GPU-ПАМП убрана) -->
+          <!-- Кнопка сброса ракурса -->
           <div>
             <button type="button" id="btn-left-reset-cam" class="w-full py-2 px-3 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
               🔄 СБРОСИТЬ РАКУРС 3D-КАМЕРЫ
@@ -631,7 +640,7 @@
       <div id="phases-list" class="space-y-1.5 pb-4"></div>
     </div>
 
-    <!-- ВКЛАДКА 4: АККАУНТ (TELEGRAM + GOOGLE) И СОХРАНЕНИЕ КАЖДЫЕ 5 СЕК -->
+    <!-- ВКЛАДКА 4: АККАУНТ И СОХРАНЕНИЕ КАЖДЫЕ 5 СЕК -->
     <div id="panel-save" class="space-y-3 pb-4">
       <!-- Карточка аккаунта и облака -->
       <div class="p-3 rounded-xl bg-indigo-950/50 border border-cyan-500/40 space-y-2.5">
@@ -644,14 +653,9 @@
           <p class="text-[9px] text-slate-300">
             Авторизуйтесь через Telegram или Google для синхронизации прогресса между ПК и телефоном каждые 5 секунд.
           </p>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" id="btn-tab-tg-login" class="py-2 px-2.5 rounded-lg bg-[#24A1DE] hover:bg-[#1f8bc0] text-white text-[9px] font-bold uppercase flex items-center justify-center gap-1.5">
-              <span>✈️</span><span>TELEGRAM</span>
-            </button>
-            <button type="button" id="btn-tab-google-login" class="py-2 px-2.5 rounded-lg bg-white hover:bg-slate-200 text-slate-900 text-[9px] font-bold uppercase flex items-center justify-center gap-1.5">
-              <span>🌐</span><span>GOOGLE</span>
-            </button>
-          </div>
+          <button type="button" id="btn-tab-open-auth" class="w-full py-2.5 px-3 rounded-lg bg-gradient-to-r from-cyan-500/30 to-indigo-600/40 hover:from-cyan-500/45 hover:to-indigo-600/60 border border-cyan-400/50 text-cyan-200 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+            <span>👤</span><span>ОТКРЫТЬ ОКНО ВХОДА (TELEGRAM / GOOGLE)</span>
+          </button>
         </div>
 
         <div id="account-logged-in-view" class="hidden space-y-2">
@@ -714,15 +718,13 @@
 
     /*************************************************************************
      * 0. КОНФИГУРАЦИЯ АВТОРИЗАЦИИ TELEGRAM & GOOGLE И ОБЛАЧНОЙ БАЗЫ ДАННЫХ
-     * Впишите сюда username вашего бота, Google Client ID и ссылку Firebase DB
      *************************************************************************/
     const AUTH_CONFIG = {
-      // Имя вашего Telegram-бота без символа @ (например: 'YchuchacovichAuthBot')
+      // Имя вашего Telegram-бота без символа @
       TELEGRAM_BOT_USERNAME: 'icucacidbot',
-      // Ваш Client ID из Google Cloud Console (например: '123456-abc.apps.googleusercontent.com')
+      // Ваш Client ID из Google Cloud Console
       GOOGLE_CLIENT_ID: '834355674248-vgcrjijav70u1eduengch43dbgkas8pp.apps.googleusercontent.com',
       // Ссылка на вашу Firebase Realtime Database для межплатформенной синхронизации
-      // (например: 'https://ychuchacovich-default-rtdb.europe-west1.firebasedatabase.app')
       FIREBASE_DB_URL: 'https://icucacid-default-rtdb.firebaseio.com/'
     };
 
@@ -840,7 +842,7 @@
     }
 
     let state = getDefaultState();
-    let currentUser = null; // { id, name, provider: 'telegram' | 'google' | 'cloud_id' }
+    let currentUser = null;
     let activeTab = 'upgrades';
     let isDrawerOpen = false;
     let currentDeviceMode = 'pc';
@@ -901,7 +903,6 @@
       } catch (e) {}
     }
 
-    // Сохранение локально + отправка в облако каждые 5 секунд
     async function saveProgress(syncCloud = true) {
       try {
         state.lastSavedAt = Date.now();
@@ -926,7 +927,6 @@
       } catch (e) {}
     }
 
-    // Облачная синхронизация через Firebase Realtime Database REST API
     async function pushStateToCloud() {
       if (!currentUser || !AUTH_CONFIG.FIREBASE_DB_URL) return;
       try {
@@ -955,7 +955,6 @@
         if (!resp.ok) return false;
         const data = await resp.json();
         if (data && data.gameState) {
-          // Берем прогресс из облака, если там больше набранной массы или при явной загрузке
           if ((data.gameState.totalEarned || 0) >= (state.totalEarned || 0)) {
             state = {
               ...getDefaultState(),
@@ -976,7 +975,6 @@
       return false;
     }
 
-    // Обработка успешного входа через Telegram или Google
     async function onUserAuthenticated(userProfile) {
       currentUser = userProfile;
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser));
@@ -1021,8 +1019,8 @@
       }
     }
 
-    // Глобальный колбэк для официального Telegram Login Widget
-    window.onTelegramAuth = (tgUser) => {
+    // Привязываем обработчик к глобальному window.onTelegramAuth из <head>
+    window.__handleTelegramLogin = (tgUser) => {
       if (!tgUser || !tgUser.id) return;
       const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || `TG_${tgUser.id}`;
       onUserAuthenticated({
@@ -1033,46 +1031,78 @@
       });
     };
 
-    // Инициализация Telegram Login Widget и Google Identity Services
+    if (window.__pendingTelegramUser) {
+      window.__handleTelegramLogin(window.__pendingTelegramUser);
+      window.__pendingTelegramUser = null;
+    }
+
+    // Проверка URL-параметров, если Telegram вернул редирект (?id=...&first_name=...&hash=...)
+    function checkTelegramRedirectParams() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('id') && params.has('hash') && params.has('auth_date')) {
+          const tgUser = {
+            id: params.get('id'),
+            first_name: params.get('first_name') || '',
+            last_name: params.get('last_name') || '',
+            username: params.get('username') || ''
+          };
+          window.__handleTelegramLogin(tgUser);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (e) {}
+    }
+
+    let tgWidgetRendered = false;
+    let googleWidgetRendered = false;
+
     function initAuthProviders() {
-      // 1. Если открыто внутри Telegram Mini App — авторизуем автоматически
+      checkTelegramRedirectParams();
+
       if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-        window.onTelegramAuth(window.Telegram.WebApp.initDataUnsafe.user);
+        window.__handleTelegramLogin(window.Telegram.WebApp.initDataUnsafe.user);
       }
 
-      // 2. Если задан TELEGRAM_BOT_USERNAME в AUTH_CONFIG — рендерим официальный виджет Telegram
+      // Официальный виджет Telegram (@icucacidbot)
       const tgContainer = document.getElementById('telegram-widget-container');
-      if (tgContainer && AUTH_CONFIG.TELEGRAM_BOT_USERNAME) {
+      if (tgContainer && AUTH_CONFIG.TELEGRAM_BOT_USERNAME && !tgWidgetRendered) {
+        tgWidgetRendered = true;
         tgContainer.innerHTML = '';
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://telegram.org/js/telegram-widget.js?22';
         script.setAttribute('data-telegram-login', AUTH_CONFIG.TELEGRAM_BOT_USERNAME.replace(/^@/, ''));
         script.setAttribute('data-size', 'large');
+        script.setAttribute('data-radius', '10');
         script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+        script.setAttribute('data-auth-url', window.location.origin + window.location.pathname);
         script.setAttribute('data-request-access', 'write');
         tgContainer.appendChild(script);
       }
 
-      // 3. Если задан GOOGLE_CLIENT_ID — инициализируем Google OAuth 2.0
-      if (AUTH_CONFIG.GOOGLE_CLIENT_ID && window.google?.accounts?.id) {
-        window.google.accounts.id.initialize({
-          client_id: AUTH_CONFIG.GOOGLE_CLIENT_ID,
-          callback: (response) => {
-            try {
-              const payload = JSON.parse(atob(response.credential.split('.')[1]));
-              onUserAuthenticated({
-                id: `google_${payload.sub}`,
-                name: payload.name || payload.email || 'Google User',
-                email: payload.email || '',
-                provider: 'google'
-              });
-            } catch (e) {}
-          }
-        });
-        const gBtn = document.getElementById('google-gsi-button');
-        if (gBtn) {
-          window.google.accounts.id.renderButton(gBtn, { theme: 'outline', size: 'large', width: 320 });
+      // Официальный виджет Google Identity Services (с автоповтором, если скрипт еще грузится)
+      const gBtn = document.getElementById('google-gsi-button');
+      if (gBtn && AUTH_CONFIG.GOOGLE_CLIENT_ID && !googleWidgetRendered) {
+        if (window.google?.accounts?.id) {
+          googleWidgetRendered = true;
+          gBtn.innerHTML = '';
+          window.google.accounts.id.initialize({
+            client_id: AUTH_CONFIG.GOOGLE_CLIENT_ID,
+            callback: (response) => {
+              try {
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                onUserAuthenticated({
+                  id: `google_${payload.sub}`,
+                  name: payload.name || payload.email || 'Google User',
+                  email: payload.email || '',
+                  provider: 'google'
+                });
+              } catch (e) {}
+            }
+          });
+          window.google.accounts.id.renderButton(gBtn, { theme: 'filled_blue', size: 'large', width: 280, shape: 'pill' });
+        } else {
+          setTimeout(initAuthProviders, 400);
         }
       }
     }
@@ -1582,7 +1612,6 @@
     let currentPitch = 0.05;
     let cameraZoomOffset = 0;
 
-    // Переменные параллакса
     let mouseNormX = 0;
     let mouseNormY = 0;
     let smoothParallaxX = 0;
@@ -1635,7 +1664,6 @@
     });
 
     window.addEventListener('pointermove', (e) => {
-      // Координаты курсора от -1 до +1 для живого параллакса
       mouseNormX = (e.clientX / window.innerWidth - 0.5) * 2;
       mouseNormY = (e.clientY / window.innerHeight - 0.5) * 2;
 
@@ -1946,42 +1974,21 @@
       setDeviceLayout(currentDeviceMode === 'pc' ? 'mobile' : 'pc');
     });
 
-    // Открытие/закрытие модального окна авторизации
-    const openAuthModal = () => document.getElementById('auth-modal')?.classList.remove('hidden');
+    const openAuthModal = () => {
+      document.getElementById('auth-modal')?.classList.remove('hidden');
+      initAuthProviders();
+    };
     document.getElementById('btn-open-auth-top')?.addEventListener('click', openAuthModal);
-    document.getElementById('btn-tab-tg-login')?.addEventListener('click', openAuthModal);
-    document.getElementById('btn-tab-google-login')?.addEventListener('click', openAuthModal);
+    document.getElementById('btn-tab-open-auth')?.addEventListener('click', openAuthModal);
     document.getElementById('btn-close-auth')?.addEventListener('click', () => {
       document.getElementById('auth-modal')?.classList.add('hidden');
-    });
-
-    document.getElementById('btn-login-telegram')?.addEventListener('click', () => {
-      if (AUTH_CONFIG.TELEGRAM_BOT_USERNAME) {
-        const botName = AUTH_CONFIG.TELEGRAM_BOT_USERNAME.replace(/^@/, '');
-        window.open(`https://t.me/${botName}?start=web_login`, '_blank');
-        showToast('✈️ ПОДТВЕРДИТЕ ВХОД В БОТЕ ИЛИ ЧЕРЕЗ ВИДЖЕТ НИЖЕ', 'border-cyan-400 text-cyan-300');
-      } else {
-        const tgInput = document.getElementById('input-custom-account-id');
-        if (tgInput) tgInput.focus();
-        showToast('✈️ УКАЖИТЕ ВАШ @USERNAME НИЖЕ ИЛИ ВПИШИТЕ БОТА В AUTH_CONFIG', 'border-cyan-400 text-cyan-300');
-      }
-    });
-
-    document.getElementById('btn-login-google')?.addEventListener('click', () => {
-      if (AUTH_CONFIG.GOOGLE_CLIENT_ID && window.google?.accounts?.id) {
-        window.google.accounts.id.prompt();
-      } else {
-        const tgInput = document.getElementById('input-custom-account-id');
-        if (tgInput) tgInput.focus();
-        showToast('🌐 ВПИШИТЕ GOOGLE_CLIENT_ID В AUTH_CONFIG ИЛИ ВВЕДИТЕ EMAIL НИЖЕ', 'border-amber-400 text-amber-300');
-      }
     });
 
     document.getElementById('btn-link-account-id')?.addEventListener('click', () => {
       const inp = document.getElementById('input-custom-account-id');
       const val = inp ? inp.value.trim() : '';
       if (!val) {
-        showToast('⚠️ ВВЕДИТЕ ВАШ @USERNAME ИЛИ EMAIL', 'border-rose-500 text-rose-300');
+        showToast('⚠️ ВВЕДИТЕ ВАШ @USERNAME ИЛИ КОД', 'border-rose-500 text-rose-300');
         return;
       }
       const isTg = val.startsWith('@');
@@ -2107,7 +2114,6 @@
       ecgCtx.stroke();
     }
 
-    // Элементы для многослойного параллакса
     const leftCardEl = document.getElementById('holo-card-left');
     const rightCardEl = document.getElementById('holo-card-right');
     const gridEl = document.getElementById('parallax-grid');
@@ -2193,7 +2199,12 @@
     update3DAnatomyAndHUD();
     animate();
     loadGLBModelFromRepo();
-    setTimeout(initAuthProviders, 600);
+    setTimeout(initAuthProviders, 300);
+
+    // Если пользователь уже вошел ранее — при старте подтягиваем свежий прогресс из Firebase
+    if (currentUser) {
+      pullStateFromCloud();
+    }
 
     // Пассивный прирост массы каждую 0.25 сек
     setInterval(() => {
