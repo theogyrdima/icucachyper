@@ -4,15 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>ЫЦУЦАЦОВИЧ // 1000 ФАЗ ГИПЕРТРОФИИ</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Базовый Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-  <!-- Модули для распаковки сжатой геометрии EXT_meshopt_compression -->
+  <!-- ВАЖНО: importmap ОБЯЗАН быть самым первым скриптом в <head> -->
   <script type="importmap">
   {
     "imports": {
@@ -21,6 +14,11 @@
     }
   }
   </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root {
@@ -85,7 +83,7 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(99, 102, 241, 0.08);
     }
 
-    /* Боковые панели без Z-искажений кликов (100% точность попадания курсора) */
+    /* Боковые панели без 3D-искажения плоскости клика (нет мёртвых зон) */
     .cyber-side-panel {
       position: relative;
       background: linear-gradient(155deg, rgba(16, 23, 42, 0.94) 0%, rgba(9, 13, 25, 0.92) 100%);
@@ -101,7 +99,6 @@
       box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75), 0 0 32px rgba(0, 240, 255, 0.18), inset 0 0 28px rgba(99, 102, 241, 0.16);
     }
 
-    /* Световой блик внутри панели — строго pointer-events: none */
     .holo-glare {
       position: absolute;
       inset: 0;
@@ -128,7 +125,7 @@
     .hc-bl { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
     .hc-br { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
 
-    /* Пружинистое увеличение кнопок и карточек при наведении */
+    /* Пружинистое увеличение кнопок при наведении */
     button,
     .interactive-btn,
     .module-card,
@@ -237,31 +234,41 @@
   <div id="particles-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
   <div id="toast-layer" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-1.5 w-[92vw] max-w-md"></div>
 
-  <!-- АВТОМАТИЧЕСКИЙ ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB -->
+  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB -->
   <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
     <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
-      <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
-        <div id="loader-spinner" class="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
-        <div>
-          <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">СИНХРОНИЗАЦИЯ С РЕПОЗИТОРИЕМ</div>
-          <h2 id="loader-title" class="font-display text-sm md:text-base font-black text-white">ЗАГРУЗКА 3D-МОДЕЛИ...</h2>
+      <div class="flex items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-3">
+          <div id="loader-spinner" class="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
+          <div>
+            <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">СИНХРОНИЗАЦИЯ С РЕПОЗИТОРИЕМ</div>
+            <h2 id="loader-title" class="font-display text-sm md:text-base font-black text-white">ЗАГРУЗКА 3D-МОДЕЛИ...</h2>
+          </div>
         </div>
+        <button type="button" onclick="document.getElementById('model-loader-modal').classList.add('hidden')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300" title="Фоновая загрузка">
+          ✕
+        </button>
       </div>
 
       <!-- Прогресс-бар загрузки -->
       <div class="space-y-1.5">
         <div class="flex justify-between text-[10px] font-bold">
-          <span id="loader-step-text" class="text-cyan-300">Загрузка model.glb...</span>
-          <span id="loader-pct-text" class="text-white">15%</span>
+          <span id="loader-step-text" class="text-cyan-300">Подключение к GitHub Pages...</span>
+          <span id="loader-pct-text" class="text-white">5%</span>
         </div>
         <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-700">
-          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-200" style="width: 15%"></div>
+          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-150" style="width: 5%"></div>
         </div>
       </div>
 
-      <!-- Кнопка пропуска, если открыто без интернета/сервера -->
-      <button id="btn-skip-loader" class="hidden w-full py-2.5 px-4 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/50 text-indigo-200 font-bold text-[10px] uppercase tracking-wider">
-        ⚡ ПРОДОЛЖИТЬ СО ВСТРОЕННОЙ 3D-МОДЕЛЬЮ
+      <!-- Подробный статус -->
+      <div id="loader-sub-detail" class="text-[9px] text-slate-400 font-mono bg-slate-950/80 px-3 py-2 rounded-lg border border-slate-800">
+        Инициализация декодера Meshopt (998 293 вершин)...
+      </div>
+
+      <!-- Кнопка фонового перехода (чтобы можно было играть сразу, пока докачиваются 11.6 МБ) -->
+      <button type="button" id="btn-skip-loader" onclick="document.getElementById('model-loader-modal').classList.add('hidden')" class="w-full py-2 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-[9px] uppercase tracking-wider">
+        ⚡ СВЕРНУТЬ ОКНО (ДОКАЧАТЬ В ФОНЕ)
       </button>
     </div>
   </div>
@@ -314,13 +321,13 @@
         </div>
 
         <div class="flex items-center gap-1.5 shrink-0">
-          <button id="btn-toggle-layout" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-950/60 text-[9px] md:text-[10px] font-bold text-indigo-200 tracking-wider uppercase">
+          <button type="button" id="btn-toggle-layout" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-950/60 text-[9px] md:text-[10px] font-bold text-indigo-200 tracking-wider uppercase">
             📱 МОБ. ВИД
           </button>
-          <button id="btn-quick-save" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/50 text-[9px] md:text-[10px] font-bold text-emerald-300 uppercase" title="Сохранить прогресс">
+          <button type="button" id="btn-quick-save" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/50 text-[9px] md:text-[10px] font-bold text-emerald-300 uppercase" title="Сохранить прогресс">
             💾
           </button>
-          <button id="btn-sound" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-slate-600/80 bg-slate-900/90 text-[10px] font-bold text-slate-200 uppercase">
+          <button type="button" id="btn-sound" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-slate-600/80 bg-slate-900/90 text-[10px] font-bold text-slate-200 uppercase">
             🔊
           </button>
         </div>
@@ -445,10 +452,10 @@
 
           <!-- Быстрые переключатели 3D-сцены слева -->
           <div class="grid grid-cols-2 gap-2">
-            <button id="btn-left-reset-cam" class="py-2 px-2.5 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
+            <button type="button" id="btn-left-reset-cam" class="py-2 px-2.5 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
               🔄 СБРОС РАКУРСА
             </button>
-            <button id="btn-eye-mode" class="py-2 px-2.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 text-[9px] font-bold text-cyan-200 uppercase">
+            <button type="button" id="btn-eye-mode" class="py-2 px-2.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 text-[9px] font-bold text-cyan-200 uppercase">
               👀 ВЗГЛЯД: КУРСОР
             </button>
           </div>
@@ -456,7 +463,7 @@
 
         <div class="space-y-2 pt-2 border-t border-indigo-500/30 relative z-10">
           <div class="flex items-center justify-between text-[9px] text-slate-300">
-            <span>МОДЕЛЬ: <b id="vertex-count-label" class="text-cyan-400">ЗАГРУЗКА...</b></span>
+            <span>МОДЕЛЬ: <b id="vertex-count-label" class="text-cyan-400">ЗАГРУЗКА GLB...</b></span>
             <span>РАКУРС: <b id="cam-angle-label" class="text-indigo-300">0° / 4°</b></span>
           </div>
           <canvas id="ecg-canvas" width="300" height="36" class="w-full h-8 bg-slate-950/90 rounded border border-slate-800"></canvas>
@@ -476,7 +483,7 @@
         <div class="holo-corner hc-bl"></div>
         <div class="holo-corner hc-br"></div>
 
-        <!-- Вкладки (100% кликабельны по всей площади) -->
+        <!-- Вкладки -->
         <div class="grid grid-cols-4 border-b border-indigo-500/30 bg-slate-950/90 shrink-0 p-1.5 gap-1.5 relative z-20">
           <button type="button" data-tab="upgrades" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-cyan-500/50 bg-indigo-600/30 text-cyan-300">
             ⚡ МОДУЛИ
@@ -502,17 +509,17 @@
   <div id="orbit-hint-pill" class="fixed left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/90 border border-indigo-500/45 text-[9px] md:text-[10px] text-slate-200 backdrop-blur-md shadow-xl whitespace-nowrap">
     <span class="hidden sm:inline text-cyan-400 font-bold">🖱 ВРАЩЕНИЕ 360°</span>
     <span class="hidden sm:inline text-slate-600">|</span>
-    <button id="btn-reset-cam" class="px-2 py-0.5 rounded bg-indigo-500/25 hover:bg-indigo-500/45 text-indigo-200 border border-indigo-500/40 font-bold">
+    <button type="button" id="btn-reset-cam" class="px-2 py-0.5 rounded bg-indigo-500/25 hover:bg-indigo-500/45 text-indigo-200 border border-indigo-500/40 font-bold">
       🔄 СБРОС
     </button>
-    <button id="btn-auto-spin" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold">
+    <button type="button" id="btn-auto-spin" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold">
       🌀 АВТО: ВЫКЛ
     </button>
-    <button id="btn-light-mode" class="px-2 py-0.5 rounded bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-500/40 font-bold">
+    <button type="button" id="btn-light-mode" class="px-2 py-0.5 rounded bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-500/40 font-bold">
       ☀ СВЕТ: СТУДИЯ
     </button>
-    <button id="btn-zoom-in" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-bold">+</button>
-    <button id="btn-zoom-out" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-bold">−</button>
+    <button type="button" id="btn-zoom-in" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-bold">+</button>
+    <button type="button" id="btn-zoom-out" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-bold">−</button>
   </div>
 
   <!-- МОБИЛЬНАЯ НИЖНЯЯ ШТОРКА -->
@@ -609,8 +616,12 @@
     </div>
   </div>
 
-  <!-- ОСНОВНОЙ СКРИПТ ИГРЫ И ИНТЕРФЕЙСА -->
-  <script>
+  <!-- ЕДИНЫЙ МОДУЛЬ ИГРЫ, THREE.JS И ЗАГРУЗЧИКА MESHOPT GLB -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
     /*************************************************************************
      * 1. ДАННЫЕ: 1000 ФАЗ, 24 СКИНА, 10 МОДУЛЕЙ
      *************************************************************************/
@@ -655,7 +666,7 @@
       else {
         const root = NOUN_ROOTS[Math.floor((num - 1) / 10) % NOUN_ROOTS.length];
         const suf = RANK_SUFFIXES[(num - 1) % RANK_SUFFIXES.length];
-        title = `${root} ${suf}`;
+        title = `${root}${suf}`;
       }
       return { num, title, req };
     });
@@ -703,7 +714,7 @@
     /*************************************************************************
      * 2. СОСТОЯНИЕ И УТИЛИТЫ
      *************************************************************************/
-    const STORAGE_KEY = 'ychuchacovich_1000_v3_save';
+    const STORAGE_KEY = 'ychuchacovich_1000_v4_save';
 
     function getDefaultState() {
       return {
@@ -732,19 +743,20 @@
     let eyeMode = 'follow';
     let hasCustomGLB = false;
 
-    function setLoaderProgress(pct, statusText, titleText = null, stopSpinner = false) {
+    function setLoaderProgress(pct, statusText, detailText = null, stopSpinner = false) {
       const bar = document.getElementById('loader-progress-bar');
       const pctEl = document.getElementById('loader-pct-text');
       const stepEl = document.getElementById('loader-step-text');
-      const titleEl = document.getElementById('loader-title');
+      const subEl = document.getElementById('loader-sub-detail');
       const spinner = document.getElementById('loader-spinner');
-      if (bar) bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
-      if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
+      const clamped = Math.min(100, Math.max(0, pct));
+      if (bar) bar.style.width = `${clamped}%`;
+      if (pctEl) pctEl.textContent = `${Math.round(clamped)}%`;
       if (stepEl && statusText) stepEl.textContent = statusText;
-      if (titleEl && titleText) titleEl.textContent = titleText;
-      if (spinner) {
-        spinner.classList.toggle('animate-spin', !stopSpinner);
-        if (stopSpinner) spinner.classList.replace('border-t-transparent', 'border-emerald-400');
+      if (subEl && detailText) subEl.textContent = detailText;
+      if (spinner && stopSpinner) {
+        spinner.classList.remove('animate-spin');
+        spinner.classList.replace('border-t-transparent', 'border-emerald-400');
       }
     }
 
@@ -897,7 +909,7 @@
     }
 
     /*************************************************************************
-     * 4. THREE.JS СЦЕНА И ВСТРОЕННАЯ МОДЕЛЬ
+     * 4. THREE.JS 0.160.0 СЦЕНА + ВСТРОЕННАЯ МОДЕЛЬ
      *************************************************************************/
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
@@ -906,26 +918,26 @@
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    if (renderer.outputEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.92;
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
-    const hemiLight = new THREE.HemisphereLight(0xe2e8f0, 0x334155, 0.85);
+    const hemiLight = new THREE.HemisphereLight(0xe2e8f0, 0x334155, 0.88);
     hemiLight.position.set(0, 10, 0);
     scene.add(hemiLight);
 
-    const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.25);
+    const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.3);
     keyLight.position.set(3.5, 5.5, 5.0);
     keyLight.castShadow = true;
     scene.add(keyLight);
 
-    const leftFill = new THREE.DirectionalLight(0xc7d2fe, 0.6);
+    const leftFill = new THREE.DirectionalLight(0xc7d2fe, 0.65);
     leftFill.position.set(-5.0, 2.5, 3.0);
     scene.add(leftFill);
 
-    const rightFill = new THREE.DirectionalLight(0xa5f3fc, 0.6);
+    const rightFill = new THREE.DirectionalLight(0xa5f3fc, 0.65);
     rightFill.position.set(5.0, 2.5, 3.0);
     scene.add(rightFill);
 
@@ -953,6 +965,10 @@
 
     const builtinBodyGroup = new THREE.Group();
     characterPivot.add(builtinBodyGroup);
+
+    const glbRootGroup = new THREE.Group();
+    characterPivot.add(glbRootGroup);
+    glbRootGroup.visible = false;
 
     const shirtMat = new THREE.MeshStandardMaterial({ color: 0x6a78d1, roughness: 0.52, metalness: 0.08 });
     const skinMat = new THREE.MeshStandardMaterial({ color: 0xdca082, roughness: 0.56, metalness: 0.04 });
@@ -982,4 +998,348 @@
       builtinBodyGroup.add(anatomy.pecL, anatomy.pecR);
 
       anatomy.latL = new THREE.Mesh(new THREE.SphereGeometry(0.34, 20, 18), shirtMat);
-      anatomy.latL.position.set(-0.
+      anatomy.latL.position.set(-0.46, 0.48, -0.06);
+      anatomy.latL.scale.set(0.85, 1.35, 0.7);
+      anatomy.latR = anatomy.latL.clone();
+      anatomy.latR.position.x = 0.46;
+      builtinBodyGroup.add(anatomy.latL, anatomy.latR);
+
+      anatomy.traps = new THREE.Mesh(new THREE.SphereGeometry(0.42, 20, 16), shirtMat);
+      anatomy.traps.position.set(0, 1.08, -0.05);
+      anatomy.traps.scale.set(1.4, 0.48, 0.75);
+      builtinBodyGroup.add(anatomy.traps);
+
+      anatomy.neck = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.25, 0.36, 20), skinMat);
+      anatomy.neck.position.set(0, 1.28, 0.02);
+      builtinBodyGroup.add(anatomy.neck);
+
+      anatomy.buttons = [];
+      for (let i = 0; i < 6; i++) {
+        const btn = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.02, 12), buttonMat);
+        btn.rotation.x = Math.PI / 2;
+        btn.position.set(0, 0.92 - i * 0.2, 0.46);
+        builtinBodyGroup.add(btn);
+        anatomy.buttons.push(btn);
+      }
+
+      anatomy.headGroup = new THREE.Group();
+      anatomy.headGroup.position.set(0, 1.64, 0.05);
+      builtinBodyGroup.add(anatomy.headGroup);
+
+      const skull = new THREE.Mesh(new THREE.SphereGeometry(0.32, 28, 24), skinMat);
+      skull.scale.set(0.92, 1.12, 0.96);
+      anatomy.headGroup.add(skull);
+
+      const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.26, 0.38), skinMat);
+      jaw.position.set(0, -0.14, 0.04);
+      anatomy.headGroup.add(jaw);
+
+      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.16, 12), skinMat);
+      nose.position.set(0, -0.01, 0.33);
+      nose.rotation.x = Math.PI * 0.42;
+      anatomy.headGroup.add(nose);
+
+      const hairTop = new THREE.Mesh(new THREE.SphereGeometry(0.33, 20, 16), hairMat);
+      hairTop.position.set(0, 0.14, -0.02);
+      hairTop.scale.set(0.95, 0.85, 0.98);
+      anatomy.headGroup.add(hairTop);
+
+      const scleraMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const irisMat = new THREE.MeshBasicMaterial({ color: 0x3b2314 });
+      const pupilMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
+
+      anatomy.eyeL = new THREE.Group();
+      anatomy.eyeL.position.set(-0.11, 0.05, 0.28);
+      anatomy.eyeR = new THREE.Group();
+      anatomy.eyeR.position.set(0.11, 0.05, 0.28);
+      anatomy.headGroup.add(anatomy.eyeL, anatomy.eyeR);
+
+      [anatomy.eyeL, anatomy.eyeR].forEach((eyeGrp, idx) => {
+        const eyeball = new THREE.Mesh(new THREE.SphereGeometry(0.055, 16, 16), scleraMat);
+        eyeball.scale.set(1.1, 0.9, 0.7);
+        eyeGrp.add(eyeball);
+
+        const pupilPivot = new THREE.Group();
+        const iris = new THREE.Mesh(new THREE.CircleGeometry(0.028, 16), irisMat);
+        iris.position.z = 0.04;
+        const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.015, 12), pupilMat);
+        pupil.position.z = 0.042;
+        pupilPivot.add(iris, pupil);
+        eyeGrp.add(pupilPivot);
+        if (idx === 0) anatomy.pupilL = pupilPivot;
+        else anatomy.pupilR = pupilPivot;
+      });
+
+      [-1, 1].forEach(side => {
+        const key = side === -1 ? 'L' : 'R';
+        const armRoot = new THREE.Group();
+        armRoot.position.set(side * 0.72, 0.92, 0.0);
+        builtinBodyGroup.add(armRoot);
+
+        const delt = new THREE.Mesh(new THREE.SphereGeometry(0.3, 22, 20), shirtMat);
+        armRoot.add(delt);
+
+        const bicep = new THREE.Mesh(new THREE.SphereGeometry(0.25, 20, 18), shirtMat);
+        bicep.position.set(side * 0.18, -0.34, 0.12);
+        bicep.scale.set(0.95, 1.35, 0.95);
+        armRoot.add(bicep);
+
+        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.62, 18), shirtMat);
+        forearm.position.set(side * 0.12, -0.74, 0.32);
+        forearm.rotation.x = -0.68;
+        forearm.rotation.z = -side * 0.35;
+        armRoot.add(forearm);
+
+        const fist = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), skinMat);
+        fist.position.set(side * 0.02, -0.96, 0.56);
+        armRoot.add(fist);
+
+        anatomy[`armRoot${key}`] = armRoot;
+        anatomy[`delt${key}`] = delt;
+        anatomy[`bicep${key}`] = bicep;
+        anatomy[`forearm${key}`] = forearm;
+      });
+
+      const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.44, 0.36, 22), pantsMat);
+      pelvis.position.set(0, -0.45, 0);
+      pelvis.scale.set(1, 1, 0.72);
+      builtinBodyGroup.add(pelvis);
+
+      [-1, 1].forEach(side => {
+        const key = side === -1 ? 'L' : 'R';
+        const legGroup = new THREE.Group();
+        legGroup.position.set(side * 0.25, -0.58, 0);
+        builtinBodyGroup.add(legGroup);
+
+        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.19, 0.85, 20), pantsMat);
+        thigh.position.set(0, -0.42, 0.02);
+        legGroup.add(thigh);
+
+        const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.82, 18), pantsMat);
+        calf.position.set(0, -1.2, -0.02);
+        legGroup.add(calf);
+
+        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.52), shoeMat);
+        shoe.position.set(0, -1.68, 0.1);
+        legGroup.add(shoe);
+
+        anatomy[`thigh${key}`] = thigh;
+        anatomy[`calf${key}`] = calf;
+      });
+    }
+
+    buildDetailedBuiltinHero();
+
+    /*************************************************************************
+     * 5. СКИНЫ, СВЕТ И РОСТ МЫШЦ
+     *************************************************************************/
+    let loadedGLBMeshes = [];
+
+    function applyActiveSkinTo3D() {
+      const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[0];
+
+      shirtMat.color.setHex(skin.shirt);
+      shirtMat.metalness = skin.metal;
+      shirtMat.roughness = Math.max(0.25, skin.rough);
+      shirtMat.emissive.setHex(skin.emissive || 0x000000);
+      shirtMat.emissiveIntensity = skin.wire ? 0.22 : 0.04;
+      shirtMat.wireframe = !!skin.wire;
+
+      skinMat.color.setHex(skin.skin);
+      pantsMat.color.setHex(skin.pants);
+
+      if (hasCustomGLB && loadedGLBMeshes.length > 0) {
+        loadedGLBMeshes.forEach(mesh => {
+          const mat = mesh.material;
+          if (!mat) return;
+          if (skin.preserveOriginalTexture) {
+            mat.color.setHex(0xffffff);
+            mat.emissive.setHex(0x000000);
+            mat.metalness = 0.08;
+            mat.roughness = 0.52;
+            mat.wireframe = false;
+          } else {
+            mat.color.setHex(skin.shirt);
+            mat.emissive.setHex(skin.emissive || 0x000000);
+            mat.emissiveIntensity = skin.wire ? 0.22 : 0.06;
+            mat.metalness = skin.metal;
+            mat.roughness = Math.max(0.22, skin.rough);
+            mat.wireframe = !!skin.wire;
+          }
+          mat.needsUpdate = true;
+        });
+      }
+    }
+
+    function applyStudioLightingPreset(presetIdx) {
+      studioLightPreset = presetIdx % 3;
+      const btn = document.getElementById('btn-light-mode');
+      if (studioLightPreset === 0) {
+        renderer.toneMappingExposure = 0.92;
+        hemiLight.intensity = 0.88;
+        keyLight.intensity = 1.3;
+        if (btn) btn.textContent = '☀ СВЕТ: СТУДИЯ';
+      } else if (studioLightPreset === 1) {
+        renderer.toneMappingExposure = 0.84;
+        hemiLight.intensity = 0.52;
+        keyLight.intensity = 1.6;
+        if (btn) btn.textContent = '☀ СВЕТ: РЕЛЬЕФ';
+      } else {
+        renderer.toneMappingExposure = 0.88;
+        hemiLight.intensity = 1.1;
+        keyLight.intensity = 0.85;
+        if (btn) btn.textContent = '☀ СВЕТ: МЯГКИЙ';
+      }
+    }
+
+    let pumpImpulse = 0;
+    let shockwaveProgress = 0;
+
+    function update3DAnatomyAndHUD() {
+      const { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo } = getStats();
+      const g = pInfo.globalGrowth;
+
+      if (pInfo.current.num > state.highestPhase) {
+        state.highestPhase = pInfo.current.num;
+        showToast(`🧬 ФАЗА ${pInfo.current.num}/1000:${pInfo.current.title}!`, 'border-amber-400 text-amber-300');
+      }
+
+      if (anatomy.upperTorso) {
+        anatomy.upperTorso.scale.set(0.85 + g * 0.95, 1 + g * 0.15, 0.62 + g * 0.62);
+        anatomy.lowerTorso.scale.set(0.82 + g * 0.52, 1, 0.6 + g * 0.45);
+        anatomy.pecL.scale.set(0.9 + g * 1.15, 0.78 + g * 0.7, 0.7 + g * 1.1);
+        anatomy.pecR.scale.copy(anatomy.pecL.scale);
+        anatomy.pecL.position.set(-(0.22 + g * 0.18), 0.68, 0.24 + g * 0.22);
+        anatomy.pecR.position.set(0.22 + g * 0.18, 0.68, 0.24 + g * 0.22);
+
+        anatomy.latL.scale.set(0.7 + g * 1.1, 1.2 + g * 0.45, 0.65 + g * 0.6);
+        anatomy.latR.scale.copy(anatomy.latL.scale);
+        anatomy.latL.position.x = -(0.4 + g * 0.38);
+        anatomy.latR.position.x = 0.4 + g * 0.38;
+
+        anatomy.traps.scale.set(1.1 + g * 1.1, 0.4 + g * 0.6, 0.7 + g * 0.55);
+        anatomy.neck.scale.set(0.85 + g * 0.75, 1, 0.85 + g * 0.75);
+
+        [-1, 1].forEach(side => {
+          const k = side === -1 ? 'L' : 'R';
+          anatomy[`armRoot${k}`].position.x = side * (0.62 + g * 0.52);
+          anatomy[`delt${k}`].scale.setScalar(0.82 + g * 0.98);
+          anatomy[`bicep${k}`].scale.set(0.82 + g * 1.05, 1.2 + g * 0.55, 0.82 + g * 1.05);
+          anatomy[`forearm${k}`].scale.set(0.85 + g * 0.85, 1, 0.85 + g * 0.85);
+          anatomy[`thigh${k}`].scale.set(0.86 + g * 0.78, 1, 0.86 + g * 0.78);
+          anatomy[`calf${k}`].scale.set(0.86 + g * 0.65, 1, 0.86 + g * 0.65);
+        });
+
+        anatomy.buttons.forEach((btn, idx) => {
+          const chestFactor = idx < 3 ? (1 + g * 0.85) : (1 + g * 0.5);
+          btn.position.z = 0.38 * chestFactor;
+        });
+      }
+
+      const scaleY = 0.82 + g * 0.42;
+      const scaleXZ = 0.80 + g * 0.65;
+      builtinBodyGroup.position.y = 2.26;
+      characterPivot.position.y = FLOOR_Y;
+      characterPivot.scale.set(scaleXZ, scaleY, scaleXZ);
+
+      const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+      const setWidth = (id, pct) => {
+        const el = document.getElementById(id);
+        if (el) el.style.width = pct + '%';
+      };
+
+      setTxt('hud-score', formatMass(state.score));
+      setTxt('hud-passive', formatMass(passivePower));
+      setTxt('hud-phase-num', pInfo.current.num);
+
+      const epochObj = EPOCHS.find(e => pInfo.current.num >= e.range[0] && pInfo.current.num <= e.range[1]) || EPOCHS[0];
+      setTxt('pc-epoch-tag', epochObj.name);
+      setTxt('pc-phase-num', pInfo.current.num);
+      setTxt('pc-phase-title', pInfo.current.title);
+      setTxt('pc-next-phase-num', pInfo.next.num);
+      setTxt('pc-subphase-pct', Math.floor(pInfo.subProgress * 100) + '%');
+      setWidth('pc-subphase-bar', Math.floor(pInfo.subProgress * 100));
+      setTxt('pc-total-mass', formatMass(state.totalEarned) + ' КГ');
+      setTxt('pc-next-mass', formatMass(pInfo.next.req) + ' КГ');
+      setTxt('pc-global-pct', (g * 100).toFixed(1) + '%');
+      setWidth('pc-global-bar', Math.max(0.2, g * 100).toFixed(1));
+
+      setTxt('mob-phase-num', pInfo.current.num);
+      setTxt('mob-phase-title', pInfo.current.title);
+      setTxt('mob-next-req', `${formatMass(state.totalEarned)} /${formatMass(pInfo.next.req)} КГ`);
+      setWidth('mob-subphase-bar', Math.floor(pInfo.subProgress * 100));
+
+      const ePct = Math.min(100, Math.max(0, (state.energy / maxEnergy) * 100));
+      setTxt('pc-energy-text', `${Math.floor(state.energy)} /${maxEnergy}`);
+      setWidth('pc-energy-bar', ePct);
+      setTxt('pc-tap-power', '+' + formatMass(clickPower) + ' КГ');
+      setTxt('pc-regen-rate', '+' + regenRate + '/С');
+      setTxt('lbl-tap-power', formatMass(clickPower));
+
+      setTxt('bio-chest', (88 + g * 124).toFixed(1) + ' СМ');
+      setTxt('bio-biceps', (29 + g * 58).toFixed(1) + ' СМ');
+      setTxt('bio-shoulders', (43 + g * 68).toFixed(1) + ' СМ');
+      setTxt('bio-legs', (48 + g * 64).toFixed(1) + ' СМ');
+      setTxt('bio-pressure', (1.05 + g * 48.5).toFixed(2) + ' МПа');
+      setTxt('bio-multiplier', 'x' + mult.toFixed(2));
+
+      document.querySelectorAll('.skins-count-label').forEach(el => {
+        el.textContent = `${state.ownedSkins.length}/${SKINS_DATA.length}`;
+      });
+      setTxt('phases-unlocked-badge', `${pInfo.current.num} / 1000`);
+
+      UPGRADES_DATA.forEach(u => {
+        const card = document.getElementById(`upg-card-${u.id}`);
+        if (!card) return;
+        const lvl = state.upgrades[u.id] || 0;
+        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
+        card.classList.toggle('disabled', state.score < cost);
+      });
+    }
+
+    /*************************************************************************
+     * 6. ВРАЩЕНИЕ 360° И КЛИКИ ПО 3D-МОДЕЛИ
+     *************************************************************************/
+    let targetYaw = 0;
+    let currentYaw = 0;
+    let targetPitch = 0.06;
+    let currentPitch = 0.06;
+    let cameraZoomOffset = 0;
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let totalDragDist = 0;
+    let pointerNormX = 0;
+    let pointerNormY = 0;
+
+    function triggerPumpClick(clientX, clientY) {
+      const { clickPower, pInfo } = getStats();
+      const cost = Math.min(8, Math.max(1, Math.ceil(clickPower * 0.015)));
+      if (state.energy < cost) {
+        showToast('⚡ НЕДОСТАТОЧНО РЕСУРСА ШВОВ!', 'border-rose-500 text-rose-300');
+        return;
+      }
+
+      state.energy = Math.max(0, state.energy - cost);
+      state.score += clickPower;
+      state.totalEarned += clickPower;
+
+      pumpImpulse = 1.0;
+      shockwaveProgress = 0.01;
+      clickFlashLight.intensity = 1.5;
+
+      playPumpHitSound(pInfo.globalGrowth);
+      spawnFloatingNumber(clientX, clientY, `+${formatMass(clickPower)} КГ`);
+      update3DAnatomyAndHUD();
+    }
+
+    function spawnFloatingNumber(x, y, text) {
+      const layer = document.getElementById('particles-layer');
+      if (!layer) return;
+      const el = document.createElement('div');
+      el.className = 'float-particle text-sm md:text-lg text-cyan-300';
+      el.style.left = `${
