@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#090d18" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ЫЦУЦАЦОВИЧ" />
   <title>ЫЦУЦАЦОВИЧ // 1000 ФАЗ ГИПЕРТРОФИИ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -249,7 +253,7 @@
   <div id="particles-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
   <div id="toast-layer" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-1.5 w-[92vw] max-w-md"></div>
 
-  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB (ЛЕГКОЕ РАЗМЫТИЕ ФОНА) -->
+  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB -->
   <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-[2px] flex items-center justify-center p-4 transition-opacity duration-300">
     <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
       <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
@@ -280,45 +284,121 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ (БЕЗ ДУБЛИРУЮЩИХСЯ КНОПОК И БЕЗ СИЛЬНОГО РАЗМЫТИЯ) -->
-  <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-[2px] flex items-center justify-center p-4">
-    <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-indigo-400/50 space-y-4 shadow-[0_0_45px_rgba(0,0,0,0.75)]">
+  <!-- ПОЛНОЦЕННЫЙ ЦЕНТР АККАУНТА (МУЛЬТИ-ПРИВЯЗКА TG + GOOGLE, ВЫХОД И PWA) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-[2px] flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="tech-panel max-w-lg w-full rounded-2xl p-4 sm:p-6 border border-indigo-400/50 space-y-4 shadow-[0_0_50px_rgba(0,0,0,0.8)] my-auto max-h-[92dvh] overflow-y-auto">
+      <!-- Шапка Центра Аккаунта -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div>
-          <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">ОБЛАЧНАЯ СИНХРОНИЗАЦИЯ // 5 СЕК</div>
-          <h2 class="font-display text-sm md:text-base font-black text-white">ВХОД В АККАУНТ</h2>
+        <div class="flex items-center gap-2.5">
+          <div class="w-2.5 h-7 bg-gradient-to-b from-cyan-400 to-indigo-500 rounded-sm"></div>
+          <div>
+            <div class="text-[9px] font-bold text-cyan-400 uppercase tracking-widest">ЕДИНЫЙ ПРОФИЛЬ // FIREBASE CLOUD (5 СЕК)</div>
+            <h2 class="font-display text-sm md:text-base font-black text-white">ЦЕНТР АККАУНТА</h2>
+          </div>
         </div>
         <button type="button" id="btn-close-auth" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">✕</button>
       </div>
 
-      <p class="text-[10px] text-slate-300 leading-relaxed">
-        Войдите через <b>Telegram</b> или <b>Google</b>, чтобы ваш прогресс, фазы и скины автоматически сохранялись каждые 5 секунд и синхронизировались между компьютером и телефоном.
-      </p>
+      <!-- Карточка текущего профиля (показывается, когда выполнен вход) -->
+      <div id="modal-profile-card" class="hidden p-3.5 rounded-xl bg-gradient-to-r from-indigo-950/80 via-slate-900/90 to-cyan-950/60 border border-emerald-500/40 space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <img id="modal-user-avatar" src="" alt="Avatar" class="hidden w-11 h-11 rounded-full border-2 border-cyan-400 object-cover shrink-0" />
+            <div id="modal-user-avatar-fallback" class="w-11 h-11 rounded-full bg-indigo-600/40 border-2 border-cyan-400 flex items-center justify-center font-display text-sm font-black text-cyan-200 shrink-0">
+              Ы
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span id="modal-user-name" class="font-display text-xs sm:text-sm font-black text-white truncate">Игрок</span>
+                <span id="modal-linked-count-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded uppercase">1/2 СЕРВИСА</span>
+              </div>
+              <div id="modal-user-master-id" class="text-[9px] text-cyan-300 font-mono truncate">MASTER ID: —</div>
+              <div id="modal-sync-timestamp" class="text-[8px] text-slate-400">Облачная синхронизация каждые 5 сек</div>
+            </div>
+          </div>
 
-      <!-- Единые официальные виджеты входа без дубликатов -->
-      <div class="space-y-3 py-3 flex flex-col items-center justify-center bg-slate-950/60 rounded-xl border border-slate-800/90 p-4">
-        <!-- Единственная кнопка Telegram (Официальный виджет icucacidbot) -->
-        <div id="telegram-widget-container" class="min-h-[42px] flex items-center justify-center w-full">
-          <span class="text-[10px] text-cyan-300 animate-pulse">Загрузка кнопки Telegram (@icucacidbot)...</span>
-        </div>
-
-        <div class="w-full flex items-center gap-2">
-          <div class="h-[1px] flex-1 bg-slate-800"></div>
-          <span class="text-[9px] text-slate-500 font-bold uppercase">ИЛИ</span>
-          <div class="h-[1px] flex-1 bg-slate-800"></div>
-        </div>
-
-        <!-- Единственная кнопка Google (Официальный виджет Google Identity) -->
-        <div id="google-gsi-button" class="min-h-[42px] flex items-center justify-center w-full">
-          <span class="text-[10px] text-indigo-300 animate-pulse">Загрузка кнопки Google...</span>
+          <!-- Заметная кнопка выхода из аккаунта -->
+          <button type="button" id="btn-modal-logout" class="px-3 py-2 rounded-xl bg-rose-600/25 hover:bg-rose-600/45 border border-rose-500/60 text-[10px] font-bold text-rose-200 uppercase tracking-wider shrink-0 flex items-center gap-1">
+            <span>🚪</span><span>ВЫЙТИ</span>
+          </button>
         </div>
       </div>
 
-      <!-- Быстрый резервный вход по никнейму / ID -->
+      <!-- Секция привязки двух сервисов (Telegram + Google) к одному профилю -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">🔗 ПРИВЯЗКА СЕРВИСОВ К ПРОФИЛЮ (TG + GOOGLE)</span>
+          <span id="modal-auth-hint-badge" class="text-[9px] text-cyan-400 font-bold">Выберите способ входа</span>
+        </div>
+        <p class="text-[9px] text-slate-300 leading-relaxed">
+          Вы можете привязать <b>оба сервиса</b> к одному аккаунту: войдите через первый сервис, а затем нажмите кнопку второго сервиса ниже — они объединятся в единый облачный профиль!
+        </p>
+
+        <!-- СЛОТ 1: TELEGRAM (@icucacidbot) -->
+        <div id="slot-card-telegram" class="p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2.5 transition-all">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-[#24A1DE]/20 border border-[#24A1DE]/50 flex items-center justify-center text-sm shrink-0">✈️</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span>Telegram</span>
+                  <span id="tg-status-pill" class="px-1.5 py-0.5 text-[8px] rounded bg-slate-800 text-slate-400 font-bold uppercase">НЕ ПРИВЯЗАН</span>
+                </div>
+                <div id="tg-account-subtext" class="text-[9px] text-slate-400 truncate">Авторизация через бота @icucacidbot</div>
+              </div>
+            </div>
+            <button type="button" id="btn-unlink-tg" class="hidden px-2 py-1 rounded bg-slate-900 hover:bg-rose-950/60 border border-slate-700 text-[8px] font-bold text-slate-400 hover:text-rose-300 uppercase shrink-0">
+              Отвязать
+            </button>
+          </div>
+          <!-- Контейнер официального виджета Telegram -->
+          <div id="telegram-widget-container" class="min-h-[40px] flex items-center justify-center w-full pt-1">
+            <span class="text-[10px] text-cyan-300 animate-pulse">Загрузка кнопки Telegram (@icucacidbot)...</span>
+          </div>
+        </div>
+
+        <!-- СЛОТ 2: GOOGLE OAUTH 2.0 -->
+        <div id="slot-card-google" class="p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2.5 transition-all">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-white/10 border border-white/25 flex items-center justify-center text-sm shrink-0">🌐</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span>Google Аккаунт</span>
+                  <span id="google-status-pill" class="px-1.5 py-0.5 text-[8px] rounded bg-slate-800 text-slate-400 font-bold uppercase">НЕ ПРИВЯЗАН</span>
+                </div>
+                <div id="google-account-subtext" class="text-[9px] text-slate-400 truncate">Синхронизация через Google OAuth 2.0</div>
+              </div>
+            </div>
+            <button type="button" id="btn-unlink-google" class="hidden px-2 py-1 rounded bg-slate-900 hover:bg-rose-950/60 border border-slate-700 text-[8px] font-bold text-slate-400 hover:text-rose-300 uppercase shrink-0">
+              Отвязать
+            </button>
+          </div>
+          <!-- Контейнер официальной кнопки Google -->
+          <div id="google-gsi-button" class="min-h-[40px] flex items-center justify-center w-full pt-1">
+            <span class="text-[10px] text-indigo-300 animate-pulse">Загрузка кнопки Google...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция установки веб-приложения (PWA) -->
+      <div class="p-3 rounded-xl bg-cyan-950/25 border border-cyan-500/35 space-y-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[10px] font-bold text-cyan-300 uppercase">📲 УСТАНОВИТЬ ВЕБ-ПРИЛОЖЕНИЕ (PWA)</div>
+            <div id="pwa-status-text" class="text-[9px] text-slate-300">Запуск в отдельном окне без адресной строки на ПК и телефоне</div>
+          </div>
+          <button type="button" id="btn-modal-install-pwa" class="px-3 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-display font-black text-[9px] uppercase tracking-wider shrink-0 shadow-lg">
+            📲 УСТАНОВИТЬ
+          </button>
+        </div>
+      </div>
+
+      <!-- Ручная синхронизация по ключу профиля -->
       <div class="pt-2 border-t border-slate-800 space-y-2">
-        <div class="text-[9px] font-bold text-indigo-300 uppercase">ИЛИ БЫСТРЫЙ ВХОД ПО НИКНЕЙМУ / CLOUD ID:</div>
+        <div class="text-[9px] font-bold text-slate-400 uppercase">РЕЗЕРВНЫЙ ВХОД ИЛИ ОБЪЕДИНЕНИЕ ПО ID АККАУНТА:</div>
         <div class="flex gap-1.5">
-          <input id="input-custom-account-id" type="text" placeholder="Ваш @username или код аккаунта..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-[10px] text-white font-mono focus:outline-none focus:border-cyan-400" />
+          <input id="input-custom-account-id" type="text" placeholder="Ваш @username или Master ID..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-[10px] text-white font-mono focus:outline-none focus:border-cyan-400" />
           <button type="button" id="btn-link-account-id" class="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-[10px] font-bold text-white uppercase shrink-0">
             ПРИВЯЗАТЬ
           </button>
@@ -374,11 +454,15 @@
           </div>
         </div>
 
-        <!-- Кнопки Авторизации, Вида и Звука -->
+        <!-- Кнопки Центра Аккаунта, Установки PWA, Вида и Звука -->
         <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" id="btn-install-pwa-top" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-emerald-400/60 bg-emerald-500/20 text-[9px] md:text-[10px] font-bold text-emerald-200 tracking-wider uppercase flex items-center gap-1" title="Установить веб-приложение на устройство">
+            <span>📲</span>
+            <span class="hidden sm:inline">УСТАНОВИТЬ</span>
+          </button>
           <button type="button" id="btn-open-auth-top" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-cyan-400/60 bg-cyan-500/20 text-[9px] md:text-[10px] font-bold text-cyan-200 tracking-wider uppercase flex items-center gap-1.5 shadow-[0_0_12px_rgba(0,240,255,0.2)]">
             <span id="auth-top-icon">👤</span>
-            <span id="auth-top-label">ВОЙТИ (TG / G)</span>
+            <span id="auth-top-label">АККАУНТ</span>
           </button>
           <button type="button" id="btn-toggle-layout" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-950/60 text-[9px] md:text-[10px] font-bold text-indigo-200 tracking-wider uppercase">
             📱 МОБ. ВИД
@@ -640,42 +724,80 @@
       <div id="phases-list" class="space-y-1.5 pb-4"></div>
     </div>
 
-    <!-- ВКЛАДКА 4: АККАУНТ И СОХРАНЕНИЕ КАЖДЫЕ 5 СЕК -->
+    <!-- ВКЛАДКА 4: ЦЕНТР АККАУНТА, ПРИВЯЗКА TG+GOOGLE, PWA И СОХРАНЕНИЕ -->
     <div id="panel-save" class="space-y-3 pb-4">
-      <!-- Карточка аккаунта и облака -->
+      <!-- Карточка Единого Аккаунта -->
       <div class="p-3 rounded-xl bg-indigo-950/50 border border-cyan-500/40 space-y-2.5">
         <div class="flex items-center justify-between border-b border-indigo-500/30 pb-2">
-          <span class="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">☁ ОБЛАЧНЫЙ АККАУНТ</span>
+          <span class="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">☁ ЦЕНТР АККАУНТА (TG + GOOGLE)</span>
           <span id="account-sync-status" class="text-[9px] font-bold text-amber-300">Локальный режим (5с)</span>
         </div>
 
+        <!-- Когда пользователь не авторизован -->
         <div id="account-logged-out-view" class="space-y-2">
           <p class="text-[9px] text-slate-300">
-            Авторизуйтесь через Telegram или Google для синхронизации прогресса между ПК и телефоном каждые 5 секунд.
+            Войдите и привяжите Telegram + Google к единому профилю для автоматической синхронизации каждые 5 секунд.
           </p>
-          <button type="button" id="btn-tab-open-auth" class="w-full py-2.5 px-3 rounded-lg bg-gradient-to-r from-cyan-500/30 to-indigo-600/40 hover:from-cyan-500/45 hover:to-indigo-600/60 border border-cyan-400/50 text-cyan-200 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-2">
-            <span>👤</span><span>ОТКРЫТЬ ОКНО ВХОДА (TELEGRAM / GOOGLE)</span>
+          <button type="button" id="btn-tab-open-auth" class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500/30 to-indigo-600/40 hover:from-cyan-500/45 hover:to-indigo-600/60 border border-cyan-400/50 text-cyan-200 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+            <span>👤</span><span>ОТКРЫТЬ ЦЕНТР АККАУНТА (ВХОД / ПРИВЯЗКА)</span>
           </button>
         </div>
 
-        <div id="account-logged-in-view" class="hidden space-y-2">
-          <div class="flex items-center justify-between bg-slate-950/80 p-2.5 rounded-lg border border-emerald-500/40">
+        <!-- Когда пользователь авторизован -->
+        <div id="account-logged-in-view" class="hidden space-y-2.5">
+          <div class="flex items-center justify-between bg-slate-950/85 p-2.5 rounded-xl border border-emerald-500/40 gap-2">
             <div class="min-w-0">
               <div id="account-user-name" class="text-xs font-bold text-white truncate">Игрок</div>
-              <div id="account-user-id" class="text-[9px] text-cyan-400 font-mono truncate">ID: —</div>
+              <div id="account-user-id" class="text-[9px] text-cyan-400 font-mono truncate">MASTER ID: —</div>
             </div>
-            <button type="button" id="btn-logout" class="px-2.5 py-1 rounded bg-rose-950/70 hover:bg-rose-900 border border-rose-500/40 text-[9px] font-bold text-rose-300 uppercase shrink-0">
-              ВЫЙТИ
+            <button type="button" id="btn-logout" class="px-2.5 py-1.5 rounded-lg bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-[9px] font-bold text-rose-200 uppercase shrink-0">
+              🚪 ВЫЙТИ
             </button>
           </div>
+
+          <!-- Статус привязанных сервисов на вкладке -->
+          <div class="grid grid-cols-2 gap-1.5 text-[9px]">
+            <div id="tab-badge-tg" class="p-2 rounded-lg bg-slate-950/70 border border-slate-800 flex items-center justify-between">
+              <span>✈️ Telegram:</span>
+              <b id="tab-status-tg" class="text-slate-400">Не привязан</b>
+            </div>
+            <div id="tab-badge-google" class="p-2 rounded-lg bg-slate-950/70 border border-slate-800 flex items-center justify-between">
+              <span>🌐 Google:</span>
+              <b id="tab-status-google" class="text-slate-400">Не привязан</b>
+            </div>
+          </div>
+
+          <button type="button" id="btn-tab-manage-links" class="w-full py-2 px-3 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/45 border border-indigo-400/50 text-[9px] font-bold text-indigo-200 uppercase tracking-wider">
+            🔗 УПРАВЛЕНИЕ ПРИВЯЗКОЙ (TG + GOOGLE)
+          </button>
+
           <div class="grid grid-cols-2 gap-2">
             <button type="button" id="btn-cloud-push" class="py-1.5 px-2 rounded-lg bg-cyan-600/25 hover:bg-cyan-600/40 border border-cyan-500/50 text-[9px] font-bold text-cyan-200 uppercase">
-              ⬆ ОТПРАВИТЬ В ОБЛАКО
+              ⬆ В ОБЛАКО
             </button>
             <button type="button" id="btn-cloud-pull" class="py-1.5 px-2 rounded-lg bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-500/50 text-[9px] font-bold text-indigo-200 uppercase">
-              ⬇ ЗАГРУЗИТЬ ИЗ ОБЛАКА
+              ⬇ ИЗ ОБЛАКА
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- Установка веб-приложения (PWA) -->
+      <div class="p-3 rounded-xl bg-emerald-950/25 border border-emerald-500/35 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold text-emerald-300 uppercase">📲 ВЕБ-ПРИЛОЖЕНИЕ (PWA)</span>
+          <span class="text-[8px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold uppercase">ПК / ANDROID / IOS</span>
+        </div>
+        <p class="text-[9px] text-slate-300 leading-relaxed">
+          Установите «ЫЦУЦАЦОВИЧ» как отдельное приложение на рабочий стол или главный экран смартфона.
+        </p>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="btn-tab-install-pwa" class="py-2 px-2.5 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-400/50 text-[9px] font-bold text-emerald-200 uppercase">
+            📲 УСТАНОВИТЬ APP
+          </button>
+          <button type="button" id="btn-download-sw" class="py-2 px-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[9px] font-bold text-slate-300 uppercase" title="Скачать файл sw.js для корня репозитория GitHub">
+            📥 СКАЧАТЬ SW.JS
+          </button>
         </div>
       </div>
 
@@ -695,7 +817,7 @@
         </div>
         <div class="space-y-1.5 pt-1">
           <label class="text-[9px] text-slate-300 uppercase block">РЕЗЕРВНЫЙ КОД СОХРАНЕНИЯ:</label>
-          <textarea id="save-code-textarea" rows="3" placeholder="Вставьте резервный код сюда..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-[9px] text-cyan-300 font-mono focus:outline-none focus:border-cyan-400"></textarea>
+          <textarea id="save-code-textarea" rows="2" placeholder="Вставьте резервный код сюда..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-[9px] text-cyan-300 font-mono focus:outline-none focus:border-cyan-400"></textarea>
           <div class="flex gap-2">
             <button type="button" id="btn-import-save" class="flex-1 py-2 px-3 rounded-lg bg-cyan-600/25 hover:bg-cyan-600/40 border border-cyan-500/50 text-[9px] font-bold text-cyan-300 uppercase">
               📥 ЗАГРУЗИТЬ КОД
@@ -727,6 +849,112 @@
       // Ссылка на вашу Firebase Realtime Database для межплатформенной синхронизации
       FIREBASE_DB_URL: 'https://icucacid-default-rtdb.firebaseio.com/'
     };
+
+    /*************************************************************************
+     * 0.5. PWA ИНИЦИАЛИЗАЦИЯ («УСТАНОВИТЬ ВЕБ-ПРИЛОЖЕНИЕ» В БРАУЗЕРЕ)
+     *************************************************************************/
+    let deferredInstallPrompt = null;
+
+    function generatePWAIcon(size) {
+      const cvs = document.createElement('canvas');
+      cvs.width = size;
+      cvs.height = size;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(size * 0.5, size * 0.4, size * 0.1, size * 0.5, size * 0.5, size * 0.65);
+      grad.addColorStop(0, '#4f46e5');
+      grad.addColorStop(0.6, '#1e1b4b');
+      grad.addColorStop(1, '#090d18');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = Math.max(4, size * 0.035);
+      ctx.strokeRect(size * 0.06, size * 0.06, size * 0.88, size * 0.88);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `900 ${Math.floor(size * 0.44)}px Unbounded, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Ы', size * 0.5, size * 0.52);
+      return cvs.toDataURL('image/png');
+    }
+
+    function setupPWAManifestAndSW() {
+      try {
+        const icon192 = generatePWAIcon(192);
+        const icon512 = generatePWAIcon(512);
+
+        const appleIcon = document.createElement('link');
+        appleIcon.rel = 'apple-touch-icon';
+        appleIcon.href = icon192;
+        document.head.appendChild(appleIcon);
+
+        const manifestObj = {
+          id: window.location.pathname || '/',
+          name: 'ЫЦУЦАЦОВИЧ // 1000 ФАЗ ГИПЕРТРОФИИ',
+          short_name: 'ЫЦУЦАЦОВИЧ',
+          description: 'Интерактивный 3D био-симулятор 1000 фаз гипертрофии',
+          start_url: window.location.origin + window.location.pathname,
+          scope: window.location.origin + window.location.pathname,
+          display: 'standalone',
+          orientation: 'any',
+          background_color: '#090d18',
+          theme_color: '#090d18',
+          icons: [
+            { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+            { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+          ]
+        };
+
+        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        const linkEl = document.createElement('link');
+        linkEl.rel = 'manifest';
+        linkEl.href = manifestURL;
+        document.head.appendChild(linkEl);
+
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const statusTxt = document.getElementById('pwa-status-text');
+      if (statusTxt) statusTxt.textContent = '✅ Браузер готов установить приложение в 1 клик!';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      showToast('📲 ВЕБ-ПРИЛОЖЕНИЕ УСПЕШНО УСТАНОВЛЕНО!', 'border-emerald-400 text-emerald-300');
+    });
+
+    async function triggerPWAInstall() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          deferredInstallPrompt = null;
+        }
+      } else {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+          showToast('📲 На iOS нажмите «Поделиться» -> «На экран Домой»', 'border-cyan-400 text-cyan-300');
+        } else {
+          showToast('📲 Нажмите значок установки в адресной строке браузера (или добавьте sw.js в репозиторий)', 'border-cyan-400 text-cyan-300');
+        }
+      }
+    }
+
+    function downloadServiceWorkerFile() {
+      const swContent = `self.addEventListener('install', () => self.skipWaiting());\nself.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));\nself.addEventListener('fetch', () => {});\n`;
+      const blob = new Blob([swContent], { type: 'application/javascript' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sw.js';
+      a.click();
+      showToast('📥 Файл sw.js скачан! Положите его рядом с index.html на GitHub', 'border-emerald-400 text-emerald-300');
+    }
 
     /*************************************************************************
      * 1. ДАННЫЕ: 1000 ФАЗ, 24 СКИНА, 10 МОДУЛЕЙ
@@ -818,10 +1046,10 @@
     ];
 
     /*************************************************************************
-     * 2. СОСТОЯНИЕ, АВТОСОХРАНЕНИЕ (5 СЕК) И АВТОРИЗАЦИЯ (TG & GOOGLE)
+     * 2. ЦЕНТР АККАУНТА, МУЛЬТИ-ПРИВЯЗКА (TG + GOOGLE) И FIREBASE CLOUD
      *************************************************************************/
     const STORAGE_KEY = 'ychuchacovich_1000_v4_save';
-    const AUTH_STORAGE_KEY = 'ychuchacovich_auth_user';
+    const AUTH_STORAGE_KEY = 'ychuchacovich_unified_account_v2';
 
     function getDefaultState() {
       return {
@@ -842,13 +1070,54 @@
     }
 
     let state = getDefaultState();
-    let currentUser = null;
+    /**
+     * Структура единого профиля currentAccount:
+     * {
+     *   masterId: 'tg_12345' | 'google_98765',
+     *   displayName: 'Имя',
+     *   avatarUrl: '...',
+     *   providers: {
+     *     telegram: { key: 'tg_123', id: '123', name: '...', username: '...' } | null,
+     *     google:   { key: 'google_987', id: '987', name: '...', email: '...', picture: '...' } | null
+     *   }
+     * }
+     */
+    let currentAccount = null;
     let activeTab = 'upgrades';
     let isDrawerOpen = false;
     let currentDeviceMode = 'pc';
     let autoSpin = false;
     let studioLightPreset = 0;
     const shaderHypertrophyEnabled = true;
+
+    function sanitizeFirebaseKey(key) {
+      return String(key).replace(/[.#$[\]/]/g, '_');
+    }
+
+    // Умное объединение двух игровых состояний (сохраняет максимум прогресса и все скины)
+    function mergeGameStates(stateA, stateB) {
+      const a = stateA || getDefaultState();
+      const b = stateB || getDefaultState();
+      const mergedUpgrades = { ...getDefaultState().upgrades };
+      Object.keys(mergedUpgrades).forEach(k => {
+        mergedUpgrades[k] = Math.max(a.upgrades?.[k] || 0, b.upgrades?.[k] || 0);
+      });
+      const mergedSkins = Array.from(new Set([...(a.ownedSkins || ['indigo_107']), ...(b.ownedSkins || ['indigo_107'])]));
+      const useBPrimary = (b.totalEarned || 0) > (a.totalEarned || 0);
+      return {
+        ...getDefaultState(),
+        score: useBPrimary ? b.score : a.score,
+        totalEarned: Math.max(a.totalEarned || 0, b.totalEarned || 0),
+        energy: Math.max(a.energy || 1000, b.energy || 1000),
+        soundOn: a.soundOn ?? true,
+        equippedSkin: useBPrimary ? (b.equippedSkin || 'indigo_107') : (a.equippedSkin || 'indigo_107'),
+        ownedSkins: mergedSkins,
+        upgrades: mergedUpgrades,
+        highestPhase: Math.max(a.highestPhase || 1, b.highestPhase || 1),
+        selectedEpoch: useBPrimary ? (b.selectedEpoch || 1) : (a.selectedEpoch || 1),
+        lastSavedAt: Date.now()
+      };
+    }
 
     function addLoaderLog(msg, cls = 'text-slate-300') {
       const log = document.getElementById('loader-log');
@@ -885,12 +1154,12 @@
 
     function loadProgress() {
       try {
-        const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
-        if (savedUser) currentUser = JSON.parse(savedUser);
+        const savedAcc = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (savedAcc) currentAccount = JSON.parse(savedAcc);
       } catch (e) {}
 
       try {
-        const key = currentUser ? `${STORAGE_KEY}_${currentUser.id}` : STORAGE_KEY;
+        const key = currentAccount ? `${STORAGE_KEY}_${currentAccount.masterId}` : STORAGE_KEY;
         const raw = localStorage.getItem(key) || localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
         const parsed = JSON.parse(raw);
@@ -908,8 +1177,9 @@
         state.lastSavedAt = Date.now();
         const serialized = JSON.stringify(state);
         localStorage.setItem(STORAGE_KEY, serialized);
-        if (currentUser) {
-          localStorage.setItem(`${STORAGE_KEY}_${currentUser.id}`, serialized);
+        if (currentAccount) {
+          localStorage.setItem(`${STORAGE_KEY}_${currentAccount.masterId}`, serialized);
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentAccount));
         }
 
         const timeStr = new Date(state.lastSavedAt).toLocaleTimeString('ru-RU');
@@ -918,74 +1188,184 @@
 
         const badge = document.getElementById('autosave-badge');
         if (badge) {
-          badge.textContent = currentUser ? '☁ СИНХР: 5С' : '💾 АВТО: 5С';
+          badge.textContent = currentAccount ? '☁ СИНХР: 5С' : '💾 АВТО: 5С';
         }
 
-        if (syncCloud && currentUser && AUTH_CONFIG.FIREBASE_DB_URL) {
+        if (syncCloud && currentAccount && AUTH_CONFIG.FIREBASE_DB_URL) {
           await pushStateToCloud();
         }
       } catch (e) {}
     }
 
     async function pushStateToCloud() {
-      if (!currentUser || !AUTH_CONFIG.FIREBASE_DB_URL) return;
+      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return;
       try {
         const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
-        const safeId = encodeURIComponent(currentUser.id.replace(/[.#$[\]]/g, '_'));
-        await fetch(`${cleanUrl}/users/${safeId}.json`, {
+        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
+
+        // 1. Сохраняем единый профиль и прогресс в /users/{masterKey}
+        await fetch(`${cleanUrl}/users/${masterKey}.json`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            profile: currentUser,
+            account: currentAccount,
             gameState: state,
             updatedAt: Date.now()
           })
         });
+
+        // 2. Обновляем таблицу привязок /identity_map/{providerKey} -> masterId
+        if (currentAccount.providers?.telegram?.key) {
+          const tgKey = sanitizeFirebaseKey(currentAccount.providers.telegram.key);
+          await fetch(`${cleanUrl}/identity_map/${tgKey}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
+          });
+        }
+        if (currentAccount.providers?.google?.key) {
+          const gKey = sanitizeFirebaseKey(currentAccount.providers.google.key);
+          await fetch(`${cleanUrl}/identity_map/${gKey}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
+          });
+        }
+
+        const nowTime = new Date().toLocaleTimeString('ru-RU');
         const stEl = document.getElementById('account-sync-status');
-        if (stEl) stEl.textContent = '☁ Синхронизировано в ' + new Date().toLocaleTimeString('ru-RU');
+        if (stEl) stEl.textContent = '☁ Синхр: ' + nowTime;
+        const modalSyncEl = document.getElementById('modal-sync-timestamp');
+        if (modalSyncEl) modalSyncEl.textContent = '☁ Облако синхронизировано в ' + nowTime;
       } catch (e) {}
     }
 
-    async function pullStateFromCloud() {
-      if (!currentUser || !AUTH_CONFIG.FIREBASE_DB_URL) return false;
+    async function fetchCloudNode(path) {
+      if (!AUTH_CONFIG.FIREBASE_DB_URL) return null;
       try {
         const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
-        const safeId = encodeURIComponent(currentUser.id.replace(/[.#$[\]]/g, '_'));
-        const resp = await fetch(`${cleanUrl}/users/${safeId}.json`);
-        if (!resp.ok) return false;
-        const data = await resp.json();
+        const resp = await fetch(`${cleanUrl}/${path}.json`);
+        if (!resp.ok) return null;
+        return await resp.json();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function pullStateFromCloud() {
+      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return false;
+      try {
+        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
+        const data = await fetchCloudNode(`users/${masterKey}`);
         if (data && data.gameState) {
-          if ((data.gameState.totalEarned || 0) >= (state.totalEarned || 0)) {
-            state = {
-              ...getDefaultState(),
-              ...data.gameState,
-              upgrades: { ...getDefaultState().upgrades, ...(data.gameState.upgrades || {}) }
+          state = mergeGameStates(state, data.gameState);
+          if (data.account && data.account.providers) {
+            currentAccount.providers = {
+              telegram: data.account.providers.telegram || currentAccount.providers?.telegram || null,
+              google: data.account.providers.google || currentAccount.providers?.google || null
             };
-            saveProgress(false);
-            applyActiveSkinTo3D();
-            renderUpgradesList();
-            renderSkinsList();
-            renderPhasesList();
-            update3DAnatomyAndHUD();
-            showToast('☁ ПРОГРЕСС СИНХРОНИЗИРОВАН ИЗ ОБЛАКА!', 'border-cyan-400 text-cyan-300');
-            return true;
           }
+          await saveProgress(false);
+          updateAuthUI();
+          applyActiveSkinTo3D();
+          renderUpgradesList();
+          renderSkinsList();
+          renderPhasesList();
+          update3DAnatomyAndHUD();
+          showToast('☁ ПРОГРЕСС СИНХРОНИЗИРОВАН ИЗ ОБЛАКА!', 'border-cyan-400 text-cyan-300');
+          return true;
         }
       } catch (e) {}
       return false;
     }
 
-    async function onUserAuthenticated(userProfile) {
-      currentUser = userProfile;
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser));
-      updateAuthUI();
-      document.getElementById('auth-modal')?.classList.add('hidden');
-      showToast(`✅ ВЫ ВОШЛИ КАК: ${currentUser.name}`, 'border-emerald-400 text-emerald-300');
+    /**
+     * ГЛАВНАЯ ФУНКЦИЯ ВХОДА И ПРИВЯЗКИ ВТОРОГО СЕРВИСА (TG + GOOGLE -> ЕДИНЫЙ ПРОФИЛЬ)
+     * @param {'telegram'|'google'} providerType
+     * @param {Object} providerInfo { key, id, name, username, email, avatar }
+     */
+    async function authenticateOrLinkProvider(providerType, providerInfo) {
+      const providerKey = sanitizeFirebaseKey(providerInfo.key);
 
-      const pulled = await pullStateFromCloud();
-      if (!pulled) {
-        await saveProgress(true);
+      // Проверяем в Firebase, был ли этот сервис уже привязан к какому-то masterId
+      let mappedMasterId = providerKey;
+      const mapEntry = await fetchCloudNode(`identity_map/${providerKey}`);
+      if (mapEntry && mapEntry.masterId) {
+        mappedMasterId = mapEntry.masterId;
       }
+
+      // Сценарий 1: Пользователь УЖЕ вошел в аккаунт -> ПРИВЯЗЫВАЕМ второй сервис к текущему профилю!
+      if (currentAccount) {
+        // Если у привязываемого сервиса были старые сохранения в облаке — бережно объединяем прогресс
+        const existingOtherCloud = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
+        if (existingOtherCloud && existingOtherCloud.gameState) {
+          state = mergeGameStates(state, existingOtherCloud.gameState);
+        }
+
+        currentAccount.providers = currentAccount.providers || { telegram: null, google: null };
+        currentAccount.providers[providerType] = providerInfo;
+        if (!currentAccount.avatarUrl && providerInfo.avatar) {
+          currentAccount.avatarUrl = providerInfo.avatar;
+        }
+
+        await saveProgress(true);
+        updateAuthUI();
+        applyActiveSkinTo3D();
+        renderUpgradesList();
+        renderSkinsList();
+        renderPhasesList();
+        update3DAnatomyAndHUD();
+        showToast(`🔗 ${providerType.toUpperCase()} УСПЕШНО ПРИВЯЗАН К ВАШЕМУ ПРОФИЛЮ!`, 'border-emerald-400 text-emerald-300');
+        return;
+      }
+
+      // Сценарий 2: Пользователь НЕ вошел -> ищем единый профиль в облаке по mappedMasterId
+      const cloudRecord = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
+      if (cloudRecord && cloudRecord.gameState) {
+        state = mergeGameStates(state, cloudRecord.gameState);
+      }
+
+      const existingProviders = cloudRecord?.account?.providers || { telegram: null, google: null };
+      existingProviders[providerType] = providerInfo;
+
+      currentAccount = {
+        masterId: mappedMasterId,
+        displayName: cloudRecord?.account?.displayName || providerInfo.name,
+        avatarUrl: providerInfo.avatar || cloudRecord?.account?.avatarUrl || '',
+        providers: existingProviders
+      };
+
+      await saveProgress(true);
+      updateAuthUI();
+      applyActiveSkinTo3D();
+      renderUpgradesList();
+      renderSkinsList();
+      renderPhasesList();
+      update3DAnatomyAndHUD();
+      showToast(`✅ ВХОД ВЫПОЛНЕН: ${currentAccount.displayName}`, 'border-emerald-400 text-emerald-300');
+    }
+
+    // Отвязка одного из сервисов (доступна, если привязаны оба)
+    async function unlinkProvider(providerType) {
+      if (!currentAccount || !currentAccount.providers) return;
+      const hasTg = !!currentAccount.providers.telegram;
+      const hasGoogle = !!currentAccount.providers.google;
+      if ((providerType === 'telegram' && !hasGoogle) || (providerType === 'google' && !hasTg)) {
+        showToast('⚠️ Нельзя отвязать единственный сервис! Используйте кнопку «Выйти»', 'border-amber-400 text-amber-300');
+        return;
+      }
+      currentAccount.providers[providerType] = null;
+      await saveProgress(true);
+      updateAuthUI();
+      showToast(`🔓 Сервис ${providerType.toUpperCase()} отвязан от профиля`, 'border-slate-400 text-slate-300');
+    }
+
+    // Выход из аккаунта
+    function logoutAccount() {
+      currentAccount = null;
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      updateAuthUI();
+      showToast('🚪 ВЫ ВЫШЛИ ИЗ АККАУНТА', 'border-rose-400 text-rose-200');
     }
 
     function updateAuthUI() {
@@ -997,24 +1377,136 @@
       const idEl = document.getElementById('account-user-id');
       const statusEl = document.getElementById('account-sync-status');
 
-      if (currentUser) {
-        const icon = currentUser.provider === 'telegram' ? '✈️' : currentUser.provider === 'google' ? '🌐' : '☁';
-        if (topIcon) topIcon.textContent = icon;
-        if (topLabel) topLabel.textContent = currentUser.name;
-        outView?.classList.add('hidden');
-        inView?.classList.remove('hidden');
-        if (nameEl) nameEl.textContent = `${icon} ${currentUser.name}`;
-        if (idEl) idEl.textContent = `ID: ${currentUser.id}`;
-        if (statusEl) {
-          statusEl.textContent = AUTH_CONFIG.FIREBASE_DB_URL
-            ? '☁ Облако активно (5с)'
-            : '💾 Аккаунт привязан (5с)';
+      // Элементы в Центре Аккаунта (модальное окно)
+      const modalProfileCard = document.getElementById('modal-profile-card');
+      const modalUserName = document.getElementById('modal-user-name');
+      const modalMasterId = document.getElementById('modal-user-master-id');
+      const modalLinkedBadge = document.getElementById('modal-linked-count-badge');
+      const modalAvatarImg = document.getElementById('modal-user-avatar');
+      const modalAvatarFallback = document.getElementById('modal-user-avatar-fallback');
+      const modalHintBadge = document.getElementById('modal-auth-hint-badge');
+
+      const tgInfo = currentAccount?.providers?.telegram || null;
+      const googleInfo = currentAccount?.providers?.google || null;
+      const linkedCount = (tgInfo ? 1 : 0) + (googleInfo ? 1 : 0);
+
+      // Обновление слота Telegram
+      const tgCard = document.getElementById('slot-card-telegram');
+      const tgPill = document.getElementById('tg-status-pill');
+      const tgSub = document.getElementById('tg-account-subtext');
+      const tgWidgetBox = document.getElementById('telegram-widget-container');
+      const btnUnlinkTg = document.getElementById('btn-unlink-tg');
+      const tabStatusTg = document.getElementById('tab-status-tg');
+
+      if (tgInfo) {
+        if (tgCard) tgCard.className = 'p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/50 space-y-2 transition-all';
+        if (tgPill) {
+          tgPill.textContent = '✅ ПРИВЯЗАН';
+          tgPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-emerald-500/25 text-emerald-300 font-bold uppercase';
+        }
+        if (tgSub) tgSub.textContent = `${tgInfo.name}${tgInfo.username ? ' (@' + tgInfo.username + ')' : ''}`;
+        tgWidgetBox?.classList.add('hidden');
+        btnUnlinkTg?.classList.toggle('hidden', linkedCount < 2);
+        if (tabStatusTg) {
+          tabStatusTg.textContent = 'Привязан ✓';
+          tabStatusTg.className = 'text-emerald-400';
         }
       } else {
+        if (tgCard) tgCard.className = 'p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2.5 transition-all';
+        if (tgPill) {
+          tgPill.textContent = currentAccount ? '🔗 ПРИВЯЗАТЬ К ПРОФИЛЮ' : 'НЕ ПРИВЯЗАН';
+          tgPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-cyan-500/20 text-cyan-300 font-bold uppercase';
+        }
+        if (tgSub) {
+          tgSub.textContent = currentAccount
+            ? 'Нажмите кнопку ниже, чтобы привязать Telegram к этому аккаунту'
+            : 'Авторизация через бота @icucacidbot';
+        }
+        tgWidgetBox?.classList.remove('hidden');
+        btnUnlinkTg?.classList.add('hidden');
+        if (tabStatusTg) {
+          tabStatusTg.textContent = 'Не привязан';
+          tabStatusTg.className = 'text-slate-400';
+        }
+      }
+
+      // Обновление слота Google
+      const gCard = document.getElementById('slot-card-google');
+      const gPill = document.getElementById('google-status-pill');
+      const gSub = document.getElementById('google-account-subtext');
+      const gWidgetBox = document.getElementById('google-gsi-button');
+      const btnUnlinkG = document.getElementById('btn-unlink-google');
+      const tabStatusG = document.getElementById('tab-status-google');
+
+      if (googleInfo) {
+        if (gCard) gCard.className = 'p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/50 space-y-2 transition-all';
+        if (gPill) {
+          gPill.textContent = '✅ ПРИВЯЗАН';
+          gPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-emerald-500/25 text-emerald-300 font-bold uppercase';
+        }
+        if (gSub) gSub.textContent = `${googleInfo.name}${googleInfo.email ? ' (' + googleInfo.email + ')' : ''}`;
+        gWidgetBox?.classList.add('hidden');
+        btnUnlinkG?.classList.toggle('hidden', linkedCount < 2);
+        if (tabStatusG) {
+          tabStatusG.textContent = 'Привязан ✓';
+          tabStatusG.className = 'text-emerald-400';
+        }
+      } else {
+        if (gCard) gCard.className = 'p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2.5 transition-all';
+        if (gPill) {
+          gPill.textContent = currentAccount ? '🔗 ПРИВЯЗАТЬ К ПРОФИЛЮ' : 'НЕ ПРИВЯЗАН';
+          gPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-indigo-500/20 text-indigo-300 font-bold uppercase';
+        }
+        if (gSub) {
+          gSub.textContent = currentAccount
+            ? 'Нажмите кнопку ниже, чтобы привязать Google к этому аккаунту'
+            : 'Синхронизация через Google OAuth 2.0';
+        }
+        gWidgetBox?.classList.remove('hidden');
+        btnUnlinkG?.classList.add('hidden');
+        if (tabStatusG) {
+          tabStatusG.textContent = 'Не привязан';
+          tabStatusG.className = 'text-slate-400';
+        }
+      }
+
+      if (currentAccount) {
+        const icon = linkedCount === 2 ? '🔗' : tgInfo ? '✈️' : '🌐';
+        if (topIcon) topIcon.textContent = icon;
+        if (topLabel) topLabel.textContent = currentAccount.displayName;
+        outView?.classList.add('hidden');
+        inView?.classList.remove('hidden');
+        modalProfileCard?.classList.remove('hidden');
+
+        if (nameEl) nameEl.textContent = `${icon} ${currentAccount.displayName}`;
+        if (idEl) idEl.textContent = `MASTER ID: ${currentAccount.masterId}`;
+        if (modalUserName) modalUserName.textContent = currentAccount.displayName;
+        if (modalMasterId) modalMasterId.textContent = `MASTER ID: ${currentAccount.masterId}`;
+        if (modalLinkedBadge) {
+          modalLinkedBadge.textContent = linkedCount >= 2 ? '2/2 ОБЪЕДИНЕНЫ ✓' : `${linkedCount}/2 СЕРВИСА`;
+        }
+        if (modalHintBadge) {
+          modalHintBadge.textContent = linkedCount >= 2 ? 'Оба сервиса привязаны ✓' : 'Можно привязать 2-й сервис';
+        }
+
+        if (currentAccount.avatarUrl && modalAvatarImg && modalAvatarFallback) {
+          modalAvatarImg.src = currentAccount.avatarUrl;
+          modalAvatarImg.classList.remove('hidden');
+          modalAvatarFallback.classList.add('hidden');
+        } else if (modalAvatarImg && modalAvatarFallback) {
+          modalAvatarImg.classList.add('hidden');
+          modalAvatarFallback.classList.remove('hidden');
+          modalAvatarFallback.textContent = (currentAccount.displayName || 'Ы').charAt(0).toUpperCase();
+        }
+
+        if (statusEl) statusEl.textContent = '☁ Облако активно (5с)';
+      } else {
         if (topIcon) topIcon.textContent = '👤';
-        if (topLabel) topLabel.textContent = 'ВОЙТИ (TG / G)';
+        if (topLabel) topLabel.textContent = 'АККАУНТ';
         outView?.classList.remove('hidden');
         inView?.classList.add('hidden');
+        modalProfileCard?.classList.add('hidden');
+        if (modalHintBadge) modalHintBadge.textContent = 'Выберите способ входа';
         if (statusEl) statusEl.textContent = 'Локальный режим (5с)';
       }
     }
@@ -1023,11 +1515,12 @@
     window.__handleTelegramLogin = (tgUser) => {
       if (!tgUser || !tgUser.id) return;
       const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || `TG_${tgUser.id}`;
-      onUserAuthenticated({
-        id: `tg_${tgUser.id}`,
+      authenticateOrLinkProvider('telegram', {
+        key: `tg_${tgUser.id}`,
+        id: String(tgUser.id),
         name: fullName,
         username: tgUser.username || '',
-        provider: 'telegram'
+        avatar: tgUser.photo_url || ''
       });
     };
 
@@ -1045,7 +1538,8 @@
             id: params.get('id'),
             first_name: params.get('first_name') || '',
             last_name: params.get('last_name') || '',
-            username: params.get('username') || ''
+            username: params.get('username') || '',
+            photo_url: params.get('photo_url') || ''
           };
           window.__handleTelegramLogin(tgUser);
           window.history.replaceState({}, document.title, window.location.pathname);
@@ -1080,7 +1574,7 @@
         tgContainer.appendChild(script);
       }
 
-      // Официальный виджет Google Identity Services (с автоповтором, если скрипт еще грузится)
+      // Официальный виджет Google Identity Services
       const gBtn = document.getElementById('google-gsi-button');
       if (gBtn && AUTH_CONFIG.GOOGLE_CLIENT_ID && !googleWidgetRendered) {
         if (window.google?.accounts?.id) {
@@ -1090,12 +1584,13 @@
             client_id: AUTH_CONFIG.GOOGLE_CLIENT_ID,
             callback: (response) => {
               try {
-                const payload = JSON.parse(atob(response.credential.split('.')[1]));
-                onUserAuthenticated({
-                  id: `google_${payload.sub}`,
+                const payload = JSON.parse(decodeURIComponent(escape(atob(response.credential.split('.')[1]))));
+                authenticateOrLinkProvider('google', {
+                  key: `google_${payload.sub}`,
+                  id: String(payload.sub),
                   name: payload.name || payload.email || 'Google User',
                   email: payload.email || '',
-                  provider: 'google'
+                  avatar: payload.picture || ''
                 });
               } catch (e) {}
             }
@@ -1954,7 +2449,7 @@
       });
     }
 
-    // Привязка кнопок интерфейса и авторизации
+    // Привязка кнопок интерфейса, Центра Аккаунта и PWA
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
@@ -1976,34 +2471,42 @@
 
     const openAuthModal = () => {
       document.getElementById('auth-modal')?.classList.remove('hidden');
+      updateAuthUI();
       initAuthProviders();
     };
     document.getElementById('btn-open-auth-top')?.addEventListener('click', openAuthModal);
     document.getElementById('btn-tab-open-auth')?.addEventListener('click', openAuthModal);
+    document.getElementById('btn-tab-manage-links')?.addEventListener('click', openAuthModal);
     document.getElementById('btn-close-auth')?.addEventListener('click', () => {
       document.getElementById('auth-modal')?.classList.add('hidden');
     });
+
+    // Кнопки выхода из аккаунта и отвязки сервисов
+    document.getElementById('btn-logout')?.addEventListener('click', logoutAccount);
+    document.getElementById('btn-modal-logout')?.addEventListener('click', logoutAccount);
+    document.getElementById('btn-unlink-tg')?.addEventListener('click', () => unlinkProvider('telegram'));
+    document.getElementById('btn-unlink-google')?.addEventListener('click', () => unlinkProvider('google'));
+
+    // Кнопки установки PWA
+    document.getElementById('btn-install-pwa-top')?.addEventListener('click', triggerPWAInstall);
+    document.getElementById('btn-modal-install-pwa')?.addEventListener('click', triggerPWAInstall);
+    document.getElementById('btn-tab-install-pwa')?.addEventListener('click', triggerPWAInstall);
+    document.getElementById('btn-download-sw')?.addEventListener('click', downloadServiceWorkerFile);
 
     document.getElementById('btn-link-account-id')?.addEventListener('click', () => {
       const inp = document.getElementById('input-custom-account-id');
       const val = inp ? inp.value.trim() : '';
       if (!val) {
-        showToast('⚠️ ВВЕДИТЕ ВАШ @USERNAME ИЛИ КОД', 'border-rose-500 text-rose-300');
+        showToast('⚠️ ВВЕДИТЕ ВАШ @USERNAME ИЛИ MASTER ID', 'border-rose-500 text-rose-300');
         return;
       }
       const isTg = val.startsWith('@');
-      onUserAuthenticated({
-        id: (isTg ? 'tg_' : 'acc_') + val.toLowerCase().replace(/[^a-z0-9_@.-]/gi, ''),
+      authenticateOrLinkProvider(isTg ? 'telegram' : 'google', {
+        key: (isTg ? 'tg_' : 'id_') + val.toLowerCase().replace(/[^a-z0-9_@.-]/gi, ''),
+        id: val,
         name: val,
-        provider: isTg ? 'telegram' : 'google'
+        username: isTg ? val.slice(1) : ''
       });
-    });
-
-    document.getElementById('btn-logout')?.addEventListener('click', () => {
-      currentUser = null;
-      localStorage.removeItem(AUTH_STORAGE_KEY);
-      updateAuthUI();
-      showToast('👋 ВЫ ВЫШЛИ ИЗ АККАУНТА', 'border-slate-500 text-slate-300');
     });
 
     document.getElementById('btn-cloud-push')?.addEventListener('click', async () => {
@@ -2013,7 +2516,7 @@
 
     document.getElementById('btn-cloud-pull')?.addEventListener('click', async () => {
       const ok = await pullStateFromCloud();
-      if (!ok) showToast('ℹ В ОБЛАКЕ НЕТ БОЛЕЕ НОВОГО СОХРАНЕНИЯ', 'border-slate-400 text-slate-300');
+      if (!ok) showToast('ℹ ДАННЫЕ В ОБЛАКЕ СОВПАДАЮТ С ТЕКУЩИМИ', 'border-slate-400 text-slate-300');
     });
 
     const resetCamHandler = () => {
@@ -2081,7 +2584,7 @@
     });
     document.getElementById('btn-wipe-save')?.addEventListener('click', () => {
       localStorage.removeItem(STORAGE_KEY);
-      if (currentUser) localStorage.removeItem(`${STORAGE_KEY}_${currentUser.id}`);
+      if (currentAccount) localStorage.removeItem(`${STORAGE_KEY}_${currentAccount.masterId}`);
       state = getDefaultState();
       saveProgress(true);
       applyActiveSkinTo3D();
@@ -2188,6 +2691,7 @@
     }
 
     // Инициализация
+    setupPWAManifestAndSW();
     loadProgress();
     updateAuthUI();
     setDeviceLayout(window.innerWidth < 1024 ? 'mobile' : 'pc');
@@ -2201,8 +2705,7 @@
     loadGLBModelFromRepo();
     setTimeout(initAuthProviders, 300);
 
-    // Если пользователь уже вошел ранее — при старте подтягиваем свежий прогресс из Firebase
-    if (currentUser) {
+    if (currentAccount) {
       pullStateFromCloud();
     }
 
