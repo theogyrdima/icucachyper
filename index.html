@@ -9,20 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Единый современный стек Three.js r160 + MeshoptDecoder 0.23 (для gltfpack 0.23) -->
+  <!-- Единый Three.js 0.160.0 для сцены, GLTFLoader и MeshoptDecoder -->
   <script type="importmap">
   {
     "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-      "meshopt": "https://cdn.jsdelivr.net/npm/meshoptimizer@0.23.0/meshopt_decoder.module.js"
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
     }
   }
   </script>
 
   <style>
     :root {
-      --bg-panel: rgba(14, 19, 34, 0.88);
+      --bg-panel: rgba(14, 19, 34, 0.9);
       --accent-indigo: #6366f1;
       --accent-cyan: #00f0ff;
       --border-tech: rgba(99, 102, 241, 0.42);
@@ -83,37 +82,20 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(99, 102, 241, 0.08);
     }
 
-    /* 3D-ПАРАЛЛАКС БОКОВЫХ ПАНЕЛЕЙ С ВЫНОСОМ TRANSLATEZ(80PX) — БЕЗ МЕРТВЫХ ЗОН */
-    .holo-3d-stage {
+    /* Боковые панели без Z-искажений — 100% точность кликов */
+    .cyber-side-panel {
       position: relative;
-      z-index: 35;
-      perspective: 1200px;
-    }
-
-    .holo-panel-left,
-    .holo-panel-right {
-      position: relative;
-      background: linear-gradient(155deg, rgba(16, 23, 42, 0.92) 0%, rgba(9, 13, 25, 0.88) 100%);
+      background: linear-gradient(155deg, rgba(16, 23, 42, 0.94) 0%, rgba(9, 13, 25, 0.92) 100%);
       border: 1px solid rgba(99, 102, 241, 0.45);
       border-radius: 16px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.1), inset 0 0 24px rgba(99, 102, 241, 0.12);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
       overflow: hidden;
-      will-change: transform;
-      transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .holo-panel-left {
-      transform: perspective(1200px) translateZ(80px) rotateY(9deg) rotateX(1.5deg);
-      box-shadow: -15px 20px 45px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.12), inset 0 0 24px rgba(99, 102, 241, 0.14);
-    }
-
-    .holo-panel-right {
-      transform: perspective(1200px) translateZ(80px) rotateY(-9deg) rotateX(1.5deg);
-      box-shadow: 15px 20px 45px rgba(0, 0, 0, 0.65), 0 0 28px rgba(99, 102, 241, 0.15), inset 0 0 24px rgba(0, 240, 255, 0.12);
-    }
-
-    .holo-panel-left:hover,
-    .holo-panel-right:hover {
-      border-color: rgba(0, 240, 255, 0.78);
+    .cyber-side-panel:hover {
+      border-color: rgba(0, 240, 255, 0.7);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75), 0 0 32px rgba(0, 240, 255, 0.18), inset 0 0 28px rgba(99, 102, 241, 0.16);
     }
 
     .holo-glare {
@@ -124,15 +106,14 @@
       opacity: 0;
       transition: opacity 0.25s ease;
     }
-    .holo-panel-left:hover .holo-glare,
-    .holo-panel-right:hover .holo-glare {
+    .cyber-side-panel:hover .holo-glare {
       opacity: 1;
     }
 
     .holo-corner {
       position: absolute;
-      width: 13px;
-      height: 13px;
+      width: 12px;
+      height: 12px;
       pointer-events: none !important;
       z-index: 2;
       border-color: #00f0ff;
@@ -143,7 +124,7 @@
     .hc-bl { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
     .hc-br { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
 
-    /* Пружинистое увеличение кнопок и карточек при наведении */
+    /* Пружинистое увеличение кнопок при наведении */
     button,
     .interactive-btn,
     .module-card,
@@ -154,31 +135,31 @@
       z-index: 10;
       cursor: pointer;
       transition:
-        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-        box-shadow 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease !important;
+        transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background-color 0.18s ease !important;
     }
 
     button:hover:not(:disabled),
     .interactive-btn:hover {
-      transform: scale(1.08) translateY(-1px) !important;
-      box-shadow: 0 6px 18px rgba(0, 240, 255, 0.3) !important;
+      transform: scale(1.06) translateY(-1px) !important;
+      box-shadow: 0 6px 18px rgba(0, 240, 255, 0.28) !important;
       z-index: 25;
     }
 
     button:active:not(:disabled),
     .interactive-btn:active {
-      transform: scale(0.95) !important;
+      transform: scale(0.96) !important;
     }
 
     .module-card:hover:not(.disabled),
     .skin-card:hover,
     .phase-item:hover,
     .stat-box-3d:hover {
-      transform: scale(1.04) translateY(-1px) !important;
+      transform: scale(1.03) translateY(-1px) !important;
       border-color: rgba(0, 240, 255, 0.75) !important;
-      box-shadow: 0 8px 22px rgba(0, 240, 255, 0.22) !important;
+      box-shadow: 0 8px 22px rgba(0, 240, 255, 0.2) !important;
       z-index: 20;
     }
 
@@ -252,14 +233,14 @@
   <div id="particles-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
   <div id="toast-layer" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-1.5 w-[92vw] max-w-md"></div>
 
-  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB PAGES -->
-  <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/88 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
-    <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.22)]">
+  <!-- ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB (НЕ ПРОПАДАЕТ ПРОСТО ТАК, ПОКА МОДЕЛЬ НЕ ЗАГРУЗИТСЯ) -->
+  <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
       <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
         <div id="loader-spinner" class="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
         <div>
-          <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">ЗАГРУЗКА 3D-МОДЕЛИ С GITHUB</div>
-          <h2 id="loader-title" class="font-display text-sm md:text-base font-black text-white">ПОДКЛЮЧЕНИЕ MODEL.GLB...</h2>
+          <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">THREE.JS r160 // MESHOPT GLB</div>
+          <h2 id="loader-title" class="font-display text-sm md:text-base font-black text-white">ЗАГРУЗКА 3D-МОДЕЛИ...</h2>
         </div>
       </div>
 
@@ -270,22 +251,19 @@
           <span id="loader-pct-text" class="text-white">10%</span>
         </div>
         <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-700">
-          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-150" style="width: 10%"></div>
+          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-200" style="width: 10%"></div>
         </div>
       </div>
 
-      <!-- Лог загрузки (показывает точный статус файла) -->
-      <div id="loader-log" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-[9px] font-mono text-slate-300 space-y-1 max-h-28 overflow-y-auto"></div>
-
-      <!-- Кнопки на случай если файл еще не залит или обновляется -->
-      <div id="loader-actions" class="hidden flex gap-2 pt-1">
-        <button type="button" id="btn-retry-load" class="flex-1 py-2.5 px-3 rounded-xl bg-cyan-500/25 hover:bg-cyan-500/40 border border-cyan-400/60 text-cyan-200 font-bold text-[10px] uppercase tracking-wider">
-          🔄 ПОВТОРИТЬ ЗАГРУЗКУ
-        </button>
-        <button type="button" id="btn-skip-loader" class="flex-1 py-2.5 px-3 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/50 text-indigo-200 font-bold text-[10px] uppercase tracking-wider">
-          ⚡ ВСТРОЕННАЯ 3D
-        </button>
+      <!-- Лог загрузки -->
+      <div id="loader-log" class="bg-slate-950/90 border border-slate-800 rounded-xl p-2.5 text-[9px] font-mono text-slate-300 space-y-1 max-h-28 overflow-y-auto">
+        <div class="text-cyan-300">• Запуск загрузчика модели с сервера...</div>
       </div>
+
+      <!-- Кнопка повтора (появляется при ошибке сети) -->
+      <button type="button" id="btn-retry-load" class="hidden w-full py-2.5 px-4 rounded-xl bg-cyan-500/25 hover:bg-cyan-500/40 border border-cyan-400/60 text-cyan-200 font-bold text-[10px] uppercase tracking-wider">
+        🔄 ПОВТОРИТЬ ЗАГРУЗКУ МОДЕЛИ
+      </button>
     </div>
   </div>
 
@@ -299,7 +277,7 @@
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-[9px] md:text-[10px] font-bold tracking-[0.16em] text-cyan-400 uppercase">1000 ФАЗ</span>
               <span id="device-mode-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-indigo-500/25 text-indigo-200 border border-indigo-400/40 rounded uppercase">ПК</span>
-              <span id="glb-status-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded uppercase">ЗАГРУЗКА GLB...</span>
+              <span id="glb-status-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded uppercase">ЗАГРУЗКА GLB...</span>
             </div>
             <h1 class="font-display text-xs sm:text-sm md:text-lg font-black tracking-wider text-white truncate">ЫЦУЦАЦОВИЧ</h1>
           </div>
@@ -367,12 +345,12 @@
     </div>
   </header>
 
-  <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ (3 КОЛОНКИ НА ПК С 3D-ПАРАЛЛАКСОМ) -->
+  <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ (3 КОЛОНКИ НА ПК) -->
   <main id="main-workspace" class="relative z-30 flex-1 max-w-[1640px] w-full mx-auto px-4 pb-4 flex items-stretch justify-between gap-5 overflow-hidden pointer-events-none">
 
-    <!-- ЛЕВАЯ 3D-ПАНЕЛЬ (С ПАРАЛЛАКСОМ И БЕЗ МЕРТВЫХ ЗОН) -->
-    <aside id="pc-left-panel" class="holo-3d-stage w-[350px] flex flex-col justify-between pointer-events-auto shrink-0 my-1">
-      <div id="holo-card-left" class="holo-panel-left h-full p-4 flex flex-col justify-between gap-3 overflow-y-auto">
+    <!-- ЛЕВАЯ ПАНЕЛЬ (БИО-ТЕЛЕМЕТРИЯ) -->
+    <aside id="pc-left-panel" class="w-[350px] flex flex-col justify-between pointer-events-auto shrink-0 my-1 z-30">
+      <div id="holo-card-left" class="cyber-side-panel h-full p-4 flex flex-col justify-between gap-3 overflow-y-auto">
         <div id="glare-left" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
@@ -466,20 +444,20 @@
             </div>
           </div>
 
-          <!-- Управление камерой и шейдером слева -->
+          <!-- Быстрые переключатели 3D-сцены слева -->
           <div class="grid grid-cols-2 gap-2">
             <button type="button" id="btn-left-reset-cam" class="py-2 px-2.5 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
               🔄 СБРОС РАКУРСА
             </button>
-            <button type="button" id="btn-shader-mode" class="py-2 px-2.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 text-[9px] font-bold text-cyan-200 uppercase">
-              💪 ПАМП-ШЕЙДЕР: ВКЛ
+            <button type="button" id="btn-shader-toggle" class="py-2 px-2.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 text-[9px] font-bold text-cyan-200 uppercase">
+              💪 GPU-ПАМП: ВКЛ
             </button>
           </div>
         </div>
 
         <div class="space-y-2 pt-2 border-t border-indigo-500/30 relative z-10">
           <div class="flex items-center justify-between text-[9px] text-slate-300">
-            <span>ВЕРШИН: <b id="vertex-count-label" class="text-cyan-400">ЗАГРУЗКА...</b></span>
+            <span>ВЕРШИН GLB: <b id="vertex-count-label" class="text-cyan-400">ЗАГРУЗКА...</b></span>
             <span>РАКУРС: <b id="cam-angle-label" class="text-indigo-300">0° / 4°</b></span>
           </div>
           <canvas id="ecg-canvas" width="300" height="36" class="w-full h-8 bg-slate-950/90 rounded border border-slate-800"></canvas>
@@ -490,16 +468,15 @@
     <!-- ЦЕНТР (СВОБОДЕН ДЛЯ 3D МОДЕЛИ) -->
     <div class="flex-1 relative pointer-events-none"></div>
 
-    <!-- ПРАВАЯ 3D-ПАНЕЛЬ (С ПАРАЛЛАКСОМ И БЕЗ МЕРТВЫХ ЗОН) -->
-    <aside id="pc-right-panel" class="holo-3d-stage w-[400px] flex flex-col pointer-events-auto shrink-0 my-1">
-      <div id="holo-card-right" class="holo-panel-right h-full flex flex-col overflow-hidden">
+    <!-- ПРАВАЯ ПАНЕЛЬ (МОДУЛИ, 24 СКИНА, 1000 ФАЗ, ДАННЫЕ) -->
+    <aside id="pc-right-panel" class="w-[400px] flex flex-col pointer-events-auto shrink-0 my-1 z-30">
+      <div id="holo-card-right" class="cyber-side-panel h-full flex flex-col overflow-hidden">
         <div id="glare-right" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
         <div class="holo-corner hc-bl"></div>
         <div class="holo-corner hc-br"></div>
 
-        <!-- Вкладки -->
         <div class="grid grid-cols-4 border-b border-indigo-500/30 bg-slate-950/90 shrink-0 p-1.5 gap-1.5 relative z-20">
           <button type="button" data-tab="upgrades" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-cyan-500/50 bg-indigo-600/30 text-cyan-300">
             ⚡ МОДУЛИ
@@ -579,7 +556,7 @@
       <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-500/40 flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold text-indigo-200 uppercase">АРСЕНАЛ 3D-ОБРАЗОВ (24 СКИНА)</div>
-          <div class="text-[9px] text-slate-300">Скин #1 сохраняет оригинальную PBR-текстуру модели</div>
+          <div class="text-[9px] text-slate-300">Скин #1 сохраняет 100% оригинальную PBR-текстуру модели</div>
         </div>
         <span class="text-[10px] font-display font-bold text-cyan-400 skins-count-label">1/24</span>
       </div>
@@ -632,11 +609,12 @@
     </div>
   </div>
 
-  <!-- ЕДИНЫЙ ES-МОДУЛЬ THREE.JS R160 + GLTFLOADER + MESHOPTDECODER -->
+  <!-- ЕДИНЫЙ МОДУЛЬ ИГРЫ И 3D-ДВИЖКА THREE.JS 0.160.0 -->
   <script type="module">
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { MeshoptDecoder } from 'meshopt';
+    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
     /*************************************************************************
      * 1. ДАННЫЕ: 1000 ФАЗ, 24 СКИНА, 10 МОДУЛЕЙ
@@ -688,30 +666,30 @@
     });
 
     const SKINS_DATA = [
-      { id: 'indigo_107', name: 'Оригинал GLB // Индиго [#107]', desc: 'Оригинальная PBR-текстура вашей 3D-модели и синяя рубашка.', cost: 0, minPhase: 1, preserveOriginalTexture: true, shirt: 0x6a78d1, skin: 0xdca082, pants: 0x161b26, metal: 0.08, rough: 0.52, emissive: 0x000000, wire: false, swatch: '#6a78d1' },
-      { id: 'office_sky', name: 'Деловой Голубой [Офис]', desc: 'Свежая небесно-голубая классика.', cost: 250, minPhase: 3, shirt: 0x38bdf8, skin: 0xdfb195, pants: 0x1e293b, metal: 0.1, rough: 0.5, emissive: 0x000000, wire: false, swatch: '#38bdf8' },
-      { id: 'charcoal_stretch', name: 'Угольный Стретч [Noir]', desc: 'Строгая графитовая рубашка повышенной плотности.', cost: 900, minPhase: 8, shirt: 0x27272a, skin: 0xd69e82, pants: 0x09090b, metal: 0.2, rough: 0.42, emissive: 0x000000, wire: false, swatch: '#3f3f46' },
-      { id: 'tactical_olive', name: 'Тактический Олива [Милитари]', desc: 'Армейское полотно с кевларовой нитью.', cost: 2800, minPhase: 15, shirt: 0x4d7c0f, skin: 0xd29575, pants: 0x1a2e05, metal: 0.15, rough: 0.58, emissive: 0x000000, wire: false, swatch: '#4d7c0f' },
-      { id: 'crimson_pump', name: 'Багровый Памп [Овердрайв]', desc: 'Ткань цвета артериального давления на пике подхода.', cost: 8500, minPhase: 25, shirt: 0xb91c1c, skin: 0xc97a63, pants: 0x111827, metal: 0.18, rough: 0.44, emissive: 0x220000, wire: false, swatch: '#dc2626' },
-      { id: 'emerald_venom', name: 'Изумрудный Токсин [Хим-Лаб]', desc: 'Синтетическое волокно с био-люминесценцией.', cost: 25000, minPhase: 40, shirt: 0x047857, skin: 0xd8a487, pants: 0x064e3b, metal: 0.25, rough: 0.38, emissive: 0x022c22, wire: false, swatch: '#10b981' },
-      { id: 'royal_velvet', name: 'Королевский Пурпур [VIP]', desc: 'Тяжёлый бархатный стретч.', cost: 75000, minPhase: 60, shirt: 0x6d28d9, skin: 0xdfb195, pants: 0x1e1b4b, metal: 0.22, rough: 0.45, emissive: 0x1e0038, wire: false, swatch: '#7c3aed' },
-      { id: 'copper_mech', name: 'Медный Механоид [Стимпанк]', desc: 'Бронзовая кожа и тёмно-коричневый жилет.', cost: 220000, minPhase: 85, shirt: 0x78350f, skin: 0xd97706, pants: 0x1c1917, metal: 0.72, rough: 0.28, emissive: 0x1f0d00, wire: false, swatch: '#d97706' },
-      { id: 'chrome_mk4', name: 'Хромовый Титан [MK-IV]', desc: 'Жидкий металл и углеродное волокно.', cost: 650000, minPhase: 120, shirt: 0x334155, skin: 0xcbd5e1, pants: 0x0f172a, metal: 0.85, rough: 0.2, emissive: 0x091326, wire: false, swatch: '#94a3b8' },
-      { id: 'arctic_cryo', name: 'Крио-Монолит [Абсолютный Ноль]', desc: 'Ледяная броня из жидкого азота.', cost: 1800000, minPhase: 160, shirt: 0x0284c7, skin: 0xe0f2fe, pants: 0x0c4a6e, metal: 0.55, rough: 0.24, emissive: 0x002845, wire: false, swatch: '#38bdf8' },
-      { id: 'cyber_2099', name: 'Кибер-Синтетик [Неон 2099]', desc: 'Голографический каркас с импульсной сеткой.', cost: 5500000, minPhase: 210, shirt: 0x0891b2, skin: 0x1e293b, pants: 0x090d16, metal: 0.5, rough: 0.28, emissive: 0x003e4d, wire: true, swatch: '#00f0ff' },
-      { id: 'lava_magma', name: 'Лавовый Джаггернаут [Вулкан]', desc: 'Раскалённая базальтовая порода.', cost: 16000000, minPhase: 260, shirt: 0x9a3412, skin: 0x451a03, pants: 0x1c1917, metal: 0.35, rough: 0.45, emissive: 0x450a0a, wire: false, swatch: '#f97316' },
-      { id: 'gold_olymp', name: 'Золотой Олимпиец [Аурум 24К]', desc: 'Скульптурное золото 999 пробы и белый шёлк.', cost: 48000000, minPhase: 320, shirt: 0xf1f5f9, skin: 0xfbbf24, pants: 0x1e293b, metal: 0.82, rough: 0.22, emissive: 0x241700, wire: false, swatch: '#fbbf24' },
-      { id: 'gamma_mutant', name: 'Био-Мутант [Гамма-Ядро]', desc: 'Экстремальная гамма-гипертрофия.', cost: 140000000, minPhase: 380, shirt: 0x581c87, skin: 0x22c55e, pants: 0x140824, metal: 0.15, rough: 0.48, emissive: 0x052e16, wire: false, swatch: '#22c55e' },
-      { id: 'matrix_code', name: 'Матричный Архитектор [Код]', desc: 'Цифровая симуляция мышечных волокон.', cost: 420000000, minPhase: 450, shirt: 0x064e3b, skin: 0x052e16, pants: 0x022c22, metal: 0.4, rough: 0.3, emissive: 0x065f46, wire: true, swatch: '#10b981' },
-      { id: 'amethyst_geode', name: 'Аметистовый Кристалл [Кварц]', desc: 'Гранёная кристаллическая решётка.', cost: 1250000000, minPhase: 520, shirt: 0x86198f, skin: 0xd946ef, pants: 0x2e1065, metal: 0.7, rough: 0.18, emissive: 0x3b0764, wire: false, swatch: '#d946ef' },
-      { id: 'blood_moon', name: 'Алый Берсерк [Кровавая Луна]', desc: 'Тёмно-обсидиановая кожа и багровая броня.', cost: 3800000000, minPhase: 590, shirt: 0x881337, skin: 0x27272a, pants: 0x09090b, metal: 0.5, rough: 0.34, emissive: 0x4c0519, wire: false, swatch: '#f43f5e' },
-      { id: 'quantum_ghost', name: 'Квантовый Призрак [Фазовый Сдвиг]', desc: 'Эфирная материя вне времени.', cost: 11000000000, minPhase: 660, shirt: 0x2563eb, skin: 0x93c5fd, pants: 0x172554, metal: 0.6, rough: 0.25, emissive: 0x1e3a8a, wire: true, swatch: '#60a5fa' },
-      { id: 'obsidian_void', name: 'Монолит Пустоты [Vantablack]', desc: 'Поглощает 99% света с неоновым контуром.', cost: 35000000000, minPhase: 730, shirt: 0x111827, skin: 0x090d16, pants: 0x030712, metal: 0.75, rough: 0.2, emissive: 0x1e1b4b, wire: true, swatch: '#6366f1' },
-      { id: 'solar_flare', name: 'Солнечная Корона [Гелиос]', desc: 'Термоядерная плазма.', cost: 105000000000, minPhase: 800, shirt: 0xd97706, skin: 0xfde047, pants: 0x451a03, metal: 0.65, rough: 0.22, emissive: 0x78350f, wire: false, swatch: '#facc15' },
-      { id: 'nebula_cosmos', name: 'Галактическая Туманность [Космос]', desc: 'Звёздная пыль и глубокий ультрамарин.', cost: 320000000000, minPhase: 860, shirt: 0x4338ca, skin: 0x818cf8, pants: 0x0f172a, metal: 0.7, rough: 0.25, emissive: 0x312e81, wire: true, swatch: '#818cf8' },
-      { id: 'antimatter_core', name: 'Антиматерия [Коллайдер]', desc: 'Инвертированный спектр.', cost: 980000000000, minPhase: 920, shirt: 0xbe185d, skin: 0x0f172a, pants: 0x020617, metal: 0.85, rough: 0.18, emissive: 0x500724, wire: true, swatch: '#ec4899' },
-      { id: 'divine_marble', name: 'Мраморный Титан [Пантеон]', desc: 'Белый каррарский мрамор с золотыми прожилками.', cost: 3000000000000, minPhase: 965, shirt: 0xd4af37, skin: 0xf8fafc, pants: 0x334155, metal: 0.4, rough: 0.32, emissive: 0x1e293b, wire: false, swatch: '#e2e8f0' },
-      { id: 'omega_ychuchacovich', name: 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ [Ω-1000]', desc: 'Финальная форма 1000-й фазы.', cost: 10000000000000, minPhase: 1000, shirt: 0x00f0ff, skin: 0xfbbf24, pants: 0x090d16, metal: 0.9, rough: 0.15, emissive: 0x1e3a8a, wire: true, swatch: '#00f0ff' }
+      { id: 'indigo_107', name: 'Оригинал GLB [#107]', desc: 'Оригинальная PBR-текстура вашей 3D-модели без фильтра.', cost: 0, minPhase: 1, preserveOriginalTexture: true, shirt: 0xffffff, metal: 0.08, rough: 0.52, emissive: 0x000000, wire: false, swatch: '#6a78d1' },
+      { id: 'office_sky', name: 'Деловой Голубой [Офис]', desc: 'Свежий небесно-голубой оттенок.', cost: 250, minPhase: 3, shirt: 0x7dd3fc, metal: 0.1, rough: 0.5, emissive: 0x000000, wire: false, swatch: '#38bdf8' },
+      { id: 'charcoal_stretch', name: 'Угольный Стретч [Noir]', desc: 'Строгий тёмно-графитовый тон.', cost: 900, minPhase: 8, shirt: 0x52525b, metal: 0.25, rough: 0.4, emissive: 0x000000, wire: false, swatch: '#3f3f46' },
+      { id: 'tactical_olive', name: 'Тактический Олива [Милитари]', desc: 'Армейский оливковый оттенок.', cost: 2800, minPhase: 15, shirt: 0x84cc16, metal: 0.15, rough: 0.55, emissive: 0x000000, wire: false, swatch: '#4d7c0f' },
+      { id: 'crimson_pump', name: 'Багровый Памп [Овердрайв]', desc: 'Оттенок артериального пампа.', cost: 8500, minPhase: 25, shirt: 0xf87171, metal: 0.18, rough: 0.44, emissive: 0x220000, wire: false, swatch: '#dc2626' },
+      { id: 'emerald_venom', name: 'Изумрудный Токсин [Хим-Лаб]', desc: 'Изумрудное био-свечение.', cost: 25000, minPhase: 40, shirt: 0x34d399, metal: 0.25, rough: 0.38, emissive: 0x022c22, wire: false, swatch: '#10b981' },
+      { id: 'royal_velvet', name: 'Королевский Пурпур [VIP]', desc: 'Благородный фиолетовый спектр.', cost: 75000, minPhase: 60, shirt: 0xc084fc, metal: 0.22, rough: 0.45, emissive: 0x1e0038, wire: false, swatch: '#7c3aed' },
+      { id: 'copper_mech', name: 'Медный Механоид [Стимпанк]', desc: 'Бронзово-медный металлик.', cost: 220000, minPhase: 85, shirt: 0xfb923c, metal: 0.72, rough: 0.28, emissive: 0x1f0d00, wire: false, swatch: '#d97706' },
+      { id: 'chrome_mk4', name: 'Хромовый Титан [MK-IV]', desc: 'Зеркальный жидкий металл.', cost: 650000, minPhase: 120, shirt: 0xe2e8f0, metal: 0.88, rough: 0.18, emissive: 0x091326, wire: false, swatch: '#94a3b8' },
+      { id: 'arctic_cryo', name: 'Крио-Монолит [Абсолютный Ноль]', desc: 'Ледяная броня из жидкого азота.', cost: 1800000, minPhase: 160, shirt: 0x38bdf8, metal: 0.55, rough: 0.24, emissive: 0x002845, wire: false, swatch: '#38bdf8' },
+      { id: 'cyber_2099', name: 'Кибер-Синтетик [Неон 2099]', desc: 'Голографическая полигональная сетка.', cost: 5500000, minPhase: 210, shirt: 0x00f0ff, metal: 0.5, rough: 0.28, emissive: 0x003e4d, wire: true, swatch: '#00f0ff' },
+      { id: 'lava_magma', name: 'Лавовый Джаггернаут [Вулкан]', desc: 'Раскалённая магма.', cost: 16000000, minPhase: 260, shirt: 0xf97316, metal: 0.35, rough: 0.45, emissive: 0x450a0a, wire: false, swatch: '#f97316' },
+      { id: 'gold_olymp', name: 'Золотой Олимпиец [Аурум 24К]', desc: 'Скульптурное золото 999 пробы.', cost: 48000000, minPhase: 320, shirt: 0xfbbf24, metal: 0.85, rough: 0.2, emissive: 0x241700, wire: false, swatch: '#fbbf24' },
+      { id: 'gamma_mutant', name: 'Био-Мутант [Гамма-Ядро]', desc: 'Гамма-гипертрофия.', cost: 140000000, minPhase: 380, shirt: 0x4ade80, metal: 0.15, rough: 0.48, emissive: 0x052e16, wire: false, swatch: '#22c55e' },
+      { id: 'matrix_code', name: 'Матричный Архитектор [Код]', desc: 'Цифровая каркасная симуляция.', cost: 420000000, minPhase: 450, shirt: 0x10b981, metal: 0.4, rough: 0.3, emissive: 0x065f46, wire: true, swatch: '#10b981' },
+      { id: 'amethyst_geode', name: 'Аметистовый Кристалл [Кварц]', desc: 'Кристаллическая решётка.', cost: 1250000000, minPhase: 520, shirt: 0xe879f9, metal: 0.7, rough: 0.18, emissive: 0x3b0764, wire: false, swatch: '#d946ef' },
+      { id: 'blood_moon', name: 'Алый Берсерк [Кровавая Луна]', desc: 'Багровая броня.', cost: 3800000000, minPhase: 590, shirt: 0xf43f5e, metal: 0.5, rough: 0.34, emissive: 0x4c0519, wire: false, swatch: '#f43f5e' },
+      { id: 'quantum_ghost', name: 'Квантовый Призрак [Сдвиг]', desc: 'Эфирная материя вне времени.', cost: 11000000000, minPhase: 660, shirt: 0x60a5fa, metal: 0.6, rough: 0.25, emissive: 0x1e3a8a, wire: true, swatch: '#60a5fa' },
+      { id: 'obsidian_void', name: 'Монолит Пустоты [Vantablack]', desc: 'Тёмная материя с неоновым контуром.', cost: 35000000000, minPhase: 730, shirt: 0x6366f1, metal: 0.75, rough: 0.2, emissive: 0x1e1b4b, wire: true, swatch: '#6366f1' },
+      { id: 'solar_flare', name: 'Солнечная Корона [Гелиос]', desc: 'Термоядерная плазма.', cost: 105000000000, minPhase: 800, shirt: 0xfde047, metal: 0.65, rough: 0.22, emissive: 0x78350f, wire: false, swatch: '#facc15' },
+      { id: 'nebula_cosmos', name: 'Галактическая Туманность', desc: 'Глубокий ультрамарин.', cost: 320000000000, minPhase: 860, shirt: 0x818cf8, metal: 0.7, rough: 0.25, emissive: 0x312e81, wire: true, swatch: '#818cf8' },
+      { id: 'antimatter_core', name: 'Антиматерия [Коллайдер]', desc: 'Инвертированный спектр.', cost: 980000000000, minPhase: 920, shirt: 0xf472b6, metal: 0.85, rough: 0.18, emissive: 0x500724, wire: true, swatch: '#ec4899' },
+      { id: 'divine_marble', name: 'Мраморный Титан [Пантеон]', desc: 'Белый каррарский мрамор.', cost: 3000000000000, minPhase: 965, shirt: 0xf8fafc, metal: 0.35, rough: 0.3, emissive: 0x1e293b, wire: false, swatch: '#e2e8f0' },
+      { id: 'omega_ychuchacovich', name: 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ [Ω]', desc: 'Финальная форма 1000-й фазы.', cost: 10000000000000, minPhase: 1000, shirt: 0x00f0ff, metal: 0.9, rough: 0.15, emissive: 0x1e3a8a, wire: true, swatch: '#00f0ff' }
     ];
 
     const UPGRADES_DATA = [
@@ -728,7 +706,7 @@
     ];
 
     /*************************************************************************
-     * 2. СОСТОЯНИЕ И УТИЛИТЫ ЗАГРУЗЧИКА
+     * 2. СОСТОЯНИЕ И УТИЛИТЫ
      *************************************************************************/
     const STORAGE_KEY = 'ychuchacovich_1000_v4_save';
 
@@ -756,14 +734,13 @@
     let currentDeviceMode = 'pc';
     let autoSpin = false;
     let studioLightPreset = 0;
-    let shaderPumpEnabled = true;
-    let hasCustomGLB = false;
+    let shaderHypertrophyEnabled = true;
 
-    function addLoaderLog(msg, colorClass = 'text-slate-300') {
+    function addLoaderLog(msg, cls = 'text-slate-300') {
       const log = document.getElementById('loader-log');
       if (!log) return;
       const div = document.createElement('div');
-      div.className = colorClass;
+      div.className = cls;
       div.textContent = msg;
       log.appendChild(div);
       log.scrollTop = log.scrollHeight;
@@ -781,7 +758,6 @@
       if (titleEl && titleText) titleEl.textContent = titleText;
       if (spinner) {
         spinner.classList.toggle('animate-spin', !stopSpinner);
-        if (stopSpinner) spinner.classList.replace('border-t-transparent', 'border-emerald-400');
       }
     }
 
@@ -934,7 +910,7 @@
     }
 
     /*************************************************************************
-     * 4. THREE.JS R160 СЦЕНА (НАТИВНАЯ ПОДДЕРЖКА KHR_mesh_quantization)
+     * 4. THREE.JS 0.160.0 СЦЕНА И ПРЯМАЯ ЗАГРУЗКА MODEL.GLB
      *************************************************************************/
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
@@ -950,6 +926,7 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
 
+    // Студийный свет без засветов
     const hemiLight = new THREE.HemisphereLight(0xe2e8f0, 0x334155, 0.9);
     hemiLight.position.set(0, 10, 0);
     scene.add(hemiLight);
@@ -957,7 +934,8 @@
     const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.35);
     keyLight.position.set(3.5, 5.5, 5.0);
     keyLight.castShadow = true;
-    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
     scene.add(keyLight);
 
     const leftFill = new THREE.DirectionalLight(0xc7d2fe, 0.65);
@@ -983,6 +961,15 @@
     floorGrid.material.transparent = true;
     scene.add(floorGrid);
 
+    const shadowPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(18, 18),
+      new THREE.ShadowMaterial({ opacity: 0.28 })
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.y = FLOOR_Y + 0.001;
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
+
     const shockRing = new THREE.Mesh(
       new THREE.RingGeometry(0.3, 0.42, 48),
       new THREE.MeshBasicMaterial({ color: 0x00f0ff, side: THREE.DoubleSide, transparent: true, opacity: 0 })
@@ -992,52 +979,857 @@
     scene.add(shockRing);
 
     const characterPivot = new THREE.Group();
+    characterPivot.position.y = FLOOR_Y;
     scene.add(characterPivot);
 
-    // Группа для вашей .GLB модели
-    const glbRootGroup = new THREE.Group();
-    characterPivot.add(glbRootGroup);
-    glbRootGroup.visible = false;
+    const glbContainerGroup = new THREE.Group();
+    characterPivot.add(glbContainerGroup);
 
-    // Резервная 3D-модель (на случай если файл еще не скачан)
-    const builtinBodyGroup = new THREE.Group();
-    characterPivot.add(builtinBodyGroup);
+    const customShaderUniformsList = [];
+    let loadedGLBMeshes = [];
 
-    const shirtMat = new THREE.MeshStandardMaterial({ color: 0x6a78d1, roughness: 0.52, metalness: 0.08 });
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xdca082, roughness: 0.56, metalness: 0.04 });
-    const pantsMat = new THREE.MeshStandardMaterial({ color: 0x161b26, roughness: 0.65, metalness: 0.08 });
-    const shoeMat = new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.35, metalness: 0.25 });
-    const hairMat = new THREE.MeshStandardMaterial({ color: 0x2b1d14, roughness: 0.75 });
-    const buttonMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.25, metalness: 0.85 });
+    function attachHypertrophyShader(material, yMin, yMax) {
+      const ySpan = Math.max(0.001, yMax - yMin);
+      material.onBeforeCompile = (shader) => {
+        shader.uniforms.uHypertrophy = { value: 0.0 };
+        shader.uniforms.uPumpPulse = { value: 0.0 };
+        shader.uniforms.uShaderActive = { value: shaderHypertrophyEnabled ? 1.0 : 0.0 };
+        customShaderUniformsList.push(shader.uniforms);
 
-    const anatomy = {};
+        shader.vertexShader = `
+          uniform float uHypertrophy;
+          uniform float uPumpPulse;
+          uniform float uShaderActive;
+        ` + shader.vertexShader;
 
-    function buildDetailedBuiltinHero() {
-      anatomy.upperTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.48, 1.05, 28), shirtMat);
-      anatomy.upperTorso.position.set(0, 0.58, 0);
-      anatomy.upperTorso.scale.set(1, 1, 0.68);
-      builtinBodyGroup.add(anatomy.upperTorso);
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <begin_vertex>',
+          `
+          #include <begin_vertex>
+          if (uShaderActive > 0.5) {
+            float normY = clamp((position.y - (${yMin.toFixed(4)})) / (${ySpan.toFixed(4)}), 0.0, 1.0);
+            float upperBodyMask = smoothstep(0.38, 0.56, normY) * (1.0 - smoothstep(0.75, 0.84, normY));
+            float legMuscleMask = smoothstep(0.14, 0.28, normY) * (1.0 - smoothstep(0.38, 0.46, normY));
+            float muscleMask = upperBodyMask + legMuscleMask * 0.45;
 
-      anatomy.lowerTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.47, 0.43, 0.65, 24), shirtMat);
-      anatomy.lowerTorso.position.set(0, -0.05, 0);
-      anatomy.lowerTorso.scale.set(1, 1, 0.66);
-      builtinBodyGroup.add(anatomy.lowerTorso);
+            float totalInflate = (uHypertrophy * 0.042 + uPumpPulse * 0.018) * muscleMask;
+            transformed += objectNormal * totalInflate;
+            transformed.x *= 1.0 + (uHypertrophy * 0.22 + uPumpPulse * 0.06) * upperBodyMask;
+            transformed.z *= 1.0 + (uHypertrophy * 0.18 + uPumpPulse * 0.06) * upperBodyMask;
+          }
+          `
+        );
+      };
+      material.needsUpdate = true;
+    }
 
-      anatomy.pecL = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 20), shirtMat);
-      anatomy.pecL.position.set(-0.26, 0.68, 0.28);
-      anatomy.pecL.scale.set(1.12, 0.85, 0.82);
-      anatomy.pecR = anatomy.pecL.clone();
-      anatomy.pecR.position.x = 0.26;
-      builtinBodyGroup.add(anatomy.pecL, anatomy.pecR);
+    function mountGLTFScene(gltf, sourceName) {
+      while (glbContainerGroup.children.length > 0) {
+        glbContainerGroup.remove(glbContainerGroup.children[0]);
+      }
+      loadedGLBMeshes = [];
+      customShaderUniformsList.length = 0;
 
-      anatomy.latL = new THREE.Mesh(new THREE.SphereGeometry(0.34, 20, 18), shirtMat);
-      anatomy.latL.position.set(-0.46, 0.48, -0.06);
-      anatomy.latL.scale.set(0.85, 1.35, 0.7);
-      anatomy.latR = anatomy.latL.clone();
-      anatomy.latR.position.x = 0.46;
-      builtinBodyGroup.add(anatomy.latL, anatomy.latR);
+      const root = gltf.scene;
+      const box = new THREE.Box3().setFromObject(root);
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
 
-      anatomy.traps = new THREE.Mesh(new THREE.SphereGeometry(0.42, 20, 16), shirtMat);
-      anatomy.traps.position.set(0, 1.08, -0.05);
-      anatomy.traps.scale.set(1.4, 0.48, 0.75);
-      builtinBodyGroup.add(anatomy.
+      let totalVerts = 0;
+
+      root.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+          if (child.geometry?.attributes?.position) {
+            totalVerts += child.geometry.attributes.position.count;
+          }
+          const mat = child.material;
+          if (mat) {
+            child.userData.origColor = mat.color ? mat.color.clone() : new THREE.Color(0xffffff);
+            child.userData.origMetalness = mat.metalness ?? 0.08;
+            child.userData.origRoughness = mat.roughness ?? 0.52;
+            const geoBox = child.geometry.boundingBox || box;
+            attachHypertrophyShader(mat, geoBox.min.y, geoBox.max.y);
+          }
+          loadedGLBMeshes.push(child);
+        }
+      });
+
+      const targetHeight = 3.8;
+      const baseScale = targetHeight / Math.max(0.01, size.y);
+      root.position.set(-center.x * baseScale, -box.min.y * baseScale, -center.z * baseScale);
+      root.scale.setScalar(baseScale);
+
+      glbContainerGroup.add(root);
+
+      const vEl = document.getElementById('vertex-count-label');
+      if (vEl) vEl.textContent = totalVerts.toLocaleString('ru-RU');
+
+      const badge = document.getElementById('glb-status-badge');
+      if (badge) {
+        badge.textContent = '3D GLB АКТИВЕН';
+        badge.className = 'px-1.5 py-0.5 text-[8px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded uppercase';
+      }
+
+      applyActiveSkinTo3D();
+      update3DAnatomyAndHUD();
+      setLoaderProgress(100, `Модель готова (${totalVerts.toLocaleString('ru-RU')} вершин)`, '✅ 3D-МОДЕЛЬ ЗАГРУЖЕНА!', true);
+      addLoaderLog(`✅ Успешно: ${sourceName} (${totalVerts.toLocaleString('ru-RU')} вершин)`, 'text-emerald-400');
+      setTimeout(hideLoaderModal, 350);
+    }
+
+    async function loadGLBModelFromRepo() {
+      document.getElementById('btn-retry-load')?.classList.add('hidden');
+      setLoaderProgress(12, 'Инициализация WebAssembly декодера Meshopt...', 'ЗАГРУЗКА 3D-МОДЕЛИ...');
+
+      try {
+        await MeshoptDecoder.ready;
+        addLoaderLog('✓ Декодер EXT_meshopt_compression готов', 'text-emerald-400');
+      } catch (e) {
+        addLoaderLog('⚠️ Предупреждение инициализации Meshopt: ' + e.message, 'text-amber-300');
+      }
+
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+      gltfLoader.setDRACOLoader(dracoLoader);
+
+      const candidateUrls = [
+        './model.glb',
+        'model.glb',
+        './tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb',
+        './Model.glb'
+      ];
+
+      // Если сайт на GitHub Pages, проверяем список файлов в репозитории на случай другого имени .glb
+      if (window.location.hostname.endsWith('github.io')) {
+        try {
+          const owner = window.location.hostname.split('.')[0];
+          const pathParts = window.location.pathname.split('/').filter(Boolean);
+          const repo = pathParts[0];
+          if (owner && repo) {
+            const apiResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/`);
+            if (apiResp.ok) {
+              const files = await apiResp.json();
+              if (Array.isArray(files)) {
+                files.forEach(f => {
+                  if (f.name && f.name.toLowerCase().endsWith('.glb')) {
+                    if (!candidateUrls.includes('./' + f.name)) candidateUrls.unshift('./' + f.name);
+                    if (f.download_url && !candidateUrls.includes(f.download_url)) candidateUrls.push(f.download_url);
+                  }
+                });
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      const tryLoadSingleUrl = (url) => {
+        return new Promise((resolve, reject) => {
+          addLoaderLog(`🌐 Загрузка ${url}...`, 'text-cyan-300');
+          gltfLoader.load(
+            url,
+            (gltf) => resolve({ gltf, url }),
+            (xhr) => {
+              if (xhr.total > 0) {
+                const pct = 20 + (xhr.loaded / xhr.total) * 75;
+                const mbLoaded = (xhr.loaded / (1024 * 1024)).toFixed(1);
+                const mbTotal = (xhr.total / (1024 * 1024)).toFixed(1);
+                setLoaderProgress(pct, `Скачивание ${url}: ${mbLoaded} / ${mbTotal} МБ`);
+              } else if (xhr.loaded > 0) {
+                const mbLoaded = (xhr.loaded / (1024 * 1024)).toFixed(1);
+                setLoaderProgress(60, `Скачано ${mbLoaded} МБ (${url})...`);
+              }
+            },
+            (err) => reject(err)
+          );
+        });
+      };
+
+      for (const url of candidateUrls) {
+        try {
+          const { gltf } = await tryLoadSingleUrl(url);
+          mountGLTFScene(gltf, url);
+          return;
+        } catch (err) {
+          addLoaderLog(`• Не удалось загрузить ${url}`, 'text-slate-400');
+        }
+      }
+
+      setLoaderProgress(100, 'Не удалось найти файл model.glb рядом с index.html на сервере.', '⚠️ ОЖИДАНИЕ MODEL.GLB', true);
+      addLoaderLog('❌ Проверьте, что файл в репозитории назван точно model.glb (маленькими буквами)', 'text-rose-400');
+      document.getElementById('btn-retry-load')?.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-retry-load')?.addEventListener('click', loadGLBModelFromRepo);
+
+    /*************************************************************************
+     * 5. СКИНЫ, ОСВЕЩЕНИЕ И ПРОГРЕССИЯ 1000 ФАЗ
+     *************************************************************************/
+    function applyActiveSkinTo3D() {
+      const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[0];
+      loadedGLBMeshes.forEach(mesh => {
+        const mat = mesh.material;
+        if (!mat) return;
+        if (skin.preserveOriginalTexture) {
+          if (childOrigColorExists(mesh)) mat.color.copy(mesh.userData.origColor);
+          else mat.color.setHex(0xffffff);
+          mat.emissive.setHex(0x000000);
+          mat.emissiveIntensity = 0;
+          mat.metalness = mesh.userData.origMetalness ?? 0.08;
+          mat.roughness = mesh.userData.origRoughness ?? 0.52;
+          mat.wireframe = false;
+        } else {
+          mat.color.setHex(skin.shirt);
+          mat.emissive.setHex(skin.emissive || 0x000000);
+          mat.emissiveIntensity = skin.wire ? 0.25 : 0.08;
+          mat.metalness = skin.metal;
+          mat.roughness = Math.max(0.2, skin.rough);
+          mat.wireframe = !!skin.wire;
+        }
+        mat.needsUpdate = true;
+      });
+    }
+
+    function childOrigColorExists(mesh) {
+      return mesh.userData && mesh.userData.origColor;
+    }
+
+    function applyStudioLightingPreset(presetIdx) {
+      studioLightPreset = presetIdx % 3;
+      const btn = document.getElementById('btn-light-mode');
+      if (studioLightPreset === 0) {
+        renderer.toneMappingExposure = 0.94;
+        hemiLight.intensity = 0.9;
+        keyLight.intensity = 1.35;
+        if (btn) btn.textContent = '☀ СВЕТ: СТУДИЯ';
+      } else if (studioLightPreset === 1) {
+        renderer.toneMappingExposure = 0.85;
+        hemiLight.intensity = 0.55;
+        keyLight.intensity = 1.65;
+        if (btn) btn.textContent = '☀ СВЕТ: РЕЛЬЕФ';
+      } else {
+        renderer.toneMappingExposure = 0.9;
+        hemiLight.intensity = 1.15;
+        keyLight.intensity = 0.9;
+        if (btn) btn.textContent = '☀ СВЕТ: МЯГКИЙ';
+      }
+    }
+
+    let pumpImpulse = 0;
+    let shockwaveProgress = 0;
+
+    function update3DAnatomyAndHUD() {
+      const { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo } = getStats();
+      const g = pInfo.globalGrowth;
+
+      if (pInfo.current.num > state.highestPhase) {
+        state.highestPhase = pInfo.current.num;
+        showToast(`🧬 ФАЗА ${pInfo.current.num}/1000: ${pInfo.current.title}!`, 'border-amber-400 text-amber-300');
+      }
+
+      customShaderUniformsList.forEach(u => {
+        u.uHypertrophy.value = g;
+        u.uShaderActive.value = shaderHypertrophyEnabled ? 1.0 : 0.0;
+      });
+
+      const scaleY = 0.82 + g * 0.42;
+      const scaleXZ = 0.80 + g * 0.68;
+      characterPivot.position.y = FLOOR_Y;
+      characterPivot.scale.set(scaleXZ, scaleY, scaleXZ);
+
+      const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+      const setWidth = (id, pct) => {
+        const el = document.getElementById(id);
+        if (el) el.style.width = pct + '%';
+      };
+
+      setTxt('hud-score', formatMass(state.score));
+      setTxt('hud-passive', formatMass(passivePower));
+      setTxt('hud-phase-num', pInfo.current.num);
+
+      const epochObj = EPOCHS.find(e => pInfo.current.num >= e.range[0] && pInfo.current.num <= e.range[1]) || EPOCHS[0];
+      setTxt('pc-epoch-tag', epochObj.name);
+      setTxt('pc-phase-num', pInfo.current.num);
+      setTxt('pc-phase-title', pInfo.current.title);
+      setTxt('pc-next-phase-num', pInfo.next.num);
+      setTxt('pc-subphase-pct', Math.floor(pInfo.subProgress * 100) + '%');
+      setWidth('pc-subphase-bar', Math.floor(pInfo.subProgress * 100));
+      setTxt('pc-total-mass', formatMass(state.totalEarned) + ' КГ');
+      setTxt('pc-next-mass', formatMass(pInfo.next.req) + ' КГ');
+      setTxt('pc-global-pct', (g * 100).toFixed(1) + '%');
+      setWidth('pc-global-bar', Math.max(0.2, g * 100).toFixed(1));
+
+      setTxt('mob-phase-num', pInfo.current.num);
+      setTxt('mob-phase-title', pInfo.current.title);
+      setTxt('mob-next-req', `${formatMass(state.totalEarned)} / ${formatMass(pInfo.next.req)} КГ`);
+      setWidth('mob-subphase-bar', Math.floor(pInfo.subProgress * 100));
+
+      const ePct = Math.min(100, Math.max(0, (state.energy / maxEnergy) * 100));
+      setTxt('pc-energy-text', `${Math.floor(state.energy)} / ${maxEnergy}`);
+      setWidth('pc-energy-bar', ePct);
+      setTxt('pc-tap-power', '+' + formatMass(clickPower) + ' КГ');
+      setTxt('pc-regen-rate', '+' + regenRate + '/С');
+      setTxt('lbl-tap-power', formatMass(clickPower));
+
+      setTxt('bio-chest', (88 + g * 124).toFixed(1) + ' СМ');
+      setTxt('bio-biceps', (29 + g * 58).toFixed(1) + ' СМ');
+      setTxt('bio-shoulders', (43 + g * 68).toFixed(1) + ' СМ');
+      setTxt('bio-legs', (48 + g * 64).toFixed(1) + ' СМ');
+      setTxt('bio-pressure', (1.05 + g * 48.5).toFixed(2) + ' МПа');
+      setTxt('bio-multiplier', 'x' + mult.toFixed(2));
+
+      document.querySelectorAll('.skins-count-label').forEach(el => {
+        el.textContent = `${state.ownedSkins.length}/${SKINS_DATA.length}`;
+      });
+      setTxt('phases-unlocked-badge', `${pInfo.current.num} / 1000`);
+
+      UPGRADES_DATA.forEach(u => {
+        const card = document.getElementById(`upg-card-${u.id}`);
+        if (!card) return;
+        const lvl = state.upgrades[u.id] || 0;
+        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
+        card.classList.toggle('disabled', state.score < cost);
+      });
+    }
+
+    /*************************************************************************
+     * 6. ВРАЩЕНИЕ 360° И КЛИКИ ПО 3D-МОДЕЛИ
+     *************************************************************************/
+    let targetYaw = 0;
+    let currentYaw = 0;
+    let targetPitch = 0.05;
+    let currentPitch = 0.05;
+    let cameraZoomOffset = 0;
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let totalDragDist = 0;
+
+    function triggerPumpClick(clientX, clientY) {
+      const { clickPower, pInfo } = getStats();
+      const cost = Math.min(8, Math.max(1, Math.ceil(clickPower * 0.015)));
+      if (state.energy < cost) {
+        showToast('⚡ НЕДОСТАТОЧНО РЕСУРСА ШВОВ!', 'border-rose-500 text-rose-300');
+        return;
+      }
+
+      state.energy = Math.max(0, state.energy - cost);
+      state.score += clickPower;
+      state.totalEarned += clickPower;
+
+      pumpImpulse = 1.0;
+      shockwaveProgress = 0.01;
+      clickFlashLight.intensity = 1.5;
+
+      playPumpHitSound(pInfo.globalGrowth);
+      spawnFloatingNumber(clientX, clientY, `+${formatMass(clickPower)} КГ`);
+      update3DAnatomyAndHUD();
+    }
+
+    function spawnFloatingNumber(x, y, text) {
+      const layer = document.getElementById('particles-layer');
+      if (!layer) return;
+      const el = document.createElement('div');
+      el.className = 'float-particle text-sm md:text-lg text-cyan-300';
+      el.style.left = `${x + (Math.random() - 0.5) * 32}px`;
+      el.style.top = `${y - 12}px`;
+      el.style.textShadow = '0 0 12px rgba(0,240,255,0.85), 0 2px 4px #000';
+      el.textContent = text;
+      layer.appendChild(el);
+      setTimeout(() => el.remove(), 850);
+    }
+
+    container.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      totalDragDist = 0;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      totalDragDist += Math.abs(dx) + Math.abs(dy);
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+
+      targetYaw += dx * 0.011;
+      targetPitch = Math.max(-0.65, Math.min(0.85, targetPitch + dy * 0.008));
+
+      const angleEl = document.getElementById('cam-angle-label');
+      if (angleEl) {
+        const degY = Math.round(((targetYaw * 180) / Math.PI) % 360);
+        const degP = Math.round((targetPitch * 180) / Math.PI);
+        angleEl.textContent = `${degY}° / ${degP}°`;
+      }
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      if (totalDragDist < 12 && e.target === renderer.domElement) {
+        triggerPumpClick(e.clientX, e.clientY);
+      }
+    });
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      cameraZoomOffset = Math.max(-2.8, Math.min(4.2, cameraZoomOffset + e.deltaY * 0.003));
+      syncResponsiveCamera();
+    }, { passive: false });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        triggerPumpClick(window.innerWidth / 2, window.innerHeight * 0.45);
+      }
+    });
+
+    /*************************************************************************
+     * 7. ПОДСВЕТКА ПАНЕЛЕЙ И УПРАВЛЕНИЕ ВКЛАДКАМИ
+     *************************************************************************/
+    function setupPanelSpotlight(cardId, glareId) {
+      const card = document.getElementById(cardId);
+      const glare = document.getElementById(glareId);
+      if (!card || !glare) return;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        glare.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(0, 240, 255, 0.14) 0%, transparent 55%)`;
+      });
+    }
+    setupPanelSpotlight('holo-card-left', 'glare-left');
+    setupPanelSpotlight('holo-card-right', 'glare-right');
+
+    function syncResponsiveCamera() {
+      const aspect = window.innerWidth / window.innerHeight;
+      camera.aspect = aspect;
+      if (currentDeviceMode === 'mobile') {
+        camera.fov = aspect < 0.65 ? 52 : 46;
+        camera.position.set(0, isDrawerOpen ? -0.8 : -0.25, (aspect < 0.65 ? 7.6 : 6.8) + cameraZoomOffset);
+        camera.lookAt(0, isDrawerOpen ? -0.95 : -0.35, 0);
+      } else {
+        camera.fov = 40;
+        camera.position.set(0, -0.25, 6.5 + cameraZoomOffset);
+        camera.lookAt(0, -0.35, 0);
+      }
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', syncResponsiveCamera);
+
+    function setDeviceLayout(mode) {
+      currentDeviceMode = mode;
+      document.body.setAttribute('data-device', mode);
+      const badge = document.getElementById('device-mode-badge');
+      const btn = document.getElementById('btn-toggle-layout');
+      if (mode === 'pc') {
+        if (badge) badge.textContent = 'ПК';
+        if (btn) btn.textContent = '📱 МОБ. ВИД';
+      } else {
+        if (badge) badge.textContent = 'ТЕЛЕФОН';
+        if (btn) btn.textContent = '🖥 ПК ВИД';
+      }
+      mountActiveTabPanel();
+      syncResponsiveCamera();
+    }
+
+    function mountActiveTabPanel() {
+      const holder = document.getElementById('shared-panels-holder');
+      const pcTarget = document.getElementById('pc-tab-container');
+      const mobTarget = document.getElementById('mob-tab-container');
+      ['upgrades', 'skins', 'phases', 'save'].forEach(t => {
+        const el = document.getElementById(`panel-${t}`);
+        if (el && el.parentElement !== holder) holder.appendChild(el);
+      });
+      const activePanel = document.getElementById(`panel-${activeTab}`);
+      if (!activePanel) return;
+      if (currentDeviceMode === 'pc') pcTarget.appendChild(activePanel);
+      else mobTarget.appendChild(activePanel);
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.className = `tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border ${
+          active ? 'border-cyan-500/50 bg-indigo-600/30 text-cyan-300' : 'border-transparent text-slate-300 hover:text-white'
+        }`;
+      });
+      document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.className = `mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase flex items-center justify-center gap-1 border ${
+          active ? 'bg-indigo-600/30 text-cyan-300 border-cyan-500/40' : 'text-slate-400 border-transparent'
+        }`;
+      });
+      mountActiveTabPanel();
+    }
+
+    function setMobileDrawerOpen(open) {
+      isDrawerOpen = open;
+      const drawer = document.getElementById('bottom-drawer');
+      const btn = document.getElementById('btn-drawer-toggle');
+      if (drawer) drawer.classList.toggle('collapsed', !open);
+      if (btn) btn.textContent = open ? '▼ СВЕРНУТЬ' : '▲ МЕНЮ';
+      syncResponsiveCamera();
+    }
+
+    function renderUpgradesList() {
+      const list = document.getElementById('upgrades-list');
+      if (!list) return;
+      list.innerHTML = '';
+      UPGRADES_DATA.forEach(u => {
+        const lvl = state.upgrades[u.id] || 0;
+        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
+        const canBuy = state.score >= cost;
+        const card = document.createElement('div');
+        card.id = `upg-card-${u.id}`;
+        card.className = `module-card rounded-xl p-2.5 flex items-center justify-between gap-2 ${canBuy ? '' : 'disabled'}`;
+        card.innerHTML = `
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[8px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-cyan-400 border border-slate-700">${u.code}</span>
+              <span class="text-xs font-bold text-white truncate">${u.name}</span>
+            </div>
+            <div class="text-[10px] text-slate-300 mt-0.5">${u.desc}</div>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="text-[10px] font-bold text-amber-400">ЦЕНА: ${formatMass(cost)} КГ</span>
+              <span class="text-[9px] text-slate-400">| УР. <b class="text-white">${lvl}</b></span>
+            </div>
+          </div>
+          <div class="px-2.5 py-1.5 rounded-lg bg-indigo-500/20 border border-indigo-400/40 text-[9px] font-display font-bold text-indigo-200 shrink-0">+УР</div>
+        `;
+        card.addEventListener('click', () => {
+          const curLvl = state.upgrades[u.id] || 0;
+          const curCost = Math.floor(u.baseCost * Math.pow(u.mult, curLvl));
+          if (state.score < curCost) return;
+          state.score -= curCost;
+          state.upgrades[u.id] = curLvl + 1;
+          if (u.energyBonus) state.energy += u.energyBonus;
+          playUpgradeSound();
+          renderUpgradesList();
+          update3DAnatomyAndHUD();
+          saveProgress();
+        });
+        list.appendChild(card);
+      });
+    }
+
+    function renderSkinsList() {
+      const list = document.getElementById('skins-list');
+      if (!list) return;
+      list.innerHTML = '';
+      const { pInfo } = getStats();
+      SKINS_DATA.forEach(s => {
+        const owned = state.ownedSkins.includes(s.id);
+        const equipped = state.equippedSkin === s.id;
+        const phaseOk = pInfo.current.num >= s.minPhase;
+        const canUnlock = !owned && phaseOk && state.score >= s.cost;
+
+        let btnLabel = 'ВЫБРАТЬ';
+        let btnStyle = 'bg-indigo-600 hover:bg-indigo-500 text-white';
+        if (equipped) {
+          btnLabel = 'АКТИВЕН ✓';
+          btnStyle = 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
+        } else if (!owned) {
+          if (!phaseOk) {
+            btnLabel = `ФАЗА ${s.minPhase}`;
+            btnStyle = 'bg-slate-900 text-slate-500 border border-slate-800 cursor-not-allowed';
+          } else {
+            btnLabel = `${formatMass(s.cost)} КГ`;
+            btnStyle = canUnlock ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800';
+          }
+        }
+
+        const card = document.createElement('div');
+        card.className = `skin-card rounded-xl p-2.5 flex items-center justify-between gap-2.5 ${equipped ? 'equipped' : ''}`;
+        card.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-9 h-9 rounded-lg shrink-0 border border-white/20" style="background:${s.swatch}"></div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white truncate">${s.name}</div>
+              <div class="text-[9px] text-slate-300 truncate">${s.desc}</div>
+              <div class="text-[8px] text-indigo-300 mt-0.5 uppercase">Требуется Фаза ${s.minPhase}/1000</div>
+            </div>
+          </div>
+          <button type="button" class="px-2.5 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider shrink-0 ${btnStyle}">${btnLabel}</button>
+        `;
+        card.querySelector('button').addEventListener('click', () => {
+          if (owned) {
+            state.equippedSkin = s.id;
+            applyActiveSkinTo3D();
+            renderSkinsList();
+            saveProgress();
+          } else if (phaseOk && state.score >= s.cost) {
+            state.score -= s.cost;
+            state.ownedSkins.push(s.id);
+            state.equippedSkin = s.id;
+            playUpgradeSound();
+            applyActiveSkinTo3D();
+            renderSkinsList();
+            update3DAnatomyAndHUD();
+            saveProgress();
+          }
+        });
+        list.appendChild(card);
+      });
+    }
+
+    function renderEpochFilterBar() {
+      const bar = document.getElementById('epoch-filter-bar');
+      if (!bar) return;
+      bar.innerHTML = '';
+      EPOCHS.forEach(ep => {
+        const active = state.selectedEpoch === ep.id;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `px-2 py-1 rounded text-[8px] font-bold uppercase border ${
+          active ? 'bg-cyan-500/25 border-cyan-400 text-cyan-300' : 'bg-slate-900 border-slate-800 text-slate-400'
+        }`;
+        btn.textContent = `${ep.range[0]}-${ep.range[1]}`;
+        btn.addEventListener('click', () => {
+          state.selectedEpoch = ep.id;
+          renderEpochFilterBar();
+          renderPhasesList();
+        });
+        bar.appendChild(btn);
+      });
+    }
+
+    function renderPhasesList() {
+      const list = document.getElementById('phases-list');
+      if (!list) return;
+      list.innerHTML = '';
+      const { pInfo } = getStats();
+      const ep = EPOCHS.find(e => e.id === state.selectedEpoch) || EPOCHS[0];
+      const subset = PHASES_1000.slice(ep.range[0] - 1, ep.range[1]);
+
+      subset.forEach(p => {
+        const unlocked = p.num <= pInfo.current.num;
+        const isCurrent = p.num === pInfo.current.num;
+        const row = document.createElement('div');
+        row.className = `phase-item p-2 rounded-lg border flex items-center justify-between text-[10px] ${
+          isCurrent
+            ? 'bg-indigo-950/80 border-cyan-400 text-white'
+            : unlocked
+              ? 'bg-slate-900/75 border-indigo-500/30 text-slate-200'
+              : 'bg-slate-950/40 border-slate-800/60 text-slate-500 opacity-60'
+        }`;
+        row.innerHTML = `
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="px-1.5 py-0.5 rounded font-display text-[9px] font-bold ${isCurrent ? 'bg-cyan-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">#${p.num}</span>
+            <span class="font-bold truncate">${p.title}</span>
+          </div>
+          <span class="text-[9px] font-bold shrink-0 ml-2">${unlocked ? 'ОТКРЫТО ✓' : formatMass(p.req) + ' КГ'}</span>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    // Привязка кнопок интерфейса
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+    document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        if (activeTab === tab && isDrawerOpen) setMobileDrawerOpen(false);
+        else {
+          switchTab(tab);
+          setMobileDrawerOpen(true);
+        }
+      });
+    });
+
+    document.getElementById('btn-drawer-toggle')?.addEventListener('click', () => setMobileDrawerOpen(!isDrawerOpen));
+    document.getElementById('btn-toggle-layout')?.addEventListener('click', () => {
+      setDeviceLayout(currentDeviceMode === 'pc' ? 'mobile' : 'pc');
+    });
+
+    document.getElementById('btn-shader-toggle')?.addEventListener('click', (e) => {
+      shaderHypertrophyEnabled = !shaderHypertrophyEnabled;
+      e.currentTarget.textContent = shaderHypertrophyEnabled ? '💪 GPU-ПАМП: ВКЛ' : '💪 GPU-ПАМП: ВЫКЛ';
+      update3DAnatomyAndHUD();
+    });
+
+    const resetCamHandler = () => {
+      targetYaw = 0;
+      targetPitch = 0.05;
+      cameraZoomOffset = 0;
+      syncResponsiveCamera();
+    };
+    document.getElementById('btn-reset-cam')?.addEventListener('click', resetCamHandler);
+    document.getElementById('btn-left-reset-cam')?.addEventListener('click', resetCamHandler);
+
+    document.getElementById('btn-auto-spin')?.addEventListener('click', (e) => {
+      autoSpin = !autoSpin;
+      e.currentTarget.textContent = autoSpin ? '🌀 АВТО: ВКЛ' : '🌀 АВТО: ВЫКЛ';
+    });
+    document.getElementById('btn-light-mode')?.addEventListener('click', () => {
+      applyStudioLightingPreset(studioLightPreset + 1);
+    });
+    document.getElementById('btn-zoom-in')?.addEventListener('click', () => {
+      cameraZoomOffset = Math.max(-2.8, cameraZoomOffset - 0.5);
+      syncResponsiveCamera();
+    });
+    document.getElementById('btn-zoom-out')?.addEventListener('click', () => {
+      cameraZoomOffset = Math.min(4.2, cameraZoomOffset + 0.5);
+      syncResponsiveCamera();
+    });
+    document.getElementById('btn-sound')?.addEventListener('click', (e) => {
+      state.soundOn = !state.soundOn;
+      e.currentTarget.textContent = state.soundOn ? '🔊' : '🔇';
+      saveProgress();
+    });
+    document.getElementById('btn-quick-save')?.addEventListener('click', () => {
+      saveProgress();
+      showToast('💾 ПРОГРЕСС СОХРАНЁН!', 'border-emerald-400 text-emerald-300');
+    });
+    document.getElementById('btn-manual-save')?.addEventListener('click', () => {
+      saveProgress();
+      showToast('💾 ПРОГРЕСС СОХРАНЁН!', 'border-emerald-400 text-emerald-300');
+    });
+    document.getElementById('btn-export-save')?.addEventListener('click', () => {
+      saveProgress();
+      const code = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+      const area = document.getElementById('save-code-textarea');
+      if (area) area.value = code;
+      navigator.clipboard?.writeText(code).catch(() => {});
+      showToast('📋 КОД СКОПИРОВАН!', 'border-indigo-400 text-indigo-200');
+    });
+    document.getElementById('btn-import-save')?.addEventListener('click', () => {
+      const area = document.getElementById('save-code-textarea');
+      const raw = area ? area.value.trim() : '';
+      if (!raw) return;
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(raw))));
+        state = { ...getDefaultState(), ...decoded };
+        saveProgress();
+        applyActiveSkinTo3D();
+        renderUpgradesList();
+        renderSkinsList();
+        renderPhasesList();
+        update3DAnatomyAndHUD();
+        showToast('✅ ПРОГРЕСС ВОССТАНОВЛЕН!', 'border-emerald-400 text-emerald-300');
+      } catch (e) {
+        showToast('❌ ОШИБКА КОДА!', 'border-rose-500 text-rose-300');
+      }
+    });
+    document.getElementById('btn-wipe-save')?.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      state = getDefaultState();
+      saveProgress();
+      applyActiveSkinTo3D();
+      renderUpgradesList();
+      renderSkinsList();
+      renderPhasesList();
+      update3DAnatomyAndHUD();
+      showToast('🗑 ПРОГРЕСС СБРОШЕН', 'border-amber-400 text-amber-300');
+    });
+
+    // Осциллограф
+    const ecgCanvas = document.getElementById('ecg-canvas');
+    const ecgCtx = ecgCanvas ? ecgCanvas.getContext('2d') : null;
+    let ecgPhase = 0;
+    function drawECG() {
+      if (!ecgCtx || currentDeviceMode !== 'pc') return;
+      const w = ecgCanvas.width;
+      const h = ecgCanvas.height;
+      ecgCtx.clearRect(0, 0, w, h);
+      ecgCtx.strokeStyle = '#00f0ff';
+      ecgCtx.lineWidth = 1.5;
+      ecgCtx.beginPath();
+      ecgPhase += 0.14 + pumpImpulse * 0.35;
+      for (let x = 0; x < w; x += 3) {
+        const amp = 4 + pumpImpulse * 10;
+        const y = h / 2 + Math.sin(x * 0.08 + ecgPhase) * amp * Math.sin(x * 0.02);
+        if (x === 0) ecgCtx.moveTo(x, y);
+        else ecgCtx.lineTo(x, y);
+      }
+      ecgCtx.stroke();
+    }
+
+    // Главный цикл 60 FPS
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(0.1, clock.getDelta());
+
+      if (autoSpin && !isDragging) targetYaw += dt * 0.65;
+
+      currentYaw += (targetYaw - currentYaw) * 0.14;
+      currentPitch += (targetPitch - currentPitch) * 0.14;
+      characterPivot.rotation.y = currentYaw;
+      characterPivot.rotation.x = currentPitch;
+
+      if (pumpImpulse > 0.001) pumpImpulse *= Math.pow(0.04, dt);
+      else pumpImpulse = 0;
+
+      customShaderUniformsList.forEach(u => {
+        u.uPumpPulse.value = pumpImpulse;
+      });
+
+      const { pInfo } = getStats();
+      const g = pInfo.globalGrowth;
+      const baseScaleY = 0.82 + g * 0.42;
+      const baseScaleXZ = (0.80 + g * 0.68) * (1 + pumpImpulse * 0.045);
+      characterPivot.scale.set(baseScaleXZ, baseScaleY * (1 + pumpImpulse * 0.02), baseScaleXZ);
+
+      if (clickFlashLight.intensity > 0.01) clickFlashLight.intensity *= Math.pow(0.01, dt);
+      else clickFlashLight.intensity = 0;
+
+      if (shockwaveProgress > 0) {
+        shockwaveProgress += dt * 2.8;
+        const s = 1 + shockwaveProgress * 5.2;
+        shockRing.scale.set(s, s, 1);
+        shockRing.material.opacity = Math.max(0, 0.85 * (1 - shockwaveProgress));
+        if (shockwaveProgress >= 1) {
+          shockwaveProgress = 0;
+          shockRing.material.opacity = 0;
+        }
+      }
+
+      drawECG();
+      renderer.render(scene, camera);
+    }
+
+    // Инициализация
+    loadProgress();
+    setDeviceLayout(window.innerWidth < 1024 ? 'mobile' : 'pc');
+    applyStudioLightingPreset(0);
+    renderUpgradesList();
+    renderSkinsList();
+    renderEpochFilterBar();
+    renderPhasesList();
+    update3DAnatomyAndHUD();
+    animate();
+    loadGLBModelFromRepo();
+
+    setInterval(() => {
+      const { passivePower, maxEnergy, regenRate } = getStats();
+      if (passivePower > 0) {
+        const gain = passivePower * 0.25;
+        state.score += gain;
+        state.totalEarned += gain;
+      }
+      if (state.energy < maxEnergy) {
+        state.energy = Math.min(maxEnergy, state.energy + regenRate * 0.25);
+      }
+      update3DAnatomyAndHUD();
+    }, 250);
+
+    setInterval(saveProgress, 6000);
+  </script>
+</body>
+</html>
