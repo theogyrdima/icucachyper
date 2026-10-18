@@ -9,10 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Базовый Three.js (загружается синхронно и безотказно даже без модуля) -->
+  <!-- Базовый Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- Importmap для современного GLTFLoader + MeshoptDecoder (распаковка вашего .glb файла) -->
+  <!-- Модули для распаковки сжатой геометрии EXT_meshopt_compression -->
   <script type="importmap">
   {
     "imports": {
@@ -24,10 +24,10 @@
 
   <style>
     :root {
-      --bg-panel: rgba(14, 19, 32, 0.86);
+      --bg-panel: rgba(14, 19, 34, 0.9);
       --accent-indigo: #6366f1;
       --accent-cyan: #00f0ff;
-      --border-tech: rgba(99, 102, 241, 0.38);
+      --border-tech: rgba(99, 102, 241, 0.42);
     }
 
     * {
@@ -56,7 +56,7 @@
     .studio-grid-overlay {
       position: fixed;
       inset: 0;
-      pointer-events: none;
+      pointer-events: none !important;
       z-index: 2;
       background-size: 48px 48px;
       background-image:
@@ -85,45 +85,32 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(99, 102, 241, 0.08);
     }
 
-    /* 3D Панели для ПК с интерактивным наклоном */
-    .holo-3d-stage {
-      perspective: 1200px;
-      transform-style: preserve-3d;
-    }
-
-    .holo-panel-left,
-    .holo-panel-right {
+    /* Боковые панели без Z-искажений кликов (100% точность попадания курсора) */
+    .cyber-side-panel {
       position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-      background: linear-gradient(155deg, rgba(17, 24, 43, 0.9) 0%, rgba(10, 14, 26, 0.82) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.42);
-      border-radius: 14px;
+      background: linear-gradient(155deg, rgba(16, 23, 42, 0.94) 0%, rgba(9, 13, 25, 0.92) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      border-radius: 16px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.1), inset 0 0 24px rgba(99, 102, 241, 0.12);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
       overflow: hidden;
     }
 
-    .holo-panel-left {
-      transform: rotateY(9deg) rotateX(1.5deg);
-      box-shadow: -15px 20px 45px rgba(0, 0, 0, 0.6), 0 0 28px rgba(0, 240, 255, 0.12);
+    .cyber-side-panel:hover {
+      border-color: rgba(0, 240, 255, 0.7);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75), 0 0 32px rgba(0, 240, 255, 0.18), inset 0 0 28px rgba(99, 102, 241, 0.16);
     }
 
-    .holo-panel-right {
-      transform: rotateY(-9deg) rotateX(1.5deg);
-      box-shadow: 15px 20px 45px rgba(0, 0, 0, 0.6), 0 0 28px rgba(99, 102, 241, 0.15);
-    }
-
+    /* Световой блик внутри панели — строго pointer-events: none */
     .holo-glare {
       position: absolute;
-      inset: -60%;
-      pointer-events: none;
-      z-index: 30;
-      background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.15) 0%, transparent 60%);
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 1;
       opacity: 0;
-      transition: opacity 0.3s ease;
-      mix-blend-mode: screen;
+      transition: opacity 0.25s ease;
     }
-    .holo-panel-left:hover .holo-glare,
-    .holo-panel-right:hover .holo-glare {
+    .cyber-side-panel:hover .holo-glare {
       opacity: 1;
     }
 
@@ -131,8 +118,8 @@
       position: absolute;
       width: 12px;
       height: 12px;
-      pointer-events: none;
-      z-index: 25;
+      pointer-events: none !important;
+      z-index: 2;
       border-color: #00f0ff;
       opacity: 0.85;
     }
@@ -141,46 +128,48 @@
     .hc-bl { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
     .hc-br { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
 
-    /* Увеличение кнопок и карточек при наведении курсора */
+    /* Пружинистое увеличение кнопок и карточек при наведении */
     button,
     .interactive-btn,
     .module-card,
     .skin-card,
     .phase-item,
     .stat-box-3d {
+      position: relative;
+      z-index: 10;
+      cursor: pointer;
       transition:
-        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-        box-shadow 0.2s ease,
-        border-color 0.2s ease,
-        background-color 0.2s ease !important;
+        transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background-color 0.18s ease !important;
     }
 
     button:hover:not(:disabled),
     .interactive-btn:hover {
-      transform: scale(1.08) translateY(-1px) !important;
-      box-shadow: 0 6px 20px rgba(0, 240, 255, 0.28) !important;
-      z-index: 20;
+      transform: scale(1.06) translateY(-1px) !important;
+      box-shadow: 0 6px 18px rgba(0, 240, 255, 0.28) !important;
+      z-index: 25;
     }
 
     button:active:not(:disabled),
     .interactive-btn:active {
-      transform: scale(0.95) !important;
+      transform: scale(0.96) !important;
     }
 
     .module-card:hover:not(.disabled),
     .skin-card:hover,
     .phase-item:hover,
     .stat-box-3d:hover {
-      transform: scale(1.04) translateY(-1px) !important;
-      border-color: rgba(0, 240, 255, 0.7) !important;
-      box-shadow: 0 8px 24px rgba(0, 240, 255, 0.2) !important;
-      z-index: 15;
+      transform: scale(1.03) translateY(-1px) !important;
+      border-color: rgba(0, 240, 255, 0.75) !important;
+      box-shadow: 0 8px 22px rgba(0, 240, 255, 0.2) !important;
+      z-index: 20;
     }
 
     .module-card {
-      background: linear-gradient(135deg, rgba(28, 37, 64, 0.8) 0%, rgba(14, 19, 35, 0.92) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.28);
-      cursor: pointer;
+      background: linear-gradient(135deg, rgba(28, 37, 64, 0.85) 0%, rgba(14, 19, 35, 0.94) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
     }
     .module-card.disabled {
       opacity: 0.45;
@@ -188,7 +177,7 @@
     }
 
     .skin-card {
-      background: linear-gradient(135deg, rgba(25, 33, 58, 0.85) 0%, rgba(12, 17, 31, 0.94) 100%);
+      background: linear-gradient(135deg, rgba(25, 33, 58, 0.88) 0%, rgba(12, 17, 31, 0.96) 100%);
       border: 1px solid rgba(148, 163, 184, 0.24);
     }
     .skin-card.equipped {
@@ -202,7 +191,7 @@
 
     .float-particle {
       position: fixed;
-      pointer-events: none;
+      pointer-events: none !important;
       z-index: 60;
       font-family: 'Unbounded', sans-serif;
       font-weight: 900;
@@ -248,61 +237,37 @@
   <div id="particles-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
   <div id="toast-layer" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-1.5 w-[92vw] max-w-md"></div>
 
-  <!-- Скрытый input для выбора .glb файла -->
-  <input id="glb-file-input" type="file" accept=".glb,.gltf" class="hidden" />
-
-  <!-- ЭКРАН ЗАГРУЗКИ И ДИАГНОСТИКИ 3D-МОДЕЛИ (ПОКАЗЫВАЕТСЯ ПРИ СТАРТЕ ИЛИ ПО КНОПКЕ) -->
-  <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
-    <div class="tech-panel max-w-lg w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center gap-2.5">
-          <div id="loader-spinner" class="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin"></div>
-          <div>
-            <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">СИСТЕМА ЗАГРУЗКИ 3D // GLB MESHOPT</div>
-            <h2 id="loader-title" class="font-display text-sm md:text-base font-black text-white">ПОИСК 3D-МОДЕЛИ ЫЦУЦАЦОВИЧА...</h2>
-          </div>
+  <!-- АВТОМАТИЧЕСКИЙ ЭКРАН ЗАГРУЗКИ 3D-МОДЕЛИ С GITHUB -->
+  <div id="model-loader-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="tech-panel max-w-md w-full rounded-2xl p-5 md:p-6 border border-cyan-400/50 space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.2)]">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+        <div id="loader-spinner" class="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
+        <div>
+          <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">СИНХРОНИЗАЦИЯ С РЕПОЗИТОРИЕМ</div>
+          <h2 id="loader-title" class="font-display text-sm md:text-base font-black text-white">ЗАГРУЗКА 3D-МОДЕЛИ...</h2>
         </div>
-        <button id="btn-close-loader-top" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">✕</button>
       </div>
 
       <!-- Прогресс-бар загрузки -->
       <div class="space-y-1.5">
         <div class="flex justify-between text-[10px] font-bold">
-          <span id="loader-step-text" class="text-cyan-300">Проверка памяти браузера и папки сервера...</span>
-          <span id="loader-pct-text" class="text-white">25%</span>
+          <span id="loader-step-text" class="text-cyan-300">Загрузка model.glb...</span>
+          <span id="loader-pct-text" class="text-white">15%</span>
         </div>
         <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-700">
-          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-200" style="width: 25%"></div>
+          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-200" style="width: 15%"></div>
         </div>
       </div>
 
-      <!-- Журнал диагностики -->
-      <div id="loader-log" class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-[10px] font-mono text-slate-300 space-y-1 max-h-32 overflow-y-auto">
-        <div class="text-emerald-400">✓ Интерфейс и кнопки инициализированы</div>
-        <div class="text-emerald-400">✓ WebGL студия и встроенный 3D-аватар готовы</div>
-      </div>
-
-      <!-- Действия пользователя -->
-      <div class="space-y-2 pt-1">
-        <button id="btn-modal-pick-glb" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-display font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
-          <span>📂</span>
-          <span>ВЫБРАТЬ ФАЙЛ .GLB С КОМПЬЮТЕРА / ТЕЛЕФОНА</span>
-        </button>
-
-        <button id="btn-modal-use-builtin" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-indigo-500/40 text-indigo-200 font-bold text-[11px] uppercase tracking-wider flex items-center justify-center gap-2">
-          <span>⚡</span>
-          <span>ПРОДОЛЖИТЬ СО ВСТРОЕННОЙ 3D-МОДЕЛЬЮ ЫЦУЦАЦОВИЧА</span>
-        </button>
-      </div>
-
-      <div class="text-[9px] text-slate-400 leading-relaxed border-t border-slate-800/80 pt-2">
-        💡 <b>Для GitHub Pages:</b> положите ваш файл рядом с <code>index.html</code> под именем <code>model.glb</code> (или оставьте исходное имя <code>tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb</code>) — сайт найдёт оба варианта автоматически!
-      </div>
+      <!-- Кнопка пропуска, если открыто без интернета/сервера -->
+      <button id="btn-skip-loader" class="hidden w-full py-2.5 px-4 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/50 text-indigo-200 font-bold text-[10px] uppercase tracking-wider">
+        ⚡ ПРОДОЛЖИТЬ СО ВСТРОЕННОЙ 3D-МОДЕЛЬЮ
+      </button>
     </div>
   </div>
 
   <!-- ВЕРХНИЙ HUD -->
-  <header class="relative z-30 w-full px-2.5 pt-2 pb-1.5 md:px-6 md:py-3 pointer-events-none">
+  <header class="relative z-40 w-full px-2.5 pt-2 pb-1.5 md:px-6 md:py-3 pointer-events-none">
     <div class="max-w-[1640px] mx-auto flex flex-col gap-1.5">
       <div class="tech-panel rounded-xl px-3 py-2 md:px-5 md:py-2.5 flex items-center justify-between gap-2 pointer-events-auto">
         <div class="flex items-center gap-2.5 min-w-0">
@@ -311,7 +276,7 @@
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-[9px] md:text-[10px] font-bold tracking-[0.16em] text-cyan-400 uppercase">1000 ФАЗ</span>
               <span id="device-mode-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-indigo-500/25 text-indigo-200 border border-indigo-400/40 rounded uppercase">ПК</span>
-              <span id="glb-status-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded uppercase">3D АКТИВЕН</span>
+              <span id="glb-status-badge" class="px-1.5 py-0.5 text-[8px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded uppercase">3D СТУДИЯ</span>
             </div>
             <h1 class="font-display text-xs sm:text-sm md:text-lg font-black tracking-wider text-white truncate">ЫЦУЦАЦОВИЧ</h1>
           </div>
@@ -349,14 +314,10 @@
         </div>
 
         <div class="flex items-center gap-1.5 shrink-0">
-          <button id="btn-open-loader" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-cyan-400/60 bg-cyan-500/20 text-[9px] md:text-[10px] font-bold text-cyan-200 tracking-wider uppercase flex items-center gap-1">
-            <span>📦</span>
-            <span class="hidden sm:inline">3D МОДЕЛЬ (.GLB)</span>
-          </button>
-          <button id="btn-toggle-layout" class="interactive-btn px-2 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-950/60 text-[9px] md:text-[10px] font-bold text-indigo-200 tracking-wider uppercase">
+          <button id="btn-toggle-layout" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-950/60 text-[9px] md:text-[10px] font-bold text-indigo-200 tracking-wider uppercase">
             📱 МОБ. ВИД
           </button>
-          <button id="btn-quick-save" class="interactive-btn px-2 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/50 text-[9px] md:text-[10px] font-bold text-emerald-300 uppercase">
+          <button id="btn-quick-save" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/50 text-[9px] md:text-[10px] font-bold text-emerald-300 uppercase" title="Сохранить прогресс">
             💾
           </button>
           <button id="btn-sound" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-slate-600/80 bg-slate-900/90 text-[10px] font-bold text-slate-200 uppercase">
@@ -384,11 +345,11 @@
   </header>
 
   <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ (3 КОЛОНКИ НА ПК) -->
-  <main id="main-workspace" class="relative z-20 flex-1 max-w-[1640px] w-full mx-auto px-4 pb-4 flex items-stretch justify-between gap-5 overflow-hidden pointer-events-none">
+  <main id="main-workspace" class="relative z-30 flex-1 max-w-[1640px] w-full mx-auto px-4 pb-4 flex items-stretch justify-between gap-5 overflow-hidden pointer-events-none">
 
-    <!-- ЛЕВАЯ 3D-ПАНЕЛЬ (БИО-ТЕЛЕМЕТРИЯ) -->
-    <aside id="pc-left-panel" class="holo-3d-stage w-[350px] flex flex-col justify-between pointer-events-auto shrink-0 my-1">
-      <div id="holo-card-left" class="holo-panel-left h-full p-4 flex flex-col justify-between gap-3 overflow-y-auto">
+    <!-- ЛЕВАЯ ПАНЕЛЬ (БИО-ТЕЛЕМЕТРИЯ — БЕЗ МЕРТВЫХ ЗОН) -->
+    <aside id="pc-left-panel" class="w-[350px] flex flex-col justify-between pointer-events-auto shrink-0 my-1 z-30">
+      <div id="holo-card-left" class="cyber-side-panel h-full p-4 flex flex-col justify-between gap-3 overflow-y-auto">
         <div id="glare-left" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
@@ -399,29 +360,13 @@
           <div class="flex items-center justify-between border-b border-indigo-500/30 pb-2">
             <span class="text-[10px] font-bold tracking-widest text-cyan-400 uppercase flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-              3D ТЕЛЕМЕТРИЯ // #107
+              БИО-ТЕЛЕМЕТРИЯ // #107
             </span>
             <span id="pc-epoch-tag" class="text-[9px] font-bold text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30">ЭПОХА 1</span>
           </div>
 
-          <!-- Статус 3D-модели -->
-          <div class="p-3 rounded-xl bg-cyan-950/35 border border-cyan-500/40 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-[9px] font-bold text-cyan-300 uppercase">РЕЖИМ 3D-МОДЕЛИ:</span>
-              <span id="left-glb-status" class="text-[9px] font-bold text-emerald-300">ВСТРОЕННЫЙ 3D-КАЧОК</span>
-            </div>
-            <div class="flex gap-1.5">
-              <button id="btn-upload-glb-left" class="flex-1 py-1.5 px-2 rounded-lg bg-cyan-500/25 hover:bg-cyan-500/40 border border-cyan-400/60 text-[9px] font-bold text-cyan-200 uppercase">
-                📂 ЗАГРУЗИТЬ .GLB
-              </button>
-              <button id="btn-eye-mode" class="py-1.5 px-2 rounded-lg bg-indigo-500/25 hover:bg-indigo-500/40 border border-indigo-400/50 text-[9px] font-bold text-indigo-200 uppercase">
-                👀 СЛЕЖЕНИЕ
-              </button>
-            </div>
-          </div>
-
-          <!-- Прогресс фазы -->
-          <div class="p-3 rounded-xl bg-slate-950/75 border border-indigo-500/35 space-y-2">
+          <!-- Прогресс текущей фазы -->
+          <div class="p-3 rounded-xl bg-slate-950/80 border border-indigo-500/35 space-y-2">
             <div class="flex justify-between items-center">
               <span class="text-[10px] text-slate-300 uppercase">ТЕКУЩАЯ ФАЗА:</span>
               <span class="font-display text-xs font-black text-cyan-400">ФАЗА <span id="pc-phase-num">1</span> / 1000</span>
@@ -457,34 +402,34 @@
 
           <!-- 6 карточек биометрии -->
           <div class="grid grid-cols-2 gap-2">
-            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/65 border border-slate-800/90">
+            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">ОБХВАТ ГРУДИ</div>
               <div id="bio-chest" class="font-display text-xs font-bold text-white mt-0.5">88.0 СМ</div>
             </div>
-            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/65 border border-slate-800/90">
+            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">ПИК БИЦЕПСА</div>
               <div id="bio-biceps" class="font-display text-xs font-bold text-white mt-0.5">29.0 СМ</div>
             </div>
-            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/65 border border-slate-800/90">
+            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">РАЗМАХ ДЕЛЬТ</div>
               <div id="bio-shoulders" class="font-display text-xs font-bold text-cyan-400 mt-0.5">43.0 СМ</div>
             </div>
-            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/65 border border-slate-800/90">
+            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">КВАДРИЦЕПСЫ</div>
               <div id="bio-legs" class="font-display text-xs font-bold text-indigo-300 mt-0.5">48.0 СМ</div>
             </div>
-            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/65 border border-slate-800/90">
+            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">ДАВЛЕНИЕ ШВОВ</div>
               <div id="bio-pressure" class="font-display text-xs font-bold text-amber-400 mt-0.5">1.05 МПа</div>
             </div>
-            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/65 border border-slate-800/90">
+            <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">МНОЖИТЕЛЬ ФАЗ</div>
               <div id="bio-multiplier" class="font-display text-xs font-bold text-emerald-400 mt-0.5">x1.00</div>
             </div>
           </div>
 
           <!-- Энергия швов -->
-          <div class="p-3 rounded-xl bg-slate-950/75 border border-slate-800 space-y-1.5">
+          <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
             <div class="flex justify-between items-center text-[9px]">
               <span class="text-slate-300 uppercase font-bold">⚡ ЦЕЛОСТНОСТЬ ШВОВ РУБАШКИ</span>
               <span id="pc-energy-text" class="text-cyan-400 font-bold">1000 / 1000</span>
@@ -497,12 +442,22 @@
               <span>РЕГЕН: <b id="pc-regen-rate" class="text-emerald-400">+25/С</b></span>
             </div>
           </div>
+
+          <!-- Быстрые переключатели 3D-сцены слева -->
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btn-left-reset-cam" class="py-2 px-2.5 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
+              🔄 СБРОС РАКУРСА
+            </button>
+            <button id="btn-eye-mode" class="py-2 px-2.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 text-[9px] font-bold text-cyan-200 uppercase">
+              👀 ВЗГЛЯД: КУРСОР
+            </button>
+          </div>
         </div>
 
         <div class="space-y-2 pt-2 border-t border-indigo-500/30 relative z-10">
           <div class="flex items-center justify-between text-[9px] text-slate-300">
-            <span>ВЕРШИН: <b id="vertex-count-label" class="text-cyan-400">ВСТРОЕННАЯ 3D</b></span>
-            <span>РАКУРС: <b id="cam-angle-label" class="text-indigo-300">0° / 5°</b></span>
+            <span>МОДЕЛЬ: <b id="vertex-count-label" class="text-cyan-400">ЗАГРУЗКА...</b></span>
+            <span>РАКУРС: <b id="cam-angle-label" class="text-indigo-300">0° / 4°</b></span>
           </div>
           <canvas id="ecg-canvas" width="300" height="36" class="w-full h-8 bg-slate-950/90 rounded border border-slate-800"></canvas>
         </div>
@@ -512,38 +467,39 @@
     <!-- ЦЕНТР (СВОБОДЕН ДЛЯ 3D МОДЕЛИ) -->
     <div class="flex-1 relative pointer-events-none"></div>
 
-    <!-- ПРАВАЯ 3D-ПАНЕЛЬ (МОДУЛИ, 24 СКИНА, 1000 ФАЗ, ДАННЫЕ) -->
-    <aside id="pc-right-panel" class="holo-3d-stage w-[400px] flex flex-col pointer-events-auto shrink-0 my-1">
-      <div id="holo-card-right" class="holo-panel-right h-full flex flex-col overflow-hidden">
+    <!-- ПРАВАЯ ПАНЕЛЬ (МОДУЛИ, 24 СКИНА, 1000 ФАЗ, ДАННЫЕ — БЕЗ МЕРТВЫХ ЗОН) -->
+    <aside id="pc-right-panel" class="w-[400px] flex flex-col pointer-events-auto shrink-0 my-1 z-30">
+      <div id="holo-card-right" class="cyber-side-panel h-full flex flex-col overflow-hidden">
         <div id="glare-right" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
         <div class="holo-corner hc-bl"></div>
         <div class="holo-corner hc-br"></div>
 
-        <div class="grid grid-cols-4 border-b border-indigo-500/30 bg-slate-950/80 shrink-0 p-1.5 gap-1.5 relative z-10">
-          <button data-tab="upgrades" class="tab-btn py-2 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-cyan-500/50 bg-indigo-600/30 text-cyan-300">
+        <!-- Вкладки (100% кликабельны по всей площади) -->
+        <div class="grid grid-cols-4 border-b border-indigo-500/30 bg-slate-950/90 shrink-0 p-1.5 gap-1.5 relative z-20">
+          <button type="button" data-tab="upgrades" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-cyan-500/50 bg-indigo-600/30 text-cyan-300">
             ⚡ МОДУЛИ
           </button>
-          <button data-tab="skins" class="tab-btn py-2 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
+          <button type="button" data-tab="skins" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
             👕 СКИНЫ [<span class="skins-count-label">1/24</span>]
           </button>
-          <button data-tab="phases" class="tab-btn py-2 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
+          <button type="button" data-tab="phases" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
             🧬 1000 ФАЗ
           </button>
-          <button data-tab="save" class="tab-btn py-2 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
+          <button type="button" data-tab="save" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
             💾 ДАННЫЕ
           </button>
         </div>
 
-        <div id="pc-tab-container" class="flex-1 overflow-y-auto p-3.5 space-y-2.5 relative z-10"></div>
+        <div id="pc-tab-container" class="flex-1 overflow-y-auto p-3.5 space-y-2.5 relative z-20"></div>
       </div>
     </aside>
 
   </main>
 
   <!-- НИЖНИЙ ПУЛЬТ КАМЕРЫ И ОСВЕЩЕНИЯ -->
-  <div id="orbit-hint-pill" class="fixed left-1/2 -translate-x-1/2 z-25 pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/90 border border-indigo-500/45 text-[9px] md:text-[10px] text-slate-200 backdrop-blur-md shadow-xl whitespace-nowrap">
+  <div id="orbit-hint-pill" class="fixed left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/90 border border-indigo-500/45 text-[9px] md:text-[10px] text-slate-200 backdrop-blur-md shadow-xl whitespace-nowrap">
     <span class="hidden sm:inline text-cyan-400 font-bold">🖱 ВРАЩЕНИЕ 360°</span>
     <span class="hidden sm:inline text-slate-600">|</span>
     <button id="btn-reset-cam" class="px-2 py-0.5 rounded bg-indigo-500/25 hover:bg-indigo-500/45 text-indigo-200 border border-indigo-500/40 font-bold">
@@ -560,23 +516,23 @@
   </div>
 
   <!-- МОБИЛЬНАЯ НИЖНЯЯ ШТОРКА -->
-  <section id="bottom-drawer" class="collapsed fixed bottom-0 left-0 right-0 z-30 w-full max-w-2xl mx-auto tech-panel rounded-t-2xl border-t-2 border-indigo-500/60 flex flex-col max-h-[66dvh] pointer-events-auto">
+  <section id="bottom-drawer" class="collapsed fixed bottom-0 left-0 right-0 z-40 w-full max-w-2xl mx-auto tech-panel rounded-t-2xl border-t-2 border-indigo-500/60 flex flex-col max-h-[66dvh] pointer-events-auto">
     <div class="flex items-center justify-between px-2 pt-1.5 pb-1.5 border-b border-slate-800/90 bg-slate-950/90 rounded-t-2xl shrink-0">
       <div class="grid grid-cols-4 gap-1 flex-1">
-        <button data-tab="upgrades" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase bg-indigo-600/30 text-cyan-300 border border-cyan-500/40 flex items-center justify-center gap-1">
+        <button type="button" data-tab="upgrades" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase bg-indigo-600/30 text-cyan-300 border border-cyan-500/40 flex items-center justify-center gap-1">
           <span>⚡</span><span>МОДУЛИ</span>
         </button>
-        <button data-tab="skins" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase text-slate-400 border border-transparent flex items-center justify-center gap-1">
+        <button type="button" data-tab="skins" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase text-slate-400 border border-transparent flex items-center justify-center gap-1">
           <span>👕</span><span>СКИНЫ</span>
         </button>
-        <button data-tab="phases" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase text-slate-400 border border-transparent flex items-center justify-center gap-1">
+        <button type="button" data-tab="phases" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase text-slate-400 border border-transparent flex items-center justify-center gap-1">
           <span>🧬</span><span>1000 ФАЗ</span>
         </button>
-        <button data-tab="save" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase text-slate-400 border border-transparent flex items-center justify-center gap-1">
+        <button type="button" data-tab="save" class="mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase text-slate-400 border border-transparent flex items-center justify-center gap-1">
           <span>💾</span><span>ДАННЫЕ</span>
         </button>
       </div>
-      <button id="btn-drawer-toggle" class="ml-1.5 px-2.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-[9px] font-bold text-slate-300 uppercase shrink-0">
+      <button type="button" id="btn-drawer-toggle" class="ml-1.5 px-2.5 py-2 rounded-lg bg-slate-900 border border-slate-700 text-[9px] font-bold text-slate-300 uppercase shrink-0">
         ▲ МЕНЮ
       </button>
     </div>
@@ -586,6 +542,7 @@
 
   <!-- ШАБЛОНЫ ВКЛАДОК -->
   <div id="shared-panels-holder" class="hidden">
+    <!-- ВКЛАДКА 1: МОДУЛИ -->
     <div id="panel-upgrades" class="space-y-2">
       <div class="flex items-center justify-between px-1 mb-1">
         <span class="text-[9px] text-slate-300 uppercase tracking-wider font-bold">БИО-РЕАКТОР ГИПЕРТРОФИИ (10 МОДУЛЕЙ)</span>
@@ -594,23 +551,25 @@
       <div id="upgrades-list" class="grid grid-cols-1 gap-2 pb-4"></div>
     </div>
 
+    <!-- ВКЛАДКА 2: 24 СКИНА -->
     <div id="panel-skins" class="space-y-2.5">
       <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-500/40 flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold text-indigo-200 uppercase">АРСЕНАЛ 3D-ОБРАЗОВ (24 СКИНА)</div>
-          <div class="text-[9px] text-slate-300">Работают и со встроенной 3D-моделью, и с вашим .GLB</div>
+          <div class="text-[9px] text-slate-300">Скин #1 сохраняет оригинальную текстуру модели</div>
         </div>
         <span class="text-[10px] font-display font-bold text-cyan-400 skins-count-label">1/24</span>
       </div>
       <div id="skins-list" class="grid grid-cols-1 gap-2 pb-4"></div>
     </div>
 
+    <!-- ВКЛАДКА 3: 1000 ФАЗ -->
     <div id="panel-phases" class="space-y-2.5">
       <div class="p-2.5 rounded-lg bg-slate-950/90 border border-slate-800 space-y-2">
         <div class="flex items-center justify-between">
           <div>
             <div class="text-[10px] font-bold text-cyan-400 uppercase">КАРТА 1000 ФАЗ ГИПЕРТРОФИИ</div>
-            <div class="text-[9px] text-slate-300">Каждые 25, 50 и 100 фаз дают бонусный множитель массы</div>
+            <div class="text-[9px] text-slate-300">Выберите эпоху (по 100 фаз) для просмотра целей</div>
           </div>
           <span id="phases-unlocked-badge" class="font-display text-xs font-black text-white bg-indigo-600/30 border border-indigo-400/40 px-2 py-1 rounded">1 / 1000</span>
         </div>
@@ -619,42 +578,29 @@
       <div id="phases-list" class="space-y-1.5 pb-4"></div>
     </div>
 
+    <!-- ВКЛАДКА 4: СОХРАНЕНИЕ ПРОГРЕССА -->
     <div id="panel-save" class="space-y-3 pb-4">
-      <div class="p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/40 space-y-2">
-        <div class="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">📦 УПРАВЛЕНИЕ 3D-МОДЕЛЬЮ (.GLB)</div>
-        <p class="text-[9px] text-slate-300 leading-relaxed">
-          Вы можете загрузить свой файл <b>.glb</b> (с поддержкой сжатия <b>Meshopt</b>) или переключиться на встроенную анатомическую 3D-модель.
-        </p>
-        <div class="flex gap-2">
-          <button id="btn-upload-glb-tab" class="flex-1 py-2 px-3 rounded-lg bg-cyan-500/25 hover:bg-cyan-500/40 border border-cyan-400/60 text-[10px] font-bold text-cyan-200 uppercase">
-            📂 ВЫБРАТЬ .GLB ФАЙЛ
-          </button>
-          <button id="btn-clear-glb" class="py-2 px-3 rounded-lg bg-rose-950/50 hover:bg-rose-900/60 border border-rose-500/40 text-[10px] font-bold text-rose-300 uppercase">
-            СБРОСИТЬ GLB
-          </button>
-        </div>
-      </div>
-
       <div class="p-3 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
         <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
           <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">💾 СОХРАНЕНИЕ ПРОГРЕССА</span>
           <span id="last-save-time" class="text-[9px] text-slate-300">Автосохранение активно</span>
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <button id="btn-manual-save" class="py-2 px-3 rounded-lg bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 text-[10px] font-bold text-emerald-300 uppercase">
+          <button type="button" id="btn-manual-save" class="py-2 px-3 rounded-lg bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 text-[10px] font-bold text-emerald-300 uppercase">
             💾 СОХРАНИТЬ
           </button>
-          <button id="btn-export-save" class="py-2 px-3 rounded-lg bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-500/50 text-[10px] font-bold text-indigo-300 uppercase">
+          <button type="button" id="btn-export-save" class="py-2 px-3 rounded-lg bg-indigo-600/25 hover:bg-indigo-600/40 border border-indigo-500/50 text-[10px] font-bold text-indigo-300 uppercase">
             📋 КОПИРОВАТЬ КОД
           </button>
         </div>
         <div class="space-y-1.5 pt-1">
-          <textarea id="save-code-textarea" rows="2" placeholder="Вставьте резервный код сюда..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-[9px] text-cyan-300 font-mono focus:outline-none focus:border-cyan-400"></textarea>
+          <label class="text-[9px] text-slate-300 uppercase block">РЕЗЕРВНЫЙ КОД СОХРАНЕНИЯ:</label>
+          <textarea id="save-code-textarea" rows="3" placeholder="Вставьте резервный код сюда..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-[9px] text-cyan-300 font-mono focus:outline-none focus:border-cyan-400"></textarea>
           <div class="flex gap-2">
-            <button id="btn-import-save" class="flex-1 py-1.5 px-3 rounded-lg bg-cyan-600/25 hover:bg-cyan-600/40 border border-cyan-500/50 text-[9px] font-bold text-cyan-300 uppercase">
+            <button type="button" id="btn-import-save" class="flex-1 py-2 px-3 rounded-lg bg-cyan-600/25 hover:bg-cyan-600/40 border border-cyan-500/50 text-[9px] font-bold text-cyan-300 uppercase">
               📥 ЗАГРУЗИТЬ КОД
             </button>
-            <button id="btn-wipe-save" class="py-1.5 px-3 rounded-lg bg-rose-950/60 hover:bg-rose-900/70 border border-rose-500/40 text-[9px] font-bold text-rose-300 uppercase">
+            <button type="button" id="btn-wipe-save" class="py-2 px-3 rounded-lg bg-rose-950/60 hover:bg-rose-900/70 border border-rose-500/40 text-[9px] font-bold text-rose-300 uppercase">
               🗑 СБРОС ИГРЫ
             </button>
           </div>
@@ -663,7 +609,7 @@
     </div>
   </div>
 
-  <!-- ГЛАВНЫЙ СКРИПТ ИГРЫ И 3D СЦЕНЫ (БЕЗ БЛОКИРУЮЩИХ ЗАВИСИМОСТЕЙ) -->
+  <!-- ОСНОВНОЙ СКРИПТ ИГРЫ И ИНТЕРФЕЙСА -->
   <script>
     /*************************************************************************
      * 1. ДАННЫЕ: 1000 ФАЗ, 24 СКИНА, 10 МОДУЛЕЙ
@@ -755,12 +701,9 @@
     ];
 
     /*************************************************************************
-     * 2. СОСТОЯНИЕ И УТИЛИТЫ ЗАГРУЗЧИКА
+     * 2. СОСТОЯНИЕ И УТИЛИТЫ
      *************************************************************************/
-    const STORAGE_KEY = 'ychuchacovich_1000_v2_save';
-    const IDB_NAME = 'YchuchacovichGLBDB';
-    const IDB_STORE = 'models';
-    const IDB_KEY = 'custom_glb';
+    const STORAGE_KEY = 'ychuchacovich_1000_v3_save';
 
     function getDefaultState() {
       return {
@@ -786,18 +729,8 @@
     let currentDeviceMode = 'pc';
     let autoSpin = false;
     let studioLightPreset = 0;
-    let eyeMode = 'follow'; // 'follow' | 'crossed'
+    let eyeMode = 'follow';
     let hasCustomGLB = false;
-
-    function addLoaderLog(msg, colorClass = 'text-slate-300') {
-      const log = document.getElementById('loader-log');
-      if (!log) return;
-      const line = document.createElement('div');
-      line.className = colorClass;
-      line.textContent = msg;
-      log.appendChild(line);
-      log.scrollTop = log.scrollHeight;
-    }
 
     function setLoaderProgress(pct, statusText, titleText = null, stopSpinner = false) {
       const bar = document.getElementById('loader-progress-bar');
@@ -821,16 +754,6 @@
       modal.style.opacity = '0';
       modal.style.pointerEvents = 'none';
       setTimeout(() => modal.classList.add('hidden'), 300);
-    }
-
-    function showLoaderModal() {
-      const modal = document.getElementById('model-loader-modal');
-      if (!modal) return;
-      modal.classList.remove('hidden');
-      requestAnimationFrame(() => {
-        modal.style.opacity = '1';
-        modal.style.pointerEvents = 'auto';
-      });
     }
 
     function loadProgress() {
@@ -974,8 +897,7 @@
     }
 
     /*************************************************************************
-     * 4. БАЗОВАЯ THREE.JS СЦЕНА И ДЕТАЛИЗИРОВАННАЯ ВСТРОЕННАЯ 3D-МОДЕЛЬ
-     * (РАБОТАЕТ СРАЗУ ЖЕ, ДАЖЕ ЕСЛИ НЕТ ФАЙЛА .GLB)
+     * 4. THREE.JS СЦЕНА И ВСТРОЕННАЯ МОДЕЛЬ
      *************************************************************************/
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
@@ -1029,7 +951,6 @@
     const characterPivot = new THREE.Group();
     scene.add(characterPivot);
 
-    // Группа для встроенного детализированного 3D-качка (с глазами и ногами)
     const builtinBodyGroup = new THREE.Group();
     characterPivot.add(builtinBodyGroup);
 
@@ -1043,7 +964,6 @@
     const anatomy = {};
 
     function buildDetailedBuiltinHero() {
-      // Торс
       anatomy.upperTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.48, 1.05, 28), shirtMat);
       anatomy.upperTorso.position.set(0, 0.58, 0);
       anatomy.upperTorso.scale.set(1, 1, 0.68);
@@ -1054,7 +974,6 @@
       anatomy.lowerTorso.scale.set(1, 1, 0.66);
       builtinBodyGroup.add(anatomy.lowerTorso);
 
-      // Грудные мышцы
       anatomy.pecL = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 20), shirtMat);
       anatomy.pecL.position.set(-0.26, 0.68, 0.28);
       anatomy.pecL.scale.set(1.12, 0.85, 0.82);
@@ -1062,1124 +981,5 @@
       anatomy.pecR.position.x = 0.26;
       builtinBodyGroup.add(anatomy.pecL, anatomy.pecR);
 
-      // Широчайшие мышцы спины
       anatomy.latL = new THREE.Mesh(new THREE.SphereGeometry(0.34, 20, 18), shirtMat);
-      anatomy.latL.position.set(-0.46, 0.48, -0.06);
-      anatomy.latL.scale.set(0.85, 1.35, 0.7);
-      anatomy.latR = anatomy.latL.clone();
-      anatomy.latR.position.x = 0.46;
-      builtinBodyGroup.add(anatomy.latL, anatomy.latR);
-
-      // Трапеции и шея
-      anatomy.traps = new THREE.Mesh(new THREE.SphereGeometry(0.42, 20, 16), shirtMat);
-      anatomy.traps.position.set(0, 1.08, -0.05);
-      anatomy.traps.scale.set(1.4, 0.48, 0.75);
-      builtinBodyGroup.add(anatomy.traps);
-
-      anatomy.neck = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.25, 0.36, 20), skinMat);
-      anatomy.neck.position.set(0, 1.28, 0.02);
-      builtinBodyGroup.add(anatomy.neck);
-
-      // Пуговицы на рубашке
-      anatomy.buttons = [];
-      for (let i = 0; i < 6; i++) {
-        const btn = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.02, 12), buttonMat);
-        btn.rotation.x = Math.PI / 2;
-        btn.position.set(0, 0.92 - i * 0.2, 0.46);
-        builtinBodyGroup.add(btn);
-        anatomy.buttons.push(btn);
-      }
-
-      // Голова, прическа и глаза со слежением за курсором
-      anatomy.headGroup = new THREE.Group();
-      anatomy.headGroup.position.set(0, 1.64, 0.05);
-      builtinBodyGroup.add(anatomy.headGroup);
-
-      const skull = new THREE.Mesh(new THREE.SphereGeometry(0.32, 28, 24), skinMat);
-      skull.scale.set(0.92, 1.12, 0.96);
-      anatomy.headGroup.add(skull);
-
-      const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.26, 0.38), skinMat);
-      jaw.position.set(0, -0.14, 0.04);
-      anatomy.headGroup.add(jaw);
-
-      const nose = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.16, 12), skinMat);
-      nose.position.set(0, -0.01, 0.33);
-      nose.rotation.x = Math.PI * 0.42;
-      anatomy.headGroup.add(nose);
-
-      const hairTop = new THREE.Mesh(new THREE.SphereGeometry(0.33, 20, 16), hairMat);
-      hairTop.position.set(0, 0.14, -0.02);
-      hairTop.scale.set(0.95, 0.85, 0.98);
-      anatomy.headGroup.add(hairTop);
-
-      const scleraMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const irisMat = new THREE.MeshBasicMaterial({ color: 0x3b2314 });
-      const pupilMat = new THREE.MeshBasicMaterial({ color: 0x050505 });
-
-      anatomy.eyeL = new THREE.Group();
-      anatomy.eyeL.position.set(-0.11, 0.05, 0.28);
-      anatomy.eyeR = new THREE.Group();
-      anatomy.eyeR.position.set(0.11, 0.05, 0.28);
-      anatomy.headGroup.add(anatomy.eyeL, anatomy.eyeR);
-
-      [anatomy.eyeL, anatomy.eyeR].forEach((eyeGrp, idx) => {
-        const eyeball = new THREE.Mesh(new THREE.SphereGeometry(0.055, 16, 16), scleraMat);
-        eyeball.scale.set(1.1, 0.9, 0.7);
-        eyeGrp.add(eyeball);
-
-        const pupilPivot = new THREE.Group();
-        const iris = new THREE.Mesh(new THREE.CircleGeometry(0.028, 16), irisMat);
-        iris.position.z = 0.04;
-        const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.015, 12), pupilMat);
-        pupil.position.z = 0.042;
-        pupilPivot.add(iris, pupil);
-        eyeGrp.add(pupilPivot);
-        if (idx === 0) anatomy.pupilL = pupilPivot;
-        else anatomy.pupilR = pupilPivot;
-      });
-
-      // Руки в позе двойного флекса
-      [-1, 1].forEach(side => {
-        const key = side === -1 ? 'L' : 'R';
-        const armRoot = new THREE.Group();
-        armRoot.position.set(side * 0.72, 0.92, 0.0);
-        builtinBodyGroup.add(armRoot);
-
-        const delt = new THREE.Mesh(new THREE.SphereGeometry(0.3, 22, 20), shirtMat);
-        armRoot.add(delt);
-
-        const bicep = new THREE.Mesh(new THREE.SphereGeometry(0.25, 20, 18), shirtMat);
-        bicep.position.set(side * 0.18, -0.34, 0.12);
-        bicep.scale.set(0.95, 1.35, 0.95);
-        armRoot.add(bicep);
-
-        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.62, 18), shirtMat);
-        forearm.position.set(side * 0.12, -0.74, 0.32);
-        forearm.rotation.x = -0.68;
-        forearm.rotation.z = -side * 0.35;
-        armRoot.add(forearm);
-
-        const fist = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), skinMat);
-        fist.position.set(side * 0.02, -0.96, 0.56);
-        armRoot.add(fist);
-
-        anatomy[`armRoot${key}`] = armRoot;
-        anatomy[`delt${key}`] = delt;
-        anatomy[`bicep${key}`] = bicep;
-        anatomy[`forearm${key}`] = forearm;
-      });
-
-      // Полноценные ноги до пола
-      const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.44, 0.36, 22), pantsMat);
-      pelvis.position.set(0, -0.45, 0);
-      pelvis.scale.set(1, 1, 0.72);
-      builtinBodyGroup.add(pelvis);
-
-      [-1, 1].forEach(side => {
-        const key = side === -1 ? 'L' : 'R';
-        const legGroup = new THREE.Group();
-        legGroup.position.set(side * 0.25, -0.58, 0);
-        builtinBodyGroup.add(legGroup);
-
-        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.19, 0.85, 20), pantsMat);
-        thigh.position.set(0, -0.42, 0.02);
-        legGroup.add(thigh);
-
-        const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.82, 18), pantsMat);
-        calf.position.set(0, -1.2, -0.02);
-        legGroup.add(calf);
-
-        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.18, 0.52), shoeMat);
-        shoe.position.set(0, -1.68, 0.1);
-        legGroup.add(shoe);
-
-        anatomy[`thigh${key}`] = thigh;
-        anatomy[`calf${key}`] = calf;
-      });
-    }
-
-    buildDetailedBuiltinHero();
-
-    /*************************************************************************
-     * 5. УПРАВЛЕНИЕ СКИНАМИ, СВЕТОМ И РОСТОМ МЫШЦ
-     *************************************************************************/
-    let loadedGLBMeshes = [];
-    let glbRootGroup = new THREE.Group();
-    characterPivot.add(glbRootGroup);
-    glbRootGroup.visible = false;
-
-    function applyActiveSkinTo3D() {
-      const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[0];
-
-      // Для встроенной модели
-      shirtMat.color.setHex(skin.shirt);
-      shirtMat.metalness = skin.metal;
-      shirtMat.roughness = Math.max(0.25, skin.rough);
-      shirtMat.emissive.setHex(skin.emissive || 0x000000);
-      shirtMat.emissiveIntensity = skin.wire ? 0.22 : 0.04;
-      shirtMat.wireframe = !!skin.wire;
-
-      skinMat.color.setHex(skin.skin);
-      pantsMat.color.setHex(skin.pants);
-
-      // Для загруженной пользователем .GLB модели
-      if (hasCustomGLB && loadedGLBMeshes.length > 0) {
-        loadedGLBMeshes.forEach(mesh => {
-          const mat = mesh.material;
-          if (!mat) return;
-          if (skin.preserveOriginalTexture) {
-            mat.color.setHex(0xffffff);
-            mat.wireframe = false;
-          } else {
-            mat.color.setHex(skin.shirt);
-            mat.wireframe = !!skin.wire;
-          }
-          mat.needsUpdate = true;
-        });
-      }
-    }
-
-    function applyStudioLightingPreset(presetIdx) {
-      studioLightPreset = presetIdx % 3;
-      const btn = document.getElementById('btn-light-mode');
-      if (studioLightPreset === 0) {
-        renderer.toneMappingExposure = 0.92;
-        hemiLight.intensity = 0.85;
-        keyLight.intensity = 1.25;
-        if (btn) btn.textContent = '☀ СВЕТ: СТУДИЯ';
-      } else if (studioLightPreset === 1) {
-        renderer.toneMappingExposure = 0.84;
-        hemiLight.intensity = 0.5;
-        keyLight.intensity = 1.6;
-        if (btn) btn.textContent = '☀ СВЕТ: РЕЛЬЕФ';
-      } else {
-        renderer.toneMappingExposure = 0.88;
-        hemiLight.intensity = 1.1;
-        keyLight.intensity = 0.85;
-        if (btn) btn.textContent = '☀ СВЕТ: МЯГКИЙ';
-      }
-    }
-
-    let pumpImpulse = 0;
-    let shockwaveProgress = 0;
-
-    function update3DAnatomyAndHUD() {
-      const { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo } = getStats();
-      const g = pInfo.globalGrowth; // 0..1
-
-      if (pInfo.current.num > state.highestPhase) {
-        state.highestPhase = pInfo.current.num;
-        showToast(`🧬 ФАЗА ${pInfo.current.num}/1000: ${pInfo.current.title}!`, 'border-amber-400 text-amber-300');
-      }
-
-      // Рост встроенной анатомической модели
-      if (anatomy.upperTorso) {
-        anatomy.upperTorso.scale.set(0.85 + g * 0.95, 1 + g * 0.15, 0.62 + g * 0.62);
-        anatomy.lowerTorso.scale.set(0.82 + g * 0.52, 1, 0.6 + g * 0.45);
-        anatomy.pecL.scale.set(0.9 + g * 1.15, 0.78 + g * 0.7, 0.7 + g * 1.1);
-        anatomy.pecR.scale.copy(anatomy.pecL.scale);
-        anatomy.pecL.position.set(-(0.22 + g * 0.18), 0.68, 0.24 + g * 0.22);
-        anatomy.pecR.position.set(0.22 + g * 0.18, 0.68, 0.24 + g * 0.22);
-
-        anatomy.latL.scale.set(0.7 + g * 1.1, 1.2 + g * 0.45, 0.65 + g * 0.6);
-        anatomy.latR.scale.copy(anatomy.latL.scale);
-        anatomy.latL.position.x = -(0.4 + g * 0.38);
-        anatomy.latR.position.x = 0.4 + g * 0.38;
-
-        anatomy.traps.scale.set(1.1 + g * 1.1, 0.4 + g * 0.6, 0.7 + g * 0.55);
-        anatomy.neck.scale.set(0.85 + g * 0.75, 1, 0.85 + g * 0.75);
-
-        [-1, 1].forEach(side => {
-          const k = side === -1 ? 'L' : 'R';
-          anatomy[`armRoot${k}`].position.x = side * (0.62 + g * 0.52);
-          anatomy[`delt${k}`].scale.setScalar(0.82 + g * 0.98);
-          anatomy[`bicep${k}`].scale.set(0.82 + g * 1.05, 1.2 + g * 0.55, 0.82 + g * 1.05);
-          anatomy[`forearm${k}`].scale.set(0.85 + g * 0.85, 1, 0.85 + g * 0.85);
-          anatomy[`thigh${k}`].scale.set(0.86 + g * 0.78, 1, 0.86 + g * 0.78);
-          anatomy[`calf${k}`].scale.set(0.86 + g * 0.65, 1, 0.86 + g * 0.65);
-        });
-
-        anatomy.buttons.forEach((btn, idx) => {
-          const chestFactor = idx < 3 ? (1 + g * 0.85) : (1 + g * 0.5);
-          btn.position.z = 0.38 * chestFactor;
-        });
-      }
-
-      // Общий масштаб контейнера (стопы всегда стоят на FLOOR_Y)
-      const scaleY = 0.86 + g * 0.32;
-      const scaleXZ = 0.84 + g * 0.48;
-      builtinBodyGroup.position.y = 2.26;
-      characterPivot.position.y = FLOOR_Y;
-      characterPivot.scale.set(scaleXZ, scaleY, scaleXZ);
-
-      // Обновление DOM
-      const setTxt = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-      const setWidth = (id, pct) => {
-        const el = document.getElementById(id);
-        if (el) el.style.width = pct + '%';
-      };
-
-      setTxt('hud-score', formatMass(state.score));
-      setTxt('hud-passive', formatMass(passivePower));
-      setTxt('hud-phase-num', pInfo.current.num);
-
-      const epochObj = EPOCHS.find(e => pInfo.current.num >= e.range[0] && pInfo.current.num <= e.range[1]) || EPOCHS[0];
-      setTxt('pc-epoch-tag', epochObj.name);
-      setTxt('pc-phase-num', pInfo.current.num);
-      setTxt('pc-phase-title', pInfo.current.title);
-      setTxt('pc-next-phase-num', pInfo.next.num);
-      setTxt('pc-subphase-pct', Math.floor(pInfo.subProgress * 100) + '%');
-      setWidth('pc-subphase-bar', Math.floor(pInfo.subProgress * 100));
-      setTxt('pc-total-mass', formatMass(state.totalEarned) + ' КГ');
-      setTxt('pc-next-mass', formatMass(pInfo.next.req) + ' КГ');
-      setTxt('pc-global-pct', (g * 100).toFixed(1) + '%');
-      setWidth('pc-global-bar', Math.max(0.2, g * 100).toFixed(1));
-
-      setTxt('mob-phase-num', pInfo.current.num);
-      setTxt('mob-phase-title', pInfo.current.title);
-      setTxt('mob-next-req', `${formatMass(state.totalEarned)} / ${formatMass(pInfo.next.req)} КГ`);
-      setWidth('mob-subphase-bar', Math.floor(pInfo.subProgress * 100));
-
-      const ePct = Math.min(100, Math.max(0, (state.energy / maxEnergy) * 100));
-      setTxt('pc-energy-text', `${Math.floor(state.energy)} / ${maxEnergy}`);
-      setWidth('pc-energy-bar', ePct);
-      setTxt('pc-tap-power', '+' + formatMass(clickPower) + ' КГ');
-      setTxt('pc-regen-rate', '+' + regenRate + '/С');
-      setTxt('lbl-tap-power', formatMass(clickPower));
-
-      setTxt('bio-chest', (88 + g * 124).toFixed(1) + ' СМ');
-      setTxt('bio-biceps', (29 + g * 58).toFixed(1) + ' СМ');
-      setTxt('bio-shoulders', (43 + g * 68).toFixed(1) + ' СМ');
-      setTxt('bio-legs', (48 + g * 64).toFixed(1) + ' СМ');
-      setTxt('bio-pressure', (1.05 + g * 48.5).toFixed(2) + ' МПа');
-      setTxt('bio-multiplier', 'x' + mult.toFixed(2));
-
-      document.querySelectorAll('.skins-count-label').forEach(el => {
-        el.textContent = `${state.ownedSkins.length}/${SKINS_DATA.length}`;
-      });
-      setTxt('phases-unlocked-badge', `${pInfo.current.num} / 1000`);
-
-      UPGRADES_DATA.forEach(u => {
-        const card = document.getElementById(`upg-card-${u.id}`);
-        if (!card) return;
-        const lvl = state.upgrades[u.id] || 0;
-        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
-        card.classList.toggle('disabled', state.score < cost);
-      });
-    }
-
-    /*************************************************************************
-     * 6. ВРАЩЕНИЕ 360°, СЛЕЖЕНИЕ ГЛАЗ ЗА КУРСОРОМ И КЛИКИ
-     *************************************************************************/
-    let targetYaw = 0;
-    let currentYaw = 0;
-    let targetPitch = 0.06;
-    let currentPitch = 0.06;
-    let cameraZoomOffset = 0;
-
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let totalDragDist = 0;
-    let pointerNormX = 0;
-    let pointerNormY = 0;
-
-    function triggerPumpClick(clientX, clientY) {
-      const { clickPower, pInfo } = getStats();
-      const cost = Math.min(8, Math.max(1, Math.ceil(clickPower * 0.015)));
-      if (state.energy < cost) {
-        showToast('⚡ НЕДОСТАТОЧНО РЕСУРСА ШВОВ!', 'border-rose-500 text-rose-300');
-        return;
-      }
-
-      state.energy = Math.max(0, state.energy - cost);
-      state.score += clickPower;
-      state.totalEarned += clickPower;
-
-      pumpImpulse = 1.0;
-      shockwaveProgress = 0.01;
-      clickFlashLight.intensity = 1.5;
-
-      playPumpHitSound(pInfo.globalGrowth);
-      spawnFloatingNumber(clientX, clientY, `+${formatMass(clickPower)} КГ`);
-      update3DAnatomyAndHUD();
-    }
-
-    function spawnFloatingNumber(x, y, text) {
-      const layer = document.getElementById('particles-layer');
-      if (!layer) return;
-      const el = document.createElement('div');
-      el.className = 'float-particle text-sm md:text-lg text-cyan-300';
-      el.style.left = `${x + (Math.random() - 0.5) * 32}px`;
-      el.style.top = `${y - 12}px`;
-      el.style.textShadow = '0 0 12px rgba(0,240,255,0.85), 0 2px 4px #000';
-      el.textContent = text;
-      layer.appendChild(el);
-      setTimeout(() => el.remove(), 850);
-    }
-
-    container.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      totalDragDist = 0;
-      pointerNormX = (e.clientX / window.innerWidth) * 2 - 1;
-      pointerNormY = -((e.clientY / window.innerHeight) * 2 - 1);
-    });
-
-    window.addEventListener('pointermove', (e) => {
-      pointerNormX = (e.clientX / window.innerWidth) * 2 - 1;
-      pointerNormY = -((e.clientY / window.innerHeight) * 2 - 1);
-
-      if (!isDragging) return;
-      const dx = e.clientX - dragStartX;
-      const dy = e.clientY - dragStartY;
-      totalDragDist += Math.abs(dx) + Math.abs(dy);
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-
-      targetYaw += dx * 0.011;
-      targetPitch = Math.max(-0.65, Math.min(0.85, targetPitch + dy * 0.008));
-
-      const angleEl = document.getElementById('cam-angle-label');
-      if (angleEl) {
-        const degY = Math.round(((targetYaw * 180) / Math.PI) % 360);
-        const degP = Math.round((targetPitch * 180) / Math.PI);
-        angleEl.textContent = `${degY}° / ${degP}°`;
-      }
-    });
-
-    window.addEventListener('pointerup', (e) => {
-      if (!isDragging) return;
-      isDragging = false;
-      if (totalDragDist < 12 && e.target === renderer.domElement) {
-        triggerPumpClick(e.clientX, e.clientY);
-      }
-    });
-
-    container.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      cameraZoomOffset = Math.max(-2.8, Math.min(4.2, cameraZoomOffset + e.deltaY * 0.003));
-      syncResponsiveCamera();
-    }, { passive: false });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && document.activeElement.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        triggerPumpClick(window.innerWidth / 2, window.innerHeight * 0.45);
-      }
-    });
-
-    /*************************************************************************
-     * 7. НАКЛОН 3D-ПАНЕЛЕЙ И ИНИЦИАЛИЗАЦИЯ ВСЕХ КНОПОК ИНТЕРФЕЙСА
-     *************************************************************************/
-    function setup3DPanelTilt(cardId, glareId, baseRotateY) {
-      const card = document.getElementById(cardId);
-      const glare = document.getElementById(glareId);
-      if (!card) return;
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const nx = (e.clientX - rect.left) / rect.width - 0.5;
-        const ny = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transform = `rotateY(${(baseRotateY + nx * 11).toFixed(2)}deg) rotateX(${(-ny * 9).toFixed(2)}deg) translateZ(6px)`;
-        if (glare) {
-          glare.style.background = `radial-gradient(circle at ${(nx + 0.5) * 100}% ${(ny + 0.5) * 100}%, rgba(0, 240, 255, 0.2) 0%, transparent 60%)`;
-        }
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = `rotateY(${baseRotateY}deg) rotateX(1.5deg)`;
-      });
-    }
-    setup3DPanelTilt('holo-card-left', 'glare-left', 9);
-    setup3DPanelTilt('holo-card-right', 'glare-right', -9);
-
-    function syncResponsiveCamera() {
-      const aspect = window.innerWidth / window.innerHeight;
-      camera.aspect = aspect;
-      if (currentDeviceMode === 'mobile') {
-        camera.fov = aspect < 0.65 ? 52 : 46;
-        camera.position.set(0, isDrawerOpen ? -0.8 : -0.25, (aspect < 0.65 ? 7.6 : 6.8) + cameraZoomOffset);
-        camera.lookAt(0, isDrawerOpen ? -0.95 : -0.35, 0);
-      } else {
-        camera.fov = 40;
-        camera.position.set(0, -0.25, 6.5 + cameraZoomOffset);
-        camera.lookAt(0, -0.35, 0);
-      }
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-    window.addEventListener('resize', syncResponsiveCamera);
-
-    function setDeviceLayout(mode) {
-      currentDeviceMode = mode;
-      document.body.setAttribute('data-device', mode);
-      const badge = document.getElementById('device-mode-badge');
-      const btn = document.getElementById('btn-toggle-layout');
-      if (mode === 'pc') {
-        if (badge) badge.textContent = 'ПК';
-        if (btn) btn.textContent = '📱 МОБ. ВИД';
-      } else {
-        if (badge) badge.textContent = 'ТЕЛЕФОН';
-        if (btn) btn.textContent = '🖥 ПК ВИД';
-      }
-      mountActiveTabPanel();
-      syncResponsiveCamera();
-    }
-
-    function mountActiveTabPanel() {
-      const holder = document.getElementById('shared-panels-holder');
-      const pcTarget = document.getElementById('pc-tab-container');
-      const mobTarget = document.getElementById('mob-tab-container');
-      ['upgrades', 'skins', 'phases', 'save'].forEach(t => {
-        const el = document.getElementById(`panel-${t}`);
-        if (el && el.parentElement !== holder) holder.appendChild(el);
-      });
-      const activePanel = document.getElementById(`panel-${activeTab}`);
-      if (!activePanel) return;
-      if (currentDeviceMode === 'pc') pcTarget.appendChild(activePanel);
-      else mobTarget.appendChild(activePanel);
-    }
-
-    function switchTab(tabName) {
-      activeTab = tabName;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        const active = btn.dataset.tab === tabName;
-        btn.className = `tab-btn py-2 text-[9px] font-bold tracking-wider uppercase rounded-lg border ${
-          active ? 'border-cyan-500/50 bg-indigo-600/30 text-cyan-300' : 'border-transparent text-slate-300 hover:text-white'
-        }`;
-      });
-      document.querySelectorAll('.mob-tab-btn').forEach(btn => {
-        const active = btn.dataset.tab === tabName;
-        btn.className = `mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase flex items-center justify-center gap-1 border ${
-          active ? 'bg-indigo-600/30 text-cyan-300 border-cyan-500/40' : 'text-slate-400 border-transparent'
-        }`;
-      });
-      mountActiveTabPanel();
-    }
-
-    function setMobileDrawerOpen(open) {
-      isDrawerOpen = open;
-      const drawer = document.getElementById('bottom-drawer');
-      const btn = document.getElementById('btn-drawer-toggle');
-      if (drawer) drawer.classList.toggle('collapsed', !open);
-      if (btn) btn.textContent = open ? '▼ СВЕРНУТЬ' : '▲ МЕНЮ';
-      syncResponsiveCamera();
-    }
-
-    function renderUpgradesList() {
-      const list = document.getElementById('upgrades-list');
-      if (!list) return;
-      list.innerHTML = '';
-      UPGRADES_DATA.forEach(u => {
-        const lvl = state.upgrades[u.id] || 0;
-        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
-        const canBuy = state.score >= cost;
-        const card = document.createElement('div');
-        card.id = `upg-card-${u.id}`;
-        card.className = `module-card rounded-xl p-2.5 flex items-center justify-between gap-2 ${canBuy ? '' : 'disabled'}`;
-        card.innerHTML = `
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-1.5">
-              <span class="text-[8px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-cyan-400 border border-slate-700">${u.code}</span>
-              <span class="text-xs font-bold text-white truncate">${u.name}</span>
-            </div>
-            <div class="text-[10px] text-slate-300 mt-0.5">${u.desc}</div>
-            <div class="mt-1 flex items-center gap-2">
-              <span class="text-[10px] font-bold text-amber-400">ЦЕНА: ${formatMass(cost)} КГ</span>
-              <span class="text-[9px] text-slate-400">| УР. <b class="text-white">${lvl}</b></span>
-            </div>
-          </div>
-          <div class="px-2.5 py-1.5 rounded-lg bg-indigo-500/20 border border-indigo-400/40 text-[9px] font-display font-bold text-indigo-200 shrink-0">+УР</div>
-        `;
-        card.addEventListener('click', () => {
-          const curLvl = state.upgrades[u.id] || 0;
-          const curCost = Math.floor(u.baseCost * Math.pow(u.mult, curLvl));
-          if (state.score < curCost) return;
-          state.score -= curCost;
-          state.upgrades[u.id] = curLvl + 1;
-          if (u.energyBonus) state.energy += u.energyBonus;
-          playUpgradeSound();
-          renderUpgradesList();
-          update3DAnatomyAndHUD();
-          saveProgress();
-        });
-        list.appendChild(card);
-      });
-    }
-
-    function renderSkinsList() {
-      const list = document.getElementById('skins-list');
-      if (!list) return;
-      list.innerHTML = '';
-      const { pInfo } = getStats();
-      SKINS_DATA.forEach(s => {
-        const owned = state.ownedSkins.includes(s.id);
-        const equipped = state.equippedSkin === s.id;
-        const phaseOk = pInfo.current.num >= s.minPhase;
-        const canUnlock = !owned && phaseOk && state.score >= s.cost;
-
-        let btnLabel = 'ВЫБРАТЬ';
-        let btnStyle = 'bg-indigo-600 hover:bg-indigo-500 text-white';
-        if (equipped) {
-          btnLabel = 'АКТИВЕН ✓';
-          btnStyle = 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
-        } else if (!owned) {
-          if (!phaseOk) {
-            btnLabel = `ФАЗА ${s.minPhase}`;
-            btnStyle = 'bg-slate-900 text-slate-500 border border-slate-800 cursor-not-allowed';
-          } else {
-            btnLabel = `${formatMass(s.cost)} КГ`;
-            btnStyle = canUnlock ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800';
-          }
-        }
-
-        const card = document.createElement('div');
-        card.className = `skin-card rounded-xl p-2.5 flex items-center justify-between gap-2.5 ${equipped ? 'equipped' : ''}`;
-        card.innerHTML = `
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-9 h-9 rounded-lg shrink-0 border border-white/20" style="background:${s.swatch}"></div>
-            <div class="min-w-0">
-              <div class="text-xs font-bold text-white truncate">${s.name}</div>
-              <div class="text-[9px] text-slate-300 truncate">${s.desc}</div>
-              <div class="text-[8px] text-indigo-300 mt-0.5 uppercase">Требуется Фаза ${s.minPhase}/1000</div>
-            </div>
-          </div>
-          <button class="px-2.5 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider shrink-0 ${btnStyle}">${btnLabel}</button>
-        `;
-        card.querySelector('button').addEventListener('click', () => {
-          if (owned) {
-            state.equippedSkin = s.id;
-            applyActiveSkinTo3D();
-            renderSkinsList();
-            saveProgress();
-          } else if (phaseOk && state.score >= s.cost) {
-            state.score -= s.cost;
-            state.ownedSkins.push(s.id);
-            state.equippedSkin = s.id;
-            playUpgradeSound();
-            applyActiveSkinTo3D();
-            renderSkinsList();
-            update3DAnatomyAndHUD();
-            saveProgress();
-          }
-        });
-        list.appendChild(card);
-      });
-    }
-
-    function renderEpochFilterBar() {
-      const bar = document.getElementById('epoch-filter-bar');
-      if (!bar) return;
-      bar.innerHTML = '';
-      EPOCHS.forEach(ep => {
-        const active = state.selectedEpoch === ep.id;
-        const btn = document.createElement('button');
-        btn.className = `px-2 py-1 rounded text-[8px] font-bold uppercase border ${
-          active ? 'bg-cyan-500/25 border-cyan-400 text-cyan-300' : 'bg-slate-900 border-slate-800 text-slate-400'
-        }`;
-        btn.textContent = `${ep.range[0]}-${ep.range[1]}`;
-        btn.addEventListener('click', () => {
-          state.selectedEpoch = ep.id;
-          renderEpochFilterBar();
-          renderPhasesList();
-        });
-        bar.appendChild(btn);
-      });
-    }
-
-    function renderPhasesList() {
-      const list = document.getElementById('phases-list');
-      if (!list) return;
-      list.innerHTML = '';
-      const { pInfo } = getStats();
-      const ep = EPOCHS.find(e => e.id === state.selectedEpoch) || EPOCHS[0];
-      const subset = PHASES_1000.slice(ep.range[0] - 1, ep.range[1]);
-
-      subset.forEach(p => {
-        const unlocked = p.num <= pInfo.current.num;
-        const isCurrent = p.num === pInfo.current.num;
-        const row = document.createElement('div');
-        row.className = `phase-item p-2 rounded-lg border flex items-center justify-between text-[10px] ${
-          isCurrent
-            ? 'bg-indigo-950/80 border-cyan-400 text-white'
-            : unlocked
-              ? 'bg-slate-900/75 border-indigo-500/30 text-slate-200'
-              : 'bg-slate-950/40 border-slate-800/60 text-slate-500 opacity-60'
-        }`;
-        row.innerHTML = `
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="px-1.5 py-0.5 rounded font-display text-[9px] font-bold ${isCurrent ? 'bg-cyan-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">#${p.num}</span>
-            <span class="font-bold truncate">${p.title}</span>
-          </div>
-          <span class="text-[9px] font-bold shrink-0 ml-2">${unlocked ? 'ОТКРЫТО ✓' : formatMass(p.req) + ' КГ'}</span>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    // Привязка всех кнопок
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-    });
-    document.querySelectorAll('.mob-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tab = btn.dataset.tab;
-        if (activeTab === tab && isDrawerOpen) setMobileDrawerOpen(false);
-        else {
-          switchTab(tab);
-          setMobileDrawerOpen(true);
-        }
-      });
-    });
-
-    document.getElementById('btn-drawer-toggle')?.addEventListener('click', () => setMobileDrawerOpen(!isDrawerOpen));
-    document.getElementById('btn-toggle-layout')?.addEventListener('click', () => {
-      setDeviceLayout(currentDeviceMode === 'pc' ? 'mobile' : 'pc');
-    });
-    document.getElementById('btn-open-loader')?.addEventListener('click', showLoaderModal);
-    document.getElementById('btn-close-loader-top')?.addEventListener('click', hideLoaderModal);
-    document.getElementById('btn-modal-use-builtin')?.addEventListener('click', () => {
-      hideLoaderModal();
-      showToast('⚡ АКТИВИРОВАНА ВСТРОЕННАЯ 3D-МОДЕЛЬ!', 'border-cyan-400 text-cyan-300');
-    });
-
-    document.getElementById('btn-eye-mode')?.addEventListener('click', (e) => {
-      eyeMode = eyeMode === 'follow' ? 'crossed' : 'follow';
-      e.currentTarget.textContent = eyeMode === 'follow' ? '👀 СЛЕЖЕНИЕ' : '🤪 КОСОГЛАЗИЕ';
-    });
-
-    document.getElementById('btn-reset-cam')?.addEventListener('click', () => {
-      targetYaw = 0;
-      targetPitch = 0.06;
-      cameraZoomOffset = 0;
-      syncResponsiveCamera();
-    });
-    document.getElementById('btn-auto-spin')?.addEventListener('click', (e) => {
-      autoSpin = !autoSpin;
-      e.currentTarget.textContent = autoSpin ? '🌀 АВТО: ВКЛ' : '🌀 АВТО: ВЫКЛ';
-    });
-    document.getElementById('btn-light-mode')?.addEventListener('click', () => {
-      applyStudioLightingPreset(studioLightPreset + 1);
-    });
-    document.getElementById('btn-zoom-in')?.addEventListener('click', () => {
-      cameraZoomOffset = Math.max(-2.8, cameraZoomOffset - 0.5);
-      syncResponsiveCamera();
-    });
-    document.getElementById('btn-zoom-out')?.addEventListener('click', () => {
-      cameraZoomOffset = Math.min(4.2, cameraZoomOffset + 0.5);
-      syncResponsiveCamera();
-    });
-    document.getElementById('btn-sound')?.addEventListener('click', (e) => {
-      state.soundOn = !state.soundOn;
-      e.currentTarget.textContent = state.soundOn ? '🔊' : '🔇';
-      saveProgress();
-    });
-    document.getElementById('btn-quick-save')?.addEventListener('click', () => {
-      saveProgress();
-      showToast('💾 ПРОГРЕСС СОХРАНЁН!', 'border-emerald-400 text-emerald-300');
-    });
-    document.getElementById('btn-manual-save')?.addEventListener('click', () => {
-      saveProgress();
-      showToast('💾 ПРОГРЕСС СОХРАНЁН!', 'border-emerald-400 text-emerald-300');
-    });
-    document.getElementById('btn-export-save')?.addEventListener('click', () => {
-      saveProgress();
-      const code = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
-      const area = document.getElementById('save-code-textarea');
-      if (area) area.value = code;
-      navigator.clipboard?.writeText(code).catch(() => {});
-      showToast('📋 КОД СКОПИРОВАН!', 'border-indigo-400 text-indigo-200');
-    });
-    document.getElementById('btn-import-save')?.addEventListener('click', () => {
-      const area = document.getElementById('save-code-textarea');
-      const raw = area ? area.value.trim() : '';
-      if (!raw) return;
-      try {
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(raw))));
-        state = { ...getDefaultState(), ...decoded };
-        saveProgress();
-        applyActiveSkinTo3D();
-        renderUpgradesList();
-        renderSkinsList();
-        renderPhasesList();
-        update3DAnatomyAndHUD();
-        showToast('✅ ПРОГРЕСС ВОССТАНОВЛЕН!', 'border-emerald-400 text-emerald-300');
-      } catch (e) {
-        showToast('❌ ОШИБКА КОДА!', 'border-rose-500 text-rose-300');
-      }
-    });
-    document.getElementById('btn-wipe-save')?.addEventListener('click', () => {
-      localStorage.removeItem(STORAGE_KEY);
-      state = getDefaultState();
-      saveProgress();
-      applyActiveSkinTo3D();
-      renderUpgradesList();
-      renderSkinsList();
-      renderPhasesList();
-      update3DAnatomyAndHUD();
-      showToast('🗑 ПРОГРЕСС СБРОШЕН', 'border-amber-400 text-amber-300');
-    });
-
-    // Осциллограф
-    const ecgCanvas = document.getElementById('ecg-canvas');
-    const ecgCtx = ecgCanvas ? ecgCanvas.getContext('2d') : null;
-    let ecgPhase = 0;
-    function drawECG() {
-      if (!ecgCtx || currentDeviceMode !== 'pc') return;
-      const w = ecgCanvas.width;
-      const h = ecgCanvas.height;
-      ecgCtx.clearRect(0, 0, w, h);
-      ecgCtx.strokeStyle = '#00f0ff';
-      ecgCtx.lineWidth = 1.5;
-      ecgCtx.beginPath();
-      ecgPhase += 0.14 + pumpImpulse * 0.35;
-      for (let x = 0; x < w; x += 3) {
-        const amp = 4 + pumpImpulse * 10;
-        const y = h / 2 + Math.sin(x * 0.08 + ecgPhase) * amp * Math.sin(x * 0.02);
-        if (x === 0) ecgCtx.moveTo(x, y);
-        else ecgCtx.lineTo(x, y);
-      }
-      ecgCtx.stroke();
-    }
-
-    // Главный цикл 60 FPS
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const dt = Math.min(0.1, clock.getDelta());
-
-      if (autoSpin && !isDragging) targetYaw += dt * 0.65;
-
-      currentYaw += (targetYaw - currentYaw) * 0.14;
-      currentPitch += (targetPitch - currentPitch) * 0.14;
-      characterPivot.rotation.y = currentYaw;
-      characterPivot.rotation.x = currentPitch;
-
-      // Слежение глаз и головы за курсором
-      if (anatomy.headGroup && anatomy.pupilL && anatomy.pupilR) {
-        if (eyeMode === 'crossed') {
-          anatomy.pupilL.position.set(0.022, 0, 0);
-          anatomy.pupilR.position.set(-0.022, 0, 0);
-        } else {
-          const ex = Math.max(-0.022, Math.min(0.022, pointerNormX * 0.022));
-          const ey = Math.max(-0.016, Math.min(0.016, pointerNormY * 0.016));
-          anatomy.pupilL.position.set(ex + pumpImpulse * 0.015, ey, 0);
-          anatomy.pupilR.position.set(ex - pumpImpulse * 0.015, ey, 0);
-          anatomy.headGroup.rotation.y = pointerNormX * 0.22;
-          anatomy.headGroup.rotation.x = -pointerNormY * 0.15;
-        }
-      }
-
-      if (pumpImpulse > 0.001) pumpImpulse *= Math.pow(0.04, dt);
-      else pumpImpulse = 0;
-
-      const { pInfo } = getStats();
-      const g = pInfo.globalGrowth;
-      const baseScaleY = 0.86 + g * 0.32;
-      const baseScaleXZ = (0.84 + g * 0.48) * (1 + pumpImpulse * 0.05);
-      characterPivot.scale.set(baseScaleXZ, baseScaleY * (1 + pumpImpulse * 0.02), baseScaleXZ);
-
-      if (clickFlashLight.intensity > 0.01) clickFlashLight.intensity *= Math.pow(0.01, dt);
-      else clickFlashLight.intensity = 0;
-
-      if (shockwaveProgress > 0) {
-        shockwaveProgress += dt * 2.8;
-        const s = 1 + shockwaveProgress * 5.2;
-        shockRing.scale.set(s, s, 1);
-        shockRing.material.opacity = Math.max(0, 0.85 * (1 - shockwaveProgress));
-        if (shockwaveProgress >= 1) {
-          shockwaveProgress = 0;
-          shockRing.material.opacity = 0;
-        }
-      }
-
-      drawECG();
-      renderer.render(scene, camera);
-    }
-
-    // Старт базовой игры
-    loadProgress();
-    setDeviceLayout(window.innerWidth < 1024 ? 'mobile' : 'pc');
-    applyStudioLightingPreset(0);
-    applyActiveSkinTo3D();
-    renderUpgradesList();
-    renderSkinsList();
-    renderEpochFilterBar();
-    renderPhasesList();
-    update3DAnatomyAndHUD();
-    animate();
-
-    setInterval(() => {
-      const { passivePower, maxEnergy, regenRate } = getStats();
-      if (passivePower > 0) {
-        const gain = passivePower * 0.25;
-        state.score += gain;
-        state.totalEarned += gain;
-      }
-      if (state.energy < maxEnergy) {
-        state.energy = Math.min(maxEnergy, state.energy + regenRate * 0.25);
-      }
-      update3DAnatomyAndHUD();
-    }, 250);
-
-    setInterval(saveProgress, 6000);
-
-    // Делаем функции доступными для модуля GLB-загрузчика
-    window.__YchuchacovichApp = {
-      scene,
-      characterPivot,
-      builtinBodyGroup,
-      glbRootGroup,
-      addLoaderLog,
-      setLoaderProgress,
-      hideLoaderModal,
-      showLoaderModal,
-      showToast,
-      applyActiveSkinTo3D,
-      update3DAnatomyAndHUD,
-      setCustomGLBState: (meshes, vertexCount) => {
-        loadedGLBMeshes = meshes;
-        hasCustomGLB = meshes.length > 0;
-        builtinBodyGroup.visible = !hasCustomGLB;
-        glbRootGroup.visible = hasCustomGLB;
-        const vEl = document.getElementById('vertex-count-label');
-        if (vEl) vEl.textContent = hasCustomGLB ? vertexCount.toLocaleString('ru-RU') : 'ВСТРОЕННАЯ 3D';
-        const stEl = document.getElementById('left-glb-status');
-        if (stEl) stEl.textContent = hasCustomGLB ? `ВАШ .GLB (${vertexCount.toLocaleString('ru-RU')} ВЕРШ.)` : 'ВСТРОЕННЫЙ 3D-КАЧОК';
-        const bEl = document.getElementById('glb-status-badge');
-        if (bEl) bEl.textContent = hasCustomGLB ? 'GLB ЗАГРУЖЕН' : 'ВСТРОЕННАЯ 3D';
-      }
-    };
-  </script>
-
-  <!-- МОДУЛЬ ЗАГРУЗКИ ВАШЕГО .GLB С ПОДДЕРЖКОЙ EXT_meshopt_compression -->
-  <script type="module">
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-
-    const app = window.__YchuchacovichApp;
-    const IDB_NAME = 'YchuchacovichGLBDB';
-    const IDB_STORE = 'models';
-    const IDB_KEY = 'custom_glb';
-
-    const gltfLoader = new GLTFLoader();
-    gltfLoader.setMeshoptDecoder(MeshoptDecoder);
-
-    function openDB() {
-      return new Promise((resolve, reject) => {
-        const req = indexedDB.open(IDB_NAME, 1);
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
-        };
-        req.onsuccess = (e) => resolve(e.target.result);
-        req.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    async function saveBufferToIDB(buffer, name) {
-      try {
-        const db = await openDB();
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).put({ buffer, name }, IDB_KEY);
-      } catch (e) {}
-    }
-
-    async function loadBufferFromIDB() {
-      try {
-        const db = await openDB();
-        return new Promise((resolve) => {
-          const tx = db.transaction(IDB_STORE, 'readonly');
-          const req = tx.objectStore(IDB_STORE).get(IDB_KEY);
-          req.onsuccess = () => resolve(req.result || null);
-          req.onerror = () => resolve(null);
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-
-    async function clearIDB() {
-      try {
-        const db = await openDB();
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).delete(IDB_KEY);
-      } catch (e) {}
-    }
-
-    function parseGLBBuffer(arrayBuffer, fileName, saveToCache = true) {
-      app.setLoaderProgress(85, `Распаковка геометрии Meshopt (${fileName})...`, 'РАСПАКОВКА 3D-МОДЕЛИ...');
-      app.addLoaderLog(`⏳ Распаковка буфера ${fileName} через MeshoptDecoder...`, 'text-cyan-300');
-
-      gltfLoader.parse(
-        arrayBuffer,
-        '',
-        async (gltf) => {
-          while (app.glbRootGroup.children.length > 0) {
-            app.glbRootGroup.remove(app.glbRootGroup.children[0]);
-          }
-
-          const root = gltf.scene;
-          const box = new window.THREE.Box3().setFromObject(root);
-          const size = new window.THREE.Vector3();
-          const center = new window.THREE.Vector3();
-          box.getSize(size);
-          box.getCenter(center);
-
-          const meshes = [];
-          let totalVerts = 0;
-
-          root.traverse((child) => {
-            if (child.isMesh) {
-              if (child.geometry?.attributes?.position) {
-                totalVerts += child.geometry.attributes.position.count;
-              }
-              // Переносим геометрию и текстуры в совместимый материал нашей сцены
-              const srcMat = child.material;
-              const newMat = new window.THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                roughness: 0.5,
-                metalness: 0.1
-              });
-              if (srcMat?.map?.image) {
-                const tex = new window.THREE.Texture(srcMat.map.image);
-                tex.flipY = false;
-                if (window.THREE.sRGBEncoding !== undefined) tex.encoding = window.THREE.sRGBEncoding;
-                tex.needsUpdate = true;
-                newMat.map = tex;
-              }
-              if (srcMat?.normalMap?.image) {
-                const nTex = new window.THREE.Texture(srcMat.normalMap.image);
-                nTex.flipY = false;
-                nTex.needsUpdate = true;
-                newMat.normalMap = nTex;
-              }
-              const stdMesh = new window.THREE.Mesh(child.geometry, newMat);
-              stdMesh.castShadow = true;
-              stdMesh.receiveShadow = true;
-              meshes.push(stdMesh);
-              app.glbRootGroup.add(stdMesh);
-            }
-          });
-
-          const targetHeight = 3.85;
-          const s = targetHeight / Math.max(0.01, size.y);
-          app.glbRootGroup.position.set(-center.x * s, -box.min.y * s, -center.z * s);
-          app.glbRootGroup.scale.setScalar(s);
-
-          app.setCustomGLBState(meshes, totalVerts);
-          app.applyActiveSkinTo3D();
-          app.update3DAnatomyAndHUD();
-
-          if (saveToCache) await saveBufferToIDB(arrayBuffer, fileName);
-
-          app.setLoaderProgress(100, `Готово! Загружено ${totalVerts.toLocaleString('ru-RU')} вершин.`, '✅ 3D-МОДЕЛЬ ЗАГРУЖЕНА!', true);
-          app.addLoaderLog(`✅ Модель ${fileName} успешно установлена на сцену!`, 'text-emerald-400');
-          app.showToast(`✅ 3D-МОДЕЛЬ ЗАГРУЖЕНА (${totalVerts.toLocaleString('ru-RU')} ВЕРШИН)`, 'border-emerald-400 text-emerald-300');
-          setTimeout(() => app.hideLoaderModal(), 700);
-        },
-        (err) => {
-          console.error(err);
-          app.setLoaderProgress(100, 'Ошибка чтения .GLB файла. Используйте встроенную 3D-модель или выберите другой файл.', '⚠️ ОШИБКА ФАЙЛА .GLB', true);
-          app.addLoaderLog(`❌ Ошибка декодирования GLB: ${err.message || err}`, 'text-rose-400');
-        }
-      );
-    }
-
-    // Скачивание файла с сервера (GitHub Pages) с индикацией мегабайт в реальном времени
-    function fetchGLBWithProgress(url) {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.responseType = 'arraybuffer';
-
-        xhr.onprogress = (e) => {
-          if (e.lengthComputable && e.total > 0) {
-            const pct = 30 + (e.loaded / e.total) * 50;
-            const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(1);
-            const mbTotal = (e.total / (1024 * 1024)).toFixed(1);
-            app.setLoaderProgress(pct, `Скачивание ${url}: ${mbLoaded} МБ / ${mbTotal} МБ...`, 'ЗАГРУЗКА 3D-МОДЕЛИ С СЕРВЕРА...');
-          }
-        };
-
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300 && xhr.response && xhr.response.byteLength > 1000) {
-            resolve(xhr.response);
-          } else {
-            reject(new Error(`HTTP ${xhr.status}`));
-          }
-        };
-        xhr.onerror = () => reject(new Error('Сетевая ошибка или CORS'));
-        xhr.send();
-      });
-    }
-
-    async function autoDiscoverGLB() {
-      app.addLoaderLog('🔍 Проверка сохранённой модели в IndexedDB...');
-      const cached = await loadBufferFromIDB();
-      if (cached && cached.buffer) {
-        app.addLoaderLog(`✓ Найдена сохранённая модель (${cached.name}) в памяти браузера!`, 'text-emerald-400');
-        parseGLBBuffer(cached.buffer, cached.name, false);
-        return;
-      }
-
-      // Проверяем оба возможных имени файла в папке GitHub
-      const candidateFiles = [
-        './model.glb',
-        './tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb'
-      ];
-
-      for (const candidate of candidateFiles) {
-        try {
-          app.setLoaderProgress(35, `Поиск ${candidate} на сервере...`);
-          app.addLoaderLog(`🌐 Запрос файла ${candidate}...`);
-          const buffer = await fetchGLBWithProgress(candidate);
-          app.addLoaderLog(`✓ Файл ${candidate} найден и скачан!`, 'text-emerald-400');
-          parseGLBBuffer(buffer, candidate, true);
-          return;
-        } catch (err) {
-          app.addLoaderLog(`• Файл ${candidate} не найден в папке (${err.message})`, 'text-amber-300');
-        }
-      }
-
-      // Если ни одного файла на сервере нет — показываем понятный выбор в окне загрузчика
-      app.setLoaderProgress(
-        100,
-        'Файл .glb не найден рядом с index.html. Выберите файл .glb вручную или нажмите «Продолжить со встроенной 3D-моделью»!',
-        'ВЫБЕРИТЕ РЕЖИМ 3D-МОДЕЛИ',
-        true
-      );
-    }
-
-    // Привязка выбора файла .glb с устройства
-    const fileInput = document.getElementById('glb-file-input');
-    fileInput?.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      app.showLoaderModal();
-      app.setLoaderProgress(40, `Чтение файла ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} МБ)...`, 'ЧТЕНИЕ ФАЙЛА .GLB...');
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        if (ev.target?.result) parseGLBBuffer(ev.target.result, file.name, true);
-      };
-      reader.readAsArrayBuffer(file);
-    });
-
-    ['btn-modal-pick-glb', 'btn-upload-glb-left', 'btn-upload-glb-tab'].forEach(id => {
-      document.getElementById(id)?.addEventListener('click', () => fileInput?.click());
-    });
-
-    document.getElementById('btn-clear-glb')?.addEventListener('click', async () => {
-      await clearIDB();
-      app.setCustomGLBState([], 0);
-      app.showToast('🔄 ВКЛЮЧЕНА ВСТРОЕННАЯ 3D-МОДЕЛЬ', 'border-cyan-400 text-cyan-300');
-    });
-
-    autoDiscoverGLB();
-  </script>
-</body>
-</html>
+      anatomy.latL.position.set(-0.
