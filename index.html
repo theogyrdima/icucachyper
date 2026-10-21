@@ -101,7 +101,6 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(99, 102, 241, 0.08);
     }
 
-    /* Боковые панели с 2D-параллаксом (без Z-искажений — 100% точность кликов) */
     .cyber-side-panel {
       position: relative;
       background: linear-gradient(155deg, rgba(16, 23, 42, 0.94) 0%, rgba(9, 13, 25, 0.92) 100%);
@@ -144,7 +143,6 @@
     .hc-bl { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
     .hc-br { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
 
-    /* Пружинистое увеличение кнопок при наведении */
     button,
     .interactive-btn,
     .module-card,
@@ -199,6 +197,11 @@
     .skin-card.equipped {
       border-color: var(--accent-cyan) !important;
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.25) !important;
+    }
+    .skin-card.exclusive-card {
+      background: linear-gradient(135deg, rgba(67, 20, 7, 0.9) 0%, rgba(30, 10, 45, 0.95) 100%);
+      border: 1px solid rgba(249, 115, 22, 0.6);
+      box-shadow: 0 0 25px rgba(249, 115, 22, 0.2);
     }
 
     ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -287,7 +290,6 @@
   <!-- ПОЛНОЦЕННЫЙ ЦЕНТР АККАУНТА (МУЛЬТИ-ПРИВЯЗКА TG + GOOGLE, ВЫХОД И PWA) -->
   <div id="auth-modal" class="hidden fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-[2px] flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
     <div class="tech-panel max-w-lg w-full rounded-2xl p-4 sm:p-6 border border-indigo-400/50 space-y-4 shadow-[0_0_50px_rgba(0,0,0,0.8)] my-auto max-h-[92dvh] overflow-y-auto">
-      <!-- Шапка Центра Аккаунта -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-2.5 h-7 bg-gradient-to-b from-cyan-400 to-indigo-500 rounded-sm"></div>
@@ -299,7 +301,6 @@
         <button type="button" id="btn-close-auth" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">✕</button>
       </div>
 
-      <!-- Карточка текущего профиля (показывается, когда выполнен вход) -->
       <div id="modal-profile-card" class="hidden p-3.5 rounded-xl bg-gradient-to-r from-indigo-950/80 via-slate-900/90 to-cyan-950/60 border border-emerald-500/40 space-y-3">
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-3 min-w-0">
@@ -317,14 +318,12 @@
             </div>
           </div>
 
-          <!-- Заметная кнопка выхода из аккаунта -->
           <button type="button" id="btn-modal-logout" class="px-3 py-2 rounded-xl bg-rose-600/25 hover:bg-rose-600/45 border border-rose-500/60 text-[10px] font-bold text-rose-200 uppercase tracking-wider shrink-0 flex items-center gap-1">
             <span>🚪</span><span>ВЫЙТИ</span>
           </button>
         </div>
       </div>
 
-      <!-- Секция привязки двух сервисов (Telegram + Google) к одному профилю -->
       <div class="space-y-2.5">
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">🔗 ПРИВЯЗКА СЕРВИСОВ К ПРОФИЛЮ (TG + GOOGLE)</span>
@@ -351,7 +350,6 @@
               Отвязать
             </button>
           </div>
-          <!-- Контейнер официального виджета Telegram -->
           <div id="telegram-widget-container" class="min-h-[40px] flex items-center justify-center w-full pt-1">
             <span class="text-[10px] text-cyan-300 animate-pulse">Загрузка кнопки Telegram (@icucacidbot)...</span>
           </div>
@@ -374,14 +372,12 @@
               Отвязать
             </button>
           </div>
-          <!-- Контейнер официальной кнопки Google -->
           <div id="google-gsi-button" class="min-h-[40px] flex items-center justify-center w-full pt-1">
             <span class="text-[10px] text-indigo-300 animate-pulse">Загрузка кнопки Google...</span>
           </div>
         </div>
       </div>
 
-      <!-- Секция установки веб-приложения (PWA) -->
       <div class="p-3 rounded-xl bg-cyan-950/25 border border-cyan-500/35 space-y-2">
         <div class="flex items-center justify-between">
           <div>
@@ -394,7 +390,6 @@
         </div>
       </div>
 
-      <!-- Ручная синхронизация по ключу профиля -->
       <div class="pt-2 border-t border-slate-800 space-y-2">
         <div class="text-[9px] font-bold text-slate-400 uppercase">РЕЗЕРВНЫЙ ВХОД ИЛИ ОБЪЕДИНЕНИЕ ПО ID АККАУНТА:</div>
         <div class="flex gap-1.5">
@@ -454,7 +449,6 @@
           </div>
         </div>
 
-        <!-- Кнопки Центра Аккаунта, Установки PWA, Вида и Звука -->
         <div class="flex items-center gap-1.5 shrink-0">
           <button type="button" id="btn-install-pwa-top" class="interactive-btn px-2.5 py-1.5 rounded-lg border border-emerald-400/60 bg-emerald-500/20 text-[9px] md:text-[10px] font-bold text-emerald-200 tracking-wider uppercase flex items-center gap-1" title="Установить веб-приложение на устройство">
             <span>📲</span>
@@ -593,10 +587,13 @@
             </div>
           </div>
 
-          <!-- Кнопка сброса ракурса -->
-          <div>
-            <button type="button" id="btn-left-reset-cam" class="w-full py-2 px-3 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
-              🔄 СБРОСИТЬ РАКУРС 3D-КАМЕРЫ
+          <!-- Управление ракурсом и слежением головы -->
+          <div class="grid grid-cols-2 gap-1.5">
+            <button type="button" id="btn-left-reset-cam" class="py-2 px-2 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
+              🔄 СБРОС КАМЕРЫ
+            </button>
+            <button type="button" id="btn-head-track-toggle" class="py-2 px-2 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/70 border border-emerald-500/40 text-[9px] font-bold text-emerald-300 uppercase">
+              👀 ГОЛОВА: СЛЕДИТ
             </button>
           </div>
         </div>
@@ -614,8 +611,8 @@
     <!-- ЦЕНТР (СВОБОДЕН ДЛЯ 3D МОДЕЛИ) -->
     <div class="flex-1 relative pointer-events-none"></div>
 
-    <!-- ПРАВАЯ ПАНЕЛЬ (МОДУЛИ, 24 СКИНА, 1000 ФАЗ, АККАУНТ) -->
-    <aside id="pc-right-panel" class="w-[400px] flex flex-col pointer-events-auto shrink-0 my-1 z-30">
+    <!-- ПРАВАЯ ПАНЕЛЬ (МОДУЛИ, 25 СКИНОВ, 1000 ФАЗ, АККАУНТ) -->
+    <aside id="pc-right-panel" class="w-[410px] flex flex-col pointer-events-auto shrink-0 my-1 z-30">
       <div id="holo-card-right" class="cyber-side-panel h-full flex flex-col overflow-hidden">
         <div id="glare-right" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
@@ -628,7 +625,7 @@
             ⚡ МОДУЛИ
           </button>
           <button type="button" data-tab="skins" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
-            👕 СКИНЫ [<span class="skins-count-label">1/24</span>]
+            👕 СКИНЫ [<span class="skins-count-label">1/25</span>]
           </button>
           <button type="button" data-tab="phases" class="tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border border-transparent text-slate-300 hover:text-white">
             🧬 1000 ФАЗ
@@ -697,15 +694,30 @@
       <div id="upgrades-list" class="grid grid-cols-1 gap-2 pb-4"></div>
     </div>
 
-    <!-- ВКЛАДКА 2: 24 СКИНА -->
+    <!-- ВКЛАДКА 2: ПЕРЕРАБОТАННЫЕ 3D-СКИНЫ + ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ -->
     <div id="panel-skins" class="space-y-2.5">
-      <div class="p-2.5 rounded-lg bg-indigo-950/50 border border-indigo-500/40 flex items-center justify-between">
+      <div class="p-2.5 rounded-xl bg-indigo-950/60 border border-indigo-500/40 flex items-center justify-between">
         <div>
-          <div class="text-[10px] font-bold text-indigo-200 uppercase">АРСЕНАЛ 3D-ОБРАЗОВ (24 СКИНА)</div>
-          <div class="text-[9px] text-slate-300">Скин #1 сохраняет 100% оригинальную PBR-текстуру модели</div>
+          <div class="text-[10px] font-bold text-indigo-200 uppercase">3D ШЕЙДЕРНЫЕ СКИНЫ И АУРЫ</div>
+          <div class="text-[9px] text-slate-300">Каждый скин меняет физику материала и 3D-экипировку</div>
         </div>
-        <span class="text-[10px] font-display font-bold text-cyan-400 skins-count-label">1/24</span>
+        <span class="text-[10px] font-display font-bold text-cyan-400 skins-count-label">1/25</span>
       </div>
+
+      <!-- Баннер эксклюзивного скина до 1 ноября -->
+      <div id="exclusive-event-banner" class="p-3 rounded-xl bg-gradient-to-r from-orange-950/90 via-purple-950/90 to-slate-950 border border-orange-500/60 space-y-1.5 shadow-[0_0_20px_rgba(249,115,22,0.2)]">
+        <div class="flex items-center justify-between">
+          <span class="px-1.5 py-0.5 rounded bg-orange-500/25 border border-orange-400/50 text-[8px] font-black text-orange-300 uppercase">
+            🎃 ЛИМИТИРОВАННЫЙ ИВЕНТ ДО 1 НОЯБРЯ
+          </span>
+          <span id="exclusive-countdown-timer" class="text-[9px] font-mono font-bold text-amber-300">ОСТАЛОСЬ: —</span>
+        </div>
+        <div class="text-[11px] font-display font-black text-white">ЖНЕЦ ТЫКВЕННОГО ПАМПА [ФАЗА 500]</div>
+        <div class="text-[9px] text-orange-200/90 leading-snug">
+          Достигните <b>500-й фазы</b> до 1 ноября, чтобы бесплатно и навсегда забрать проклятую 3D-корону с рогами, огненные сферы и шейдер адского пламени!
+        </div>
+      </div>
+
       <div id="skins-list" class="grid grid-cols-1 gap-2 pb-4"></div>
     </div>
 
@@ -726,14 +738,12 @@
 
     <!-- ВКЛАДКА 4: ЦЕНТР АККАУНТА, ПРИВЯЗКА TG+GOOGLE, PWA И СОХРАНЕНИЕ -->
     <div id="panel-save" class="space-y-3 pb-4">
-      <!-- Карточка Единого Аккаунта -->
       <div class="p-3 rounded-xl bg-indigo-950/50 border border-cyan-500/40 space-y-2.5">
         <div class="flex items-center justify-between border-b border-indigo-500/30 pb-2">
           <span class="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">☁ ЦЕНТР АККАУНТА (TG + GOOGLE)</span>
           <span id="account-sync-status" class="text-[9px] font-bold text-amber-300">Локальный режим (5с)</span>
         </div>
 
-        <!-- Когда пользователь не авторизован -->
         <div id="account-logged-out-view" class="space-y-2">
           <p class="text-[9px] text-slate-300">
             Войдите и привяжите Telegram + Google к единому профилю для автоматической синхронизации каждые 5 секунд.
@@ -743,7 +753,6 @@
           </button>
         </div>
 
-        <!-- Когда пользователь авторизован -->
         <div id="account-logged-in-view" class="hidden space-y-2.5">
           <div class="flex items-center justify-between bg-slate-950/85 p-2.5 rounded-xl border border-emerald-500/40 gap-2">
             <div class="min-w-0">
@@ -755,7 +764,6 @@
             </button>
           </div>
 
-          <!-- Статус привязанных сервисов на вкладке -->
           <div class="grid grid-cols-2 gap-1.5 text-[9px]">
             <div id="tab-badge-tg" class="p-2 rounded-lg bg-slate-950/70 border border-slate-800 flex items-center justify-between">
               <span>✈️ Telegram:</span>
@@ -842,13 +850,13 @@
      * 0. КОНФИГУРАЦИЯ АВТОРИЗАЦИИ TELEGRAM & GOOGLE И ОБЛАЧНОЙ БАЗЫ ДАННЫХ
      *************************************************************************/
     const AUTH_CONFIG = {
-      // Имя вашего Telegram-бота без символа @
       TELEGRAM_BOT_USERNAME: 'icucacidbot',
-      // Ваш Client ID из Google Cloud Console
       GOOGLE_CLIENT_ID: '834355674248-vgcrjijav70u1eduengch43dbgkas8pp.apps.googleusercontent.com',
-      // Ссылка на вашу Firebase Realtime Database для межплатформенной синхронизации
       FIREBASE_DB_URL: 'https://icucacid-default-rtdb.firebaseio.com/'
     };
+
+    // Дедлайн эксклюзивного скина: 1 ноября 2026, 00:00:00
+    const EXCLUSIVE_NOV1_DEADLINE = new Date('2026-11-01T00:00:00').getTime();
 
     /*************************************************************************
      * 0.5. PWA ИНИЦИАЛИЗАЦИЯ («УСТАНОВИТЬ ВЕБ-ПРИЛОЖЕНИЕ» В БРАУЗЕРЕ)
@@ -933,9 +941,7 @@
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
         const { outcome } = await deferredInstallPrompt.userChoice;
-        if (outcome === 'accepted') {
-          deferredInstallPrompt = null;
-        }
+        if (outcome === 'accepted') deferredInstallPrompt = null;
       } else {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         if (isIOS) {
@@ -957,7 +963,7 @@
     }
 
     /*************************************************************************
-     * 1. ДАННЫЕ: 1000 ФАЗ, 24 СКИНА, 10 МОДУЛЕЙ
+     * 1. ДАННЫЕ: 1000 ФАЗ, 25 3D-ШЕЙДЕРНЫХ СКИНОВ (ВКЛЮЧАЯ ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ)
      *************************************************************************/
     const EPOCHS = [
       { id: 1, range: [1, 100], name: 'ЭПОХА 1' },
@@ -1005,31 +1011,374 @@
       return { num, title, req };
     });
 
+    /**
+     * КОДЫ ШЕЙДЕРНЫХ РЕЖИМОВ (shaderMode):
+     * 0 - Оригинальный PBR
+     * 1 - Голографический Хамелеон / Перламутр (Iridescent Fresnel)
+     * 2 - Кибер-Сканнер (Бегущие лазерные линии + сетка + 3D визор)
+     * 3 - Вулканическая Магма (Трещины лавы + пульсирующее ядро + камни)
+     * 4 - Код Матрицы (Бегущие цифровые потоки + голографические кольца)
+     * 5 - Космическая Туманность (Звёздное небо внутри контура + орбиты)
+     * 6 - Королевский Мрамор с 24К Золотыми Прожилками + Золотой Нимб
+     * 7 - Vantablack Монолит Пустоты (Поглощение света + неоновый Rim-контур)
+     * 8 - Био-Плазменный Реактор (Пульсирующие радиоактивные вены)
+     * 9 - 🎃 ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ: Жнец Тыквенного Пампа (Адское пламя + 3D рога + огненные сферы)
+     * 10 - Крио-Абсолют (Кристаллическая изморозь + ледяные осколки)
+     * 11 - Квантовый Глитч (Хроматический фазовый сдвиг)
+     */
     const SKINS_DATA = [
-      { id: 'indigo_107', name: 'Оригинал GLB [#107]', desc: 'Оригинальная PBR-текстура вашей 3D-модели без фильтра.', cost: 0, minPhase: 1, preserveOriginalTexture: true, shirt: 0xffffff, metal: 0.08, rough: 0.52, emissive: 0x000000, wire: false, swatch: '#6a78d1' },
-      { id: 'office_sky', name: 'Деловой Голубой [Офис]', desc: 'Свежий небесно-голубой оттенок.', cost: 250, minPhase: 3, shirt: 0x7dd3fc, metal: 0.1, rough: 0.5, emissive: 0x000000, wire: false, swatch: '#38bdf8' },
-      { id: 'charcoal_stretch', name: 'Угольный Стретч [Noir]', desc: 'Строгий тёмно-графитовый тон.', cost: 900, minPhase: 8, shirt: 0x52525b, metal: 0.25, rough: 0.4, emissive: 0x000000, wire: false, swatch: '#3f3f46' },
-      { id: 'tactical_olive', name: 'Тактический Олива [Милитари]', desc: 'Армейский оливковый оттенок.', cost: 2800, minPhase: 15, shirt: 0x84cc16, metal: 0.15, rough: 0.55, emissive: 0x000000, wire: false, swatch: '#4d7c0f' },
-      { id: 'crimson_pump', name: 'Багровый Памп [Овердрайв]', desc: 'Оттенок артериального пампа.', cost: 8500, minPhase: 25, shirt: 0xf87171, metal: 0.18, rough: 0.44, emissive: 0x220000, wire: false, swatch: '#dc2626' },
-      { id: 'emerald_venom', name: 'Изумрудный Токсин [Хим-Лаб]', desc: 'Изумрудное био-свечение.', cost: 25000, minPhase: 40, shirt: 0x34d399, metal: 0.25, rough: 0.38, emissive: 0x022c22, wire: false, swatch: '#10b981' },
-      { id: 'royal_velvet', name: 'Королевский Пурпур [VIP]', desc: 'Благородный фиолетовый спектр.', cost: 75000, minPhase: 60, shirt: 0xc084fc, metal: 0.22, rough: 0.45, emissive: 0x1e0038, wire: false, swatch: '#7c3aed' },
-      { id: 'copper_mech', name: 'Медный Механоид [Стимпанк]', desc: 'Бронзово-медный металлик.', cost: 220000, minPhase: 85, shirt: 0xfb923c, metal: 0.72, rough: 0.28, emissive: 0x1f0d00, wire: false, swatch: '#d97706' },
-      { id: 'chrome_mk4', name: 'Хромовый Титан [MK-IV]', desc: 'Зеркальный жидкий металл.', cost: 650000, minPhase: 120, shirt: 0xe2e8f0, metal: 0.88, rough: 0.18, emissive: 0x091326, wire: false, swatch: '#94a3b8' },
-      { id: 'arctic_cryo', name: 'Крио-Монолит [Абсолютный Ноль]', desc: 'Ледяная броня из жидкого азота.', cost: 1800000, minPhase: 160, shirt: 0x38bdf8, metal: 0.55, rough: 0.24, emissive: 0x002845, wire: false, swatch: '#38bdf8' },
-      { id: 'cyber_2099', name: 'Кибер-Синтетик [Неон 2099]', desc: 'Голографическая полигональная сетка.', cost: 5500000, minPhase: 210, shirt: 0x00f0ff, metal: 0.5, rough: 0.28, emissive: 0x003e4d, wire: true, swatch: '#00f0ff' },
-      { id: 'lava_magma', name: 'Лавовый Джаггернаут [Вулкан]', desc: 'Раскалённая магма.', cost: 16000000, minPhase: 260, shirt: 0xf97316, metal: 0.35, rough: 0.45, emissive: 0x450a0a, wire: false, swatch: '#f97316' },
-      { id: 'gold_olymp', name: 'Золотой Олимпиец [Аурум 24К]', desc: 'Скульптурное золото 999 пробы.', cost: 48000000, minPhase: 320, shirt: 0xfbbf24, metal: 0.85, rough: 0.2, emissive: 0x241700, wire: false, swatch: '#fbbf24' },
-      { id: 'gamma_mutant', name: 'Био-Мутант [Гамма-Ядро]', desc: 'Гамма-гипертрофия.', cost: 140000000, minPhase: 380, shirt: 0x4ade80, metal: 0.15, rough: 0.48, emissive: 0x052e16, wire: false, swatch: '#22c55e' },
-      { id: 'matrix_code', name: 'Матричный Архитектор [Код]', desc: 'Цифровая каркасная симуляция.', cost: 420000000, minPhase: 450, shirt: 0x10b981, metal: 0.4, rough: 0.3, emissive: 0x065f46, wire: true, swatch: '#10b981' },
-      { id: 'amethyst_geode', name: 'Аметистовый Кристалл [Кварц]', desc: 'Кристаллическая решётка.', cost: 1250000000, minPhase: 520, shirt: 0xe879f9, metal: 0.7, rough: 0.18, emissive: 0x3b0764, wire: false, swatch: '#d946ef' },
-      { id: 'blood_moon', name: 'Алый Берсерк [Кровавая Луна]', desc: 'Багровая броня.', cost: 3800000000, minPhase: 590, shirt: 0xf43f5e, metal: 0.5, rough: 0.34, emissive: 0x4c0519, wire: false, swatch: '#f43f5e' },
-      { id: 'quantum_ghost', name: 'Квантовый Призрак [Сдвиг]', desc: 'Эфирная материя вне времени.', cost: 11000000000, minPhase: 660, shirt: 0x60a5fa, metal: 0.6, rough: 0.25, emissive: 0x1e3a8a, wire: true, swatch: '#60a5fa' },
-      { id: 'obsidian_void', name: 'Монолит Пустоты [Vantablack]', desc: 'Тёмная материя с неоновым контуром.', cost: 35000000000, minPhase: 730, shirt: 0x6366f1, metal: 0.75, rough: 0.2, emissive: 0x1e1b4b, wire: true, swatch: '#6366f1' },
-      { id: 'solar_flare', name: 'Солнечная Корона [Гелиос]', desc: 'Термоядерная плазма.', cost: 105000000000, minPhase: 800, shirt: 0xfde047, metal: 0.65, rough: 0.22, emissive: 0x78350f, wire: false, swatch: '#facc15' },
-      { id: 'nebula_cosmos', name: 'Галактическая Туманность', desc: 'Глубокий ультрамарин.', cost: 320000000000, minPhase: 860, shirt: 0x818cf8, metal: 0.7, rough: 0.25, emissive: 0x312e81, wire: true, swatch: '#818cf8' },
-      { id: 'antimatter_core', name: 'Антиматерия [Коллайдер]', desc: 'Инвертированный спектр.', cost: 980000000000, minPhase: 920, shirt: 0xf472b6, metal: 0.85, rough: 0.18, emissive: 0x500724, wire: true, swatch: '#ec4899' },
-      { id: 'divine_marble', name: 'Мраморный Титан [Пантеон]', desc: 'Белый каррарский мрамор.', cost: 3000000000000, minPhase: 965, shirt: 0xf8fafc, metal: 0.35, rough: 0.3, emissive: 0x1e293b, wire: false, swatch: '#e2e8f0' },
-      { id: 'omega_ychuchacovich', name: 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ [Ω]', desc: 'Финальная форма 1000-й фазы.', cost: 10000000000000, minPhase: 1000, shirt: 0x00f0ff, metal: 0.9, rough: 0.15, emissive: 0x1e3a8a, wire: true, swatch: '#00f0ff' }
+      {
+        id: 'halloween_cursed_500',
+        name: '🎃 ЖНЕЦ ТЫКВЕННОГО ПАМПА [ДО 1 НОЯБРЯ]',
+        desc: 'ЭКСКЛЮЗИВ: Шейдер проклятого пламени, огненные жилы, 3D-демонические рога и сферы адского огня!',
+        cost: 0,
+        minPhase: 500,
+        isExclusiveNov1: true,
+        shaderMode: 9,
+        colorA: 0xff5500,
+        colorB: 0x7e22ce,
+        metal: 0.45,
+        rough: 0.28,
+        attachment: 'halloween_lord',
+        swatch: 'linear-gradient(135deg, #f97316 0%, #7e22ce 60%, #090d16 100%)'
+      },
+      {
+        id: 'indigo_107',
+        name: 'Оригинал GLB [#107]',
+        desc: 'Оригинальная PBR-текстура вашей 3D-модели без шейдерных модификаций.',
+        cost: 0,
+        minPhase: 1,
+        preserveOriginalTexture: true,
+        shaderMode: 0,
+        colorA: 0xffffff,
+        colorB: 0x6366f1,
+        metal: 0.08,
+        rough: 0.52,
+        attachment: 'none',
+        swatch: 'linear-gradient(135deg, #6a78d1, #312e81)'
+      },
+      {
+        id: 'office_sky',
+        name: 'Кobalтовый Импульс [Электро-Контур]',
+        desc: 'Энергетический Френель-контур вокруг мышц и вращающийся 3D-индикатор.',
+        cost: 250,
+        minPhase: 3,
+        shaderMode: 1,
+        colorA: 0x38bdf8,
+        colorB: 0x1d4ed8,
+        metal: 0.35,
+        rough: 0.32,
+        attachment: 'energy_ring',
+        swatch: 'linear-gradient(135deg, #38bdf8, #1d4ed8)'
+      },
+      {
+        id: 'charcoal_stretch',
+        name: 'Карбоновый Стелс [Тактическая Броня]',
+        desc: 'Диагональное переплетение углеродного волокна с титановым отливом.',
+        cost: 900,
+        minPhase: 8,
+        shaderMode: 2,
+        colorA: 0x94a3b8,
+        colorB: 0x0f172a,
+        metal: 0.65,
+        rough: 0.25,
+        attachment: 'none',
+        swatch: 'linear-gradient(135deg, #475569, #090d16)'
+      },
+      {
+        id: 'tactical_olive',
+        name: 'Изумрудный Био-Реактор [Токсин]',
+        desc: 'Пульсирующие био-люминесцентные артерии и парящие капсулы синтеза.',
+        cost: 2800,
+        minPhase: 15,
+        shaderMode: 8,
+        colorA: 0x10b981,
+        colorB: 0x064e3b,
+        metal: 0.3,
+        rough: 0.35,
+        attachment: 'bio_orbs',
+        swatch: 'linear-gradient(135deg, #10b981, #064e3b)'
+      },
+      {
+        id: 'crimson_pump',
+        name: 'Артериальный Овердрайв [Гипер-Памп]',
+        desc: 'Термо-карта мышечного напряжения с пульсацией в ритме сердцебиения.',
+        cost: 8500,
+        minPhase: 25,
+        shaderMode: 3,
+        colorA: 0xef4444,
+        colorB: 0x7f1d1d,
+        metal: 0.28,
+        rough: 0.34,
+        attachment: 'crimson_aura',
+        swatch: 'linear-gradient(135deg, #ef4444, #450a0a)'
+      },
+      {
+        id: 'emerald_venom',
+        name: 'Кислотный Мутаген [Хим-Лаборатория]',
+        desc: 'Органический шейдер клеточного деления и радиоактивный 3D-ореол.',
+        cost: 25000,
+        minPhase: 40,
+        shaderMode: 8,
+        colorA: 0x84cc16,
+        colorB: 0x14532d,
+        metal: 0.25,
+        rough: 0.3,
+        attachment: 'bio_orbs',
+        swatch: 'linear-gradient(135deg, #a3e635, #14532d)'
+      },
+      {
+        id: 'royal_velvet',
+        name: 'Аметистовый Хамелеон [Перламутр]',
+        desc: 'Двухцветный оптический перелив от глубокого индиго к неоновой фуксии.',
+        cost: 75000,
+        minPhase: 60,
+        shaderMode: 1,
+        colorA: 0xe879f9,
+        colorB: 0x3b0764,
+        metal: 0.55,
+        rough: 0.22,
+        attachment: 'crystal_shards',
+        swatch: 'linear-gradient(135deg, #e879f9, #3b0764)'
+      },
+      {
+        id: 'copper_mech',
+        name: 'Гефест-Автоматон [Раскалённая Бронза]',
+        desc: 'Кованая медь с внутренним горнилом и вращающимися шестернями-кольцами.',
+        cost: 220000,
+        minPhase: 85,
+        shaderMode: 3,
+        colorA: 0xf59e0b,
+        colorB: 0x451a03,
+        metal: 0.82,
+        rough: 0.24,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #f59e0b, #78350f)'
+      },
+      {
+        id: 'chrome_mk4',
+        name: 'Жидкий Терминатор [T-1000 Хром]',
+        desc: 'Зеркальный ртутный сплав с радужным преломлением света и 3D-визором.',
+        cost: 650000,
+        minPhase: 120,
+        shaderMode: 1,
+        colorA: 0xf8fafc,
+        colorB: 0x38bdf8,
+        metal: 0.96,
+        rough: 0.1,
+        attachment: 'cyber_visor',
+        swatch: 'linear-gradient(135deg, #f8fafc, #64748b)'
+      },
+      {
+        id: 'arctic_cryo',
+        name: 'Крио-Монолит [Абсолютный Ноль]',
+        desc: 'Морозный узор вечной мерзлоты и парящие вокруг тела 3D-осколки льда.',
+        cost: 1800000,
+        minPhase: 160,
+        shaderMode: 10,
+        colorA: 0x7dd3fc,
+        colorB: 0x0c4a6e,
+        metal: 0.6,
+        rough: 0.18,
+        attachment: 'cryo_shards',
+        swatch: 'linear-gradient(135deg, #e0f2fe, #0284c7)'
+      },
+      {
+        id: 'cyber_2099',
+        name: 'Кибер-Синтетик [Неон 2099]',
+        desc: 'Бегущие лазерные линии сканирования и 3D-голографический визор на лице.',
+        cost: 5500000,
+        minPhase: 210,
+        shaderMode: 2,
+        colorA: 0x00f0ff,
+        colorB: 0x1e1b4b,
+        metal: 0.55,
+        rough: 0.22,
+        attachment: 'cyber_visor',
+        swatch: 'linear-gradient(135deg, #00f0ff, #4f46e5)'
+      },
+      {
+        id: 'lava_magma',
+        name: 'Вулканический Титан [Тектоника]',
+        desc: 'Треснувший базальт с текущей внутри лавой и парящими огненными глыбами.',
+        cost: 16000000,
+        minPhase: 260,
+        shaderMode: 3,
+        colorA: 0xff6b00,
+        colorB: 0x1c1917,
+        metal: 0.4,
+        rough: 0.42,
+        attachment: 'magma_rocks',
+        swatch: 'linear-gradient(135deg, #ff6b00, #27272a)'
+      },
+      {
+        id: 'gold_olymp',
+        name: 'Золотой Олимпиец [Аурум 24К]',
+        desc: 'Белый мрамор с литыми золотыми жилами и парящим золотым венцом над головой.',
+        cost: 48000000,
+        minPhase: 320,
+        shaderMode: 6,
+        colorA: 0xfbbf24,
+        colorB: 0xf8fafc,
+        metal: 0.88,
+        rough: 0.18,
+        attachment: 'gold_halo',
+        swatch: 'linear-gradient(135deg, #fbbf24, #fef08a)'
+      },
+      {
+        id: 'gamma_mutant',
+        name: 'Гамма-Коллайдер [Сверх-Мутация]',
+        desc: 'Искажение био-поля с неоново-зелёными разрядами и плазменными сферами.',
+        cost: 140000000,
+        minPhase: 380,
+        shaderMode: 8,
+        colorA: 0x22c55e,
+        colorB: 0x3b0764,
+        metal: 0.35,
+        rough: 0.32,
+        attachment: 'bio_orbs',
+        swatch: 'linear-gradient(135deg, #22c55e, #581c87)'
+      },
+      {
+        id: 'matrix_code',
+        name: 'Матричный Архитектор [Исходный Код]',
+        desc: 'Вертикальные потоки цифрового кода по рельефу мышц и 3D-кольца данных.',
+        cost: 420000000,
+        minPhase: 450,
+        shaderMode: 4,
+        colorA: 0x10b981,
+        colorB: 0x022c22,
+        metal: 0.45,
+        rough: 0.25,
+        attachment: 'matrix_rings',
+        swatch: 'linear-gradient(135deg, #10b981, #022c22)'
+      },
+      {
+        id: 'amethyst_geode',
+        name: 'Призма Кварца [Кристаллический Титан]',
+        desc: 'Многогранное спектральное преломление и парящие кристаллы аметиста.',
+        cost: 1250000000,
+        minPhase: 520,
+        shaderMode: 10,
+        colorA: 0xd946ef,
+        colorB: 0x2e1065,
+        metal: 0.78,
+        rough: 0.15,
+        attachment: 'crystal_shards',
+        swatch: 'linear-gradient(135deg, #f0abfc, #581c87)'
+      },
+      {
+        id: 'blood_moon',
+        name: 'Алый Берсерк [Затмение]',
+        desc: 'Чёрный обсидиан с багровым контурным свечением и кровавым ореолом.',
+        cost: 3800000000,
+        minPhase: 590,
+        shaderMode: 7,
+        colorA: 0xf43f5e,
+        colorB: 0x09090b,
+        metal: 0.5,
+        rough: 0.28,
+        attachment: 'crimson_aura',
+        swatch: 'linear-gradient(135deg, #f43f5e, #09090b)'
+      },
+      {
+        id: 'quantum_ghost',
+        name: 'Квантовый Глитч [Фазовый Сдвиг]',
+        desc: 'Голографическая интерференция волн и квантовые кольца телепортации.',
+        cost: 11000000000,
+        minPhase: 660,
+        shaderMode: 11,
+        colorA: 0x38bdf8,
+        colorB: 0xf43f5e,
+        metal: 0.65,
+        rough: 0.2,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #38bdf8, #f43f5e)'
+      },
+      {
+        id: 'obsidian_void',
+        name: 'Монолит Пустоты [Vantablack]',
+        desc: 'Поглощает 99% света, оставляя только электрический фиолетовый контур.',
+        cost: 35000000000,
+        minPhase: 730,
+        shaderMode: 7,
+        colorA: 0x818cf8,
+        colorB: 0x030712,
+        metal: 0.8,
+        rough: 0.15,
+        attachment: 'void_monoliths',
+        swatch: 'linear-gradient(135deg, #6366f1, #020617)'
+      },
+      {
+        id: 'solar_flare',
+        name: 'Солнечная Корона [Звезда Гелиос]',
+        desc: 'Термоядерная плазма на поверхности тела и солнечная корона вокруг головы.',
+        cost: 105000000000,
+        minPhase: 800,
+        shaderMode: 3,
+        colorA: 0xfde047,
+        colorB: 0xd97706,
+        metal: 0.7,
+        rough: 0.18,
+        attachment: 'solar_crown',
+        swatch: 'linear-gradient(135deg, #fef08a, #ea580c)'
+      },
+      {
+        id: 'nebula_cosmos',
+        name: 'Галактическая Туманность [Вечность]',
+        desc: 'Живое звёздное скопление и пульсирующие созвездия прямо внутри тела.',
+        cost: 320000000000,
+        minPhase: 860,
+        shaderMode: 5,
+        colorA: 0x38bdf8,
+        colorB: 0x4c1d95,
+        metal: 0.75,
+        rough: 0.2,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #38bdf8, #4c1d95)'
+      },
+      {
+        id: 'antimatter_core',
+        name: 'Антиматерия [Горизонт Событий]',
+        desc: 'Инвертированный цветовой спектр с гравитационными кольцами сингулярности.',
+        cost: 980000000000,
+        minPhase: 920,
+        shaderMode: 11,
+        colorA: 0xec4899,
+        colorB: 0x020617,
+        metal: 0.88,
+        rough: 0.14,
+        attachment: 'void_monoliths',
+        swatch: 'linear-gradient(135deg, #ec4899, #090d16)'
+      },
+      {
+        id: 'divine_marble',
+        name: 'Император Пантеона [Божественный Мрамор]',
+        desc: 'Античный белый мрамор с золотыми молниями и двойным венцом триумфатора.',
+        cost: 3000000000000,
+        minPhase: 965,
+        shaderMode: 6,
+        colorA: 0xfacc15,
+        colorB: 0xe2e8f0,
+        metal: 0.5,
+        rough: 0.25,
+        attachment: 'gold_halo',
+        swatch: 'linear-gradient(135deg, #f8fafc, #eab308)'
+      },
+      {
+        id: 'omega_ychuchacovich',
+        name: 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ [Ω-1000]',
+        desc: 'Финальная форма 1000-й фазы: квантовая плазма, 3D-крылья архонта и корона абсолюта.',
+        cost: 10000000000000,
+        minPhase: 1000,
+        shaderMode: 5,
+        colorA: 0x00f0ff,
+        colorB: 0xfbbf24,
+        metal: 0.92,
+        rough: 0.12,
+        attachment: 'omega_ascended',
+        swatch: 'linear-gradient(135deg, #00f0ff, #fbbf24, #7c3aed)'
+      }
     ];
 
     const UPGRADES_DATA = [
@@ -1070,31 +1419,19 @@
     }
 
     let state = getDefaultState();
-    /**
-     * Структура единого профиля currentAccount:
-     * {
-     *   masterId: 'tg_12345' | 'google_98765',
-     *   displayName: 'Имя',
-     *   avatarUrl: '...',
-     *   providers: {
-     *     telegram: { key: 'tg_123', id: '123', name: '...', username: '...' } | null,
-     *     google:   { key: 'google_987', id: '987', name: '...', email: '...', picture: '...' } | null
-     *   }
-     * }
-     */
     let currentAccount = null;
     let activeTab = 'upgrades';
     let isDrawerOpen = false;
     let currentDeviceMode = 'pc';
     let autoSpin = false;
     let studioLightPreset = 0;
+    let headTrackingEnabled = true;
     const shaderHypertrophyEnabled = true;
 
     function sanitizeFirebaseKey(key) {
       return String(key).replace(/[.#$[\]/]/g, '_');
     }
 
-    // Умное объединение двух игровых состояний (сохраняет максимум прогресса и все скины)
     function mergeGameStates(stateA, stateB) {
       const a = stateA || getDefaultState();
       const b = stateB || getDefaultState();
@@ -1139,9 +1476,7 @@
       if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
       if (stepEl && statusText) stepEl.textContent = statusText;
       if (titleEl && titleText) titleEl.textContent = titleText;
-      if (spinner) {
-        spinner.classList.toggle('animate-spin', !stopSpinner);
-      }
+      if (spinner) spinner.classList.toggle('animate-spin', !stopSpinner);
     }
 
     function hideLoaderModal() {
@@ -1203,7 +1538,6 @@
         const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
         const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
 
-        // 1. Сохраняем единый профиль и прогресс в /users/{masterKey}
         await fetch(`${cleanUrl}/users/${masterKey}.json`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -1214,7 +1548,6 @@
           })
         });
 
-        // 2. Обновляем таблицу привязок /identity_map/{providerKey} -> masterId
         if (currentAccount.providers?.telegram?.key) {
           const tgKey = sanitizeFirebaseKey(currentAccount.providers.telegram.key);
           await fetch(`${cleanUrl}/identity_map/${tgKey}.json`, {
@@ -1279,24 +1612,16 @@
       return false;
     }
 
-    /**
-     * ГЛАВНАЯ ФУНКЦИЯ ВХОДА И ПРИВЯЗКИ ВТОРОГО СЕРВИСА (TG + GOOGLE -> ЕДИНЫЙ ПРОФИЛЬ)
-     * @param {'telegram'|'google'} providerType
-     * @param {Object} providerInfo { key, id, name, username, email, avatar }
-     */
     async function authenticateOrLinkProvider(providerType, providerInfo) {
       const providerKey = sanitizeFirebaseKey(providerInfo.key);
 
-      // Проверяем в Firebase, был ли этот сервис уже привязан к какому-то masterId
       let mappedMasterId = providerKey;
       const mapEntry = await fetchCloudNode(`identity_map/${providerKey}`);
       if (mapEntry && mapEntry.masterId) {
         mappedMasterId = mapEntry.masterId;
       }
 
-      // Сценарий 1: Пользователь УЖЕ вошел в аккаунт -> ПРИВЯЗЫВАЕМ второй сервис к текущему профилю!
       if (currentAccount) {
-        // Если у привязываемого сервиса были старые сохранения в облаке — бережно объединяем прогресс
         const existingOtherCloud = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
         if (existingOtherCloud && existingOtherCloud.gameState) {
           state = mergeGameStates(state, existingOtherCloud.gameState);
@@ -1319,7 +1644,6 @@
         return;
       }
 
-      // Сценарий 2: Пользователь НЕ вошел -> ищем единый профиль в облаке по mappedMasterId
       const cloudRecord = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
       if (cloudRecord && cloudRecord.gameState) {
         state = mergeGameStates(state, cloudRecord.gameState);
@@ -1345,7 +1669,6 @@
       showToast(`✅ ВХОД ВЫПОЛНЕН: ${currentAccount.displayName}`, 'border-emerald-400 text-emerald-300');
     }
 
-    // Отвязка одного из сервисов (доступна, если привязаны оба)
     async function unlinkProvider(providerType) {
       if (!currentAccount || !currentAccount.providers) return;
       const hasTg = !!currentAccount.providers.telegram;
@@ -1360,7 +1683,6 @@
       showToast(`🔓 Сервис ${providerType.toUpperCase()} отвязан от профиля`, 'border-slate-400 text-slate-300');
     }
 
-    // Выход из аккаунта
     function logoutAccount() {
       currentAccount = null;
       localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -1377,7 +1699,6 @@
       const idEl = document.getElementById('account-user-id');
       const statusEl = document.getElementById('account-sync-status');
 
-      // Элементы в Центре Аккаунта (модальное окно)
       const modalProfileCard = document.getElementById('modal-profile-card');
       const modalUserName = document.getElementById('modal-user-name');
       const modalMasterId = document.getElementById('modal-user-master-id');
@@ -1390,7 +1711,6 @@
       const googleInfo = currentAccount?.providers?.google || null;
       const linkedCount = (tgInfo ? 1 : 0) + (googleInfo ? 1 : 0);
 
-      // Обновление слота Telegram
       const tgCard = document.getElementById('slot-card-telegram');
       const tgPill = document.getElementById('tg-status-pill');
       const tgSub = document.getElementById('tg-account-subtext');
@@ -1430,7 +1750,6 @@
         }
       }
 
-      // Обновление слота Google
       const gCard = document.getElementById('slot-card-google');
       const gPill = document.getElementById('google-status-pill');
       const gSub = document.getElementById('google-account-subtext');
@@ -1511,7 +1830,6 @@
       }
     }
 
-    // Привязываем обработчик к глобальному window.onTelegramAuth из <head>
     window.__handleTelegramLogin = (tgUser) => {
       if (!tgUser || !tgUser.id) return;
       const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || `TG_${tgUser.id}`;
@@ -1529,7 +1847,6 @@
       window.__pendingTelegramUser = null;
     }
 
-    // Проверка URL-параметров, если Telegram вернул редирект (?id=...&first_name=...&hash=...)
     function checkTelegramRedirectParams() {
       try {
         const params = new URLSearchParams(window.location.search);
@@ -1557,7 +1874,6 @@
         window.__handleTelegramLogin(window.Telegram.WebApp.initDataUnsafe.user);
       }
 
-      // Официальный виджет Telegram (@icucacidbot)
       const tgContainer = document.getElementById('telegram-widget-container');
       if (tgContainer && AUTH_CONFIG.TELEGRAM_BOT_USERNAME && !tgWidgetRendered) {
         tgWidgetRendered = true;
@@ -1574,7 +1890,6 @@
         tgContainer.appendChild(script);
       }
 
-      // Официальный виджет Google Identity Services
       const gBtn = document.getElementById('google-gsi-button');
       if (gBtn && AUTH_CONFIG.GOOGLE_CLIENT_ID && !googleWidgetRendered) {
         if (window.google?.accounts?.id) {
@@ -1720,7 +2035,7 @@
     }
 
     /*************************************************************************
-     * 4. THREE.JS 0.160.0 СЦЕНА И ПРЯМАЯ ЗАГРУЗКА MODEL.GLB (БЕЗ ИЗМЕНЕНИЙ)
+     * 4. THREE.JS 0.160.0 СЦЕНА, СЛЕЖЕНИЕ ГОЛОВЫ И ПРОЦЕДУРНЫЕ ШЕЙДЕРЫ СКИНОВ
      *************************************************************************/
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
@@ -1794,30 +2109,74 @@
     const glbContainerGroup = new THREE.Group();
     characterPivot.add(glbContainerGroup);
 
+    // Группа для 3D-аксессуаров скинов (тело + голова, поворачивающаяся за курсором)
+    const skinBodyAttachments = new THREE.Group();
+    characterPivot.add(skinBodyAttachments);
+
+    const skinHeadAttachments = new THREE.Group();
+    // Точка шеи в масштабированном пространстве модели (высота ~3.8, шея на ~3.02)
+    skinHeadAttachments.position.set(0, 3.02, 0.04);
+    characterPivot.add(skinHeadAttachments);
+
     const customShaderUniformsList = [];
     let loadedGLBMeshes = [];
 
-    function attachHypertrophyShader(material, yMin, yMax) {
+    // Шейдер: 1) Гипертрофия мышц, 2) Слежение головы за курсором, 3) 11 процедурных эффектов скинов
+    function attachHypertrophyAndSkinShader(material, boxMin, boxMax) {
+      const yMin = boxMin.y;
+      const yMax = boxMax.y;
       const ySpan = Math.max(0.001, yMax - yMin);
+      const centerX = (boxMin.x + boxMax.x) * 0.5;
+      const centerZ = (boxMin.z + boxMax.z) * 0.5;
+      const neckY = yMin + ySpan * 0.785;
+
       material.onBeforeCompile = (shader) => {
         shader.uniforms.uHypertrophy = { value: 0.0 };
         shader.uniforms.uPumpPulse = { value: 0.0 };
-        shader.uniforms.uShaderActive = { value: shaderHypertrophyEnabled ? 1.0 : 0.0 };
+        shader.uniforms.uShaderActive = { value: 1.0 };
+        shader.uniforms.uHeadLook = { value: new THREE.Vector2(0, 0) };
+        shader.uniforms.uTime = { value: 0.0 };
+        shader.uniforms.uSkinMode = { value: 0 };
+        shader.uniforms.uSkinColorA = { value: new THREE.Color(0xffffff) };
+        shader.uniforms.uSkinColorB = { value: new THREE.Color(0x6366f1) };
         customShaderUniformsList.push(shader.uniforms);
 
         shader.vertexShader = `
           uniform float uHypertrophy;
           uniform float uPumpPulse;
           uniform float uShaderActive;
+          uniform vec2 uHeadLook;
+          varying vec3 vCustomLocalPos;
+          varying vec3 vCustomNormal;
+          varying float vNormY;
         ` + shader.vertexShader;
+
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <beginnormal_vertex>',
+          `
+          #include <beginnormal_vertex>
+          float normY_n = clamp((position.y - (${yMin.toFixed(4)})) / (${ySpan.toFixed(4)}), 0.0, 1.0);
+          float headMask_n = smoothstep(0.755, 0.835, normY_n);
+          if (headMask_n > 0.001) {
+            float pAng = uHeadLook.y * headMask_n;
+            float yAng = uHeadLook.x * headMask_n;
+            float cp = cos(pAng); float sp = sin(pAng);
+            float cy = cos(yAng); float sy = sin(yAng);
+            vec3 n1 = vec3(objectNormal.x, objectNormal.y * cp - objectNormal.z * sp, objectNormal.y * sp + objectNormal.z * cp);
+            objectNormal = vec3(n1.x * cy + n1.z * sy, n1.y, -n1.x * sy + n1.z * cy);
+          }
+          `
+        );
 
         shader.vertexShader = shader.vertexShader.replace(
           '#include <begin_vertex>',
           `
           #include <begin_vertex>
+          float normY = clamp((position.y - (${yMin.toFixed(4)})) / (${ySpan.toFixed(4)}), 0.0, 1.0);
+          vNormY = normY;
+
           if (uShaderActive > 0.5) {
-            float normY = clamp((position.y - (${yMin.toFixed(4)})) / (${ySpan.toFixed(4)}), 0.0, 1.0);
-            float upperBodyMask = smoothstep(0.38, 0.56, normY) * (1.0 - smoothstep(0.75, 0.84, normY));
+            float upperBodyMask = smoothstep(0.38, 0.56, normY) * (1.0 - smoothstep(0.74, 0.82, normY));
             float legMuscleMask = smoothstep(0.14, 0.28, normY) * (1.0 - smoothstep(0.38, 0.46, normY));
             float muscleMask = upperBodyMask + legMuscleMask * 0.45;
 
@@ -1826,10 +2185,249 @@
             transformed.x *= 1.0 + (uHypertrophy * 0.22 + uPumpPulse * 0.06) * upperBodyMask;
             transformed.z *= 1.0 + (uHypertrophy * 0.18 + uPumpPulse * 0.06) * upperBodyMask;
           }
+
+          // Плавный поворот головы и шеи за курсором мыши
+          float headMask = smoothstep(0.755, 0.835, normY);
+          if (headMask > 0.001) {
+            vec3 neckPivot = vec3(${centerX.toFixed(4)}, ${neckY.toFixed(4)}, ${centerZ.toFixed(4)});
+            vec3 rel = transformed - neckPivot;
+
+            float pAng = uHeadLook.y * headMask;
+            float cp = cos(pAng); float sp = sin(pAng);
+            vec3 relP = vec3(rel.x, rel.y * cp - rel.z * sp, rel.y * sp + rel.z * cp);
+
+            float yAng = uHeadLook.x * headMask;
+            float cy = cos(yAng); float sy = sin(yAng);
+            vec3 relY = vec3(relP.x * cy + relP.z * sy, relP.y, -relP.x * sy + relP.z * cy);
+
+            transformed = neckPivot + relY;
+          }
+
+          vCustomLocalPos = transformed;
+          vCustomNormal = normalize(objectNormal);
+          `
+        );
+
+        shader.fragmentShader = `
+          uniform float uTime;
+          uniform int uSkinMode;
+          uniform vec3 uSkinColorA;
+          uniform vec3 uSkinColorB;
+          varying vec3 vCustomLocalPos;
+          varying vec3 vCustomNormal;
+          varying float vNormY;
+        ` + shader.fragmentShader;
+
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <tonemapping_fragment>',
+          `
+          if (uSkinMode > 0) {
+            vec3 p = vCustomLocalPos * 14.0;
+            float fresnel = pow(1.0 - abs(dot(normalize(vNormal), vec3(0.0, 0.0, 1.0))), 2.2);
+
+            if (uSkinMode == 1) {
+              // Перламутровый Хамелеон / Жидкий Хром
+              vec3 irid = mix(uSkinColorB, uSkinColorA, fresnel);
+              irid += 0.18 * sin(vec3(1.0, 2.0, 3.0) + vNormY * 8.0 + uTime * 2.2);
+              gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * irid * 1.45 + irid * 0.25, 0.82);
+            }
+            else if (uSkinMode == 2) {
+              // Кибер-Сканнер 2099 (Голографическая сетка + бегущий лазер)
+              float grid = step(0.92, fract(vCustomLocalPos.x * 38.0)) + step(0.92, fract(vCustomLocalPos.y * 38.0));
+              float scan = smoothstep(0.06, 0.0, abs(fract(vNormY * 2.0 - uTime * 0.45) - 0.5));
+              vec3 base = gl_FragColor.rgb * uSkinColorB * 1.6;
+              gl_FragColor.rgb = base + uSkinColorA * ( clamp(grid, 0.0, 1.0) * 0.45 + scan * 0.75 + fresnel * 0.55 );
+            }
+            else if (uSkinMode == 3) {
+              // Вулканическая Магма (Трещины лавы)
+              float crackPattern = abs(sin(p.x * 1.7 + sin(p.y * 2.3 + uTime * 1.5)) * cos(p.y * 2.1 + sin(p.z * 1.9)));
+              float lava = smoothstep(0.24, 0.02, crackPattern);
+              vec3 rock = gl_FragColor.rgb * uSkinColorB * 1.3;
+              gl_FragColor.rgb = mix(rock, uSkinColorA * (1.35 + 0.35 * sin(uTime * 4.0)), lava) + uSkinColorA * fresnel * 0.35;
+            }
+            else if (uSkinMode == 4) {
+              // Код Матрицы (Бегущие цифровые потоки)
+              float col = floor(vCustomLocalPos.x * 55.0);
+              float speed = 1.5 + fract(sin(col * 12.9898) * 43758.5453) * 2.0;
+              float rain = fract(vNormY * 6.0 + uTime * speed + sin(col));
+              float charMask = step(0.55, fract(vNormY * 65.0)) * smoothstep(0.85, 0.0, rain);
+              vec3 darkBase = gl_FragColor.rgb * uSkinColorB * 0.9;
+              gl_FragColor.rgb = darkBase + uSkinColorA * (charMask * 0.95 + fresnel * 0.45);
+            }
+            else if (uSkinMode == 5) {
+              // Космическая Туманность + Звёзды
+              float nebula = 0.5 + 0.5 * sin(p.x * 0.8 + uTime) * cos(p.y * 0.9 - uTime * 0.7);
+              float starHash = fract(sin(dot(floor(p * 4.5), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+              float stars = step(0.986, starHash) * (0.6 + 0.4 * sin(uTime * 6.0 + starHash * 20.0));
+              vec3 spaceCol = mix(uSkinColorB, uSkinColorA, nebula * 0.75 + fresnel * 0.5);
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.35 + spaceCol * 0.75 + vec3(1.0, 0.98, 0.9) * stars * 1.6;
+            }
+            else if (uSkinMode == 6) {
+              // Мрамор и 24К Золотые Прожилки
+              float vein = abs(sin(p.x * 1.4 + sin(p.y * 2.2 + p.z * 1.8)));
+              float goldLine = smoothstep(0.14, 0.01, vein);
+              vec3 marble = gl_FragColor.rgb * uSkinColorB * 1.1;
+              gl_FragColor.rgb = mix(marble, uSkinColorA * 1.4, goldLine) + uSkinColorA * fresnel * 0.4;
+            }
+            else if (uSkinMode == 7) {
+              // Vantablack Монолит Пустоты + Неоновый Rim
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.08 + uSkinColorA * pow(fresnel, 1.65) * 1.45;
+            }
+            else if (uSkinMode == 8) {
+              // Био-Плазменный Реактор
+              float veins = smoothstep(0.18, 0.0, abs(sin(p.x * 2.5 + uTime * 2.0) * sin(p.y * 2.5 - uTime)));
+              gl_FragColor.rgb = gl_FragColor.rgb * uSkinColorB * 1.3 + uSkinColorA * (veins * 0.85 + fresnel * 0.5);
+            }
+            else if (uSkinMode == 9) {
+              // 🎃 ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ: Жнец Тыквенного Пампа
+              float flameWave = sin(p.x * 2.2 + sin(p.y * 3.0 - uTime * 3.5)) * cos(p.z * 2.2 + uTime * 2.0);
+              float fireVein = smoothstep(0.22, 0.0, abs(flameWave));
+              float emberPulse = 0.7 + 0.3 * sin(uTime * 5.0 + vNormY * 10.0);
+              vec3 cursedBase = gl_FragColor.rgb * vec3(0.18, 0.1, 0.26);
+              vec3 fireCol = mix(uSkinColorB, uSkinColorA, fireVein);
+              gl_FragColor.rgb = cursedBase + fireCol * (fireVein * 1.35 * emberPulse) + uSkinColorA * pow(fresnel, 1.8) * 1.25;
+            }
+            else if (uSkinMode == 10) {
+              // Крио-Абсолют (Кристаллическая изморозь)
+              float frost = abs(cos(p.x * 3.0) * sin(p.y * 3.0) * cos(p.z * 3.0));
+              floatshard = smoothstep(0.35, 0.65, frost);
+              gl_FragColor.rgb = gl_FragColor.rgb * mix(uSkinColorB, uSkinColorA, shard) * 1.25 + vec3(0.85, 0.96, 1.0) * fresnel * 0.65;
+            }
+            else if (uSkinMode == 11) {
+              // Квантовый Глитч
+              float slice = step(0.86, fract(vNormY * 18.0 + uTime * 1.8));
+              vec3 glitchCol = mix(uSkinColorA, uSkinColorB, slice);
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.55 + glitchCol * (0.45 + fresnel * 0.75);
+            }
+          }
+          #include <tonemapping_fragment>
           `
         );
       };
       material.needsUpdate = true;
+    }
+
+    // Построение 3D-аксессуаров и аур для выбранного скина
+    function rebuildSkin3DAttachments(skin) {
+      while (skinBodyAttachments.children.length > 0) {
+        skinBodyAttachments.remove(skinBodyAttachments.children[0]);
+      }
+      while (skinHeadAttachments.children.length > 0) {
+        skinHeadAttachments.remove(skinHeadAttachments.children[0]);
+      }
+
+      const type = skin.attachment || 'none';
+      if (type === 'none') return;
+
+      const matA = new THREE.MeshStandardMaterial({
+        color: skin.colorA || 0x00f0ff,
+        emissive: skin.colorA || 0x00f0ff,
+        emissiveIntensity: 0.65,
+        metalness: 0.8,
+        roughness: 0.2
+      });
+      const matB = new THREE.MeshStandardMaterial({
+        color: skin.colorB || 0x6366f1,
+        emissive: skin.colorB || 0x6366f1,
+        emissiveIntensity: 0.45,
+        metalness: 0.7,
+        roughness: 0.25
+      });
+
+      if (type === 'halloween_lord') {
+        // 🎃 Эксклюзив до 1 ноября: 3D Демонические Рога на голове + корона пламени + 4 огненных сферы вокруг тела
+        [-1, 1].forEach(side => {
+          const horn = new THREE.Mesh(new THREE.ConeGeometry(0.085, 0.46, 16), matA);
+          horn.position.set(side * 0.22, 0.62, 0.08);
+          horn.rotation.z = -side * 0.48;
+          horn.rotation.x = 0.25;
+          skinHeadAttachments.add(horn);
+        });
+        const crownRing = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.025, 12, 32), matB);
+        crownRing.rotation.x = Math.PI / 2;
+        crownRing.position.set(0, 0.56, 0.02);
+        skinHeadAttachments.add(crownRing);
+
+        for (let i = 0; i < 4; i++) {
+          const orb = new THREE.Mesh(new THREE.OctahedronGeometry(0.14, 1), matA);
+          const angle = (i / 4) * Math.PI * 2;
+          orb.position.set(Math.cos(angle) * 1.15, 1.8 + (i % 2) * 0.45, Math.sin(angle) * 1.15);
+          skinBodyAttachments.add(orb);
+        }
+      } else if (type === 'cyber_visor') {
+        // Светящийся 3D кибер-визор на глазах (поворачивается вместе с головой!)
+        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.09, 0.22), matA);
+        visor.position.set(0, 0.34, 0.22);
+        skinHeadAttachments.add(visor);
+
+        constring = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.018, 12, 48), matA);
+        constRingSetup(constring, 1.9);
+      } else if (type === 'gold_halo') {
+        // Золотой нимб-венец над головой + наплечные сферы
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.028, 16, 48), matA);
+        halo.rotation.x = Math.PI * 0.42;
+        halo.position.set(0, 0.68, -0.04);
+        skinHeadAttachments.add(halo);
+      } else if (type === 'solar_crown') {
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 16, 48), matA);
+        halo.position.set(0, 0.45, -0.15);
+        skinHeadAttachments.add(halo);
+        for (let i = 0; i < 8; i++) {
+          const ray = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.22, 8), matA);
+          const a = (i / 8) * Math.PI * 2;
+          ray.position.set(Math.cos(a) * 0.45, 0.45 + Math.sin(a) * 0.45, -0.15);
+          ray.rotation.z = a - Math.PI / 2;
+          skinHeadAttachments.add(ray);
+        }
+      } else if (type === 'magma_rocks' || type === 'cryo_shards' || type === 'crystal_shards' || type === 'bio_orbs') {
+        const geo = type === 'bio_orbs'
+          ? new THREE.SphereGeometry(0.11, 16, 16)
+          : new THREE.OctahedronGeometry(0.13, 0);
+        for (let i = 0; i < 5; i++) {
+          const m = new THREE.Mesh(geo, i % 2 === 0 ? matA : matB);
+          const a = (i / 5) * Math.PI * 2;
+          m.position.set(Math.cos(a) * 1.12, 1.5 + (i % 3) * 0.35, Math.sin(a) * 1.12);
+          skinBodyAttachments.add(m);
+        }
+      } else if (type === 'gyro_rings' || type === 'matrix_rings' || type === 'energy_ring' || type === 'crimson_aura') {
+        const r1 = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.02, 12, 56), matA);
+        r1.rotation.x = Math.PI / 2.3;
+        r1.position.y = 1.95;
+        skinBodyAttachments.add(r1);
+
+        const r2 = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.015, 12, 56), matB);
+        r2.rotation.x = -Math.PI / 2.6;
+        r2.position.y = 1.45;
+        skinBodyAttachments.add(r2);
+      } else if (type === 'void_monoliths') {
+        for (let i = 0; i < 4; i++) {
+          const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.65, 0.08), matA);
+          const a = (i / 4) * Math.PI * 2;
+          pillar.position.set(Math.cos(a) * 1.2, 1.9, Math.sin(a) * 1.2);
+          skinBodyAttachments.add(pillar);
+        }
+      } else if (type === 'omega_ascended') {
+        // Абсолют 1000 фазы: Корона + Энергетические крылья + Кольца
+        const crown = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.03, 16, 48), matA);
+        crown.rotation.x = Math.PI / 2;
+        crown.position.set(0, 0.66, 0);
+        skinHeadAttachments.add(crown);
+
+        [-1, 1].forEach(side => {
+          for (let j = 0; j < 3; j++) {
+            const wingBlade = new THREE.Mesh(new THREE.BoxGeometry(0.95 - j * 0.18, 0.09, 0.04), j % 2 === 0 ? matA : matB);
+            wingBlade.position.set(side * (0.75 + j * 0.12), 2.55 - j * 0.28, -0.35);
+            wingBlade.rotation.z = side * (0.35 - j * 0.15);
+            skinBodyAttachments.add(wingBlade);
+          }
+        });
+      }
+    }
+
+    function constRingSetup(mesh, y) {
+      mesh.rotation.x = Math.PI / 2;
+      mesh.position.y = y;
+      skinBodyAttachments.add(mesh);
     }
 
     function mountGLTFScene(gltf, sourceName) {
@@ -1861,7 +2459,7 @@
             child.userData.origMetalness = mat.metalness ?? 0.08;
             child.userData.origRoughness = mat.roughness ?? 0.52;
             const geoBox = child.geometry.boundingBox || box;
-            attachHypertrophyShader(mat, geoBox.min.y, geoBox.max.y);
+            attachHypertrophyAndSkinShader(mat, geoBox.min, geoBox.max);
           }
           loadedGLBMeshes.push(child);
         }
@@ -1970,31 +2568,34 @@
     document.getElementById('btn-retry-load')?.addEventListener('click', loadGLBModelFromRepo);
 
     /*************************************************************************
-     * 5. СКИНЫ, ОСВЕЩЕНИЕ И ПРОГРЕССИЯ 1000 ФАЗ
+     * 5. ПРИМЕНЕНИЕ 3D-ШЕЙДЕРНЫХ СКИНОВ, ОСВЕЩЕНИЯ И ПРОГРЕССИИ 1000 ФАЗ
      *************************************************************************/
     function applyActiveSkinTo3D() {
-      const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[0];
+      const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[1];
+
       loadedGLBMeshes.forEach(mesh => {
         const mat = mesh.material;
         if (!mat) return;
         if (skin.preserveOriginalTexture) {
           if (mesh.userData && mesh.userData.origColor) mat.color.copy(mesh.userData.origColor);
           else mat.color.setHex(0xffffff);
-          mat.emissive.setHex(0x000000);
-          mat.emissiveIntensity = 0;
           mat.metalness = mesh.userData.origMetalness ?? 0.08;
           mat.roughness = mesh.userData.origRoughness ?? 0.52;
-          mat.wireframe = false;
         } else {
-          mat.color.setHex(skin.shirt);
-          mat.emissive.setHex(skin.emissive || 0x000000);
-          mat.emissiveIntensity = skin.wire ? 0.25 : 0.08;
-          mat.metalness = skin.metal;
-          mat.roughness = Math.max(0.2, skin.rough);
-          mat.wireframe = !!skin.wire;
+          mat.color.setHex(0xffffff);
+          mat.metalness = skin.metal ?? 0.35;
+          mat.roughness = Math.max(0.12, skin.rough ?? 0.3);
         }
         mat.needsUpdate = true;
       });
+
+      customShaderUniformsList.forEach(u => {
+        u.uSkinMode.value = skin.shaderMode || 0;
+        u.uSkinColorA.value.setHex(skin.colorA || 0xffffff);
+        u.uSkinColorB.value.setHex(skin.colorB || 0x6366f1);
+      });
+
+      rebuildSkin3DAttachments(skin);
     }
 
     function applyStudioLightingPreset(presetIdx) {
@@ -2028,6 +2629,13 @@
       if (pInfo.current.num > state.highestPhase) {
         state.highestPhase = pInfo.current.num;
         showToast(`🧬 ФАЗА ${pInfo.current.num}/1000: ${pInfo.current.title}!`, 'border-amber-400 text-amber-300');
+      }
+
+      // Автоматическая проверка разблокировки эксклюзивного скина за 500 фазу до 1 ноября
+      if (pInfo.current.num >= 500 && Date.now() < EXCLUSIVE_NOV1_DEADLINE && !state.ownedSkins.includes('halloween_cursed_500')) {
+        state.ownedSkins.push('halloween_cursed_500');
+        showToast('🎃 РАЗБЛОКИРОВАН ЭКСКЛЮЗИВНЫЙ СКИН 500-Й ФАЗЫ!', 'border-orange-400 text-orange-300');
+        renderSkinsList();
       }
 
       customShaderUniformsList.forEach(u => {
@@ -2099,7 +2707,7 @@
     }
 
     /*************************************************************************
-     * 6. ПАРАЛЛАКС (СЦЕНА + ПАНЕЛИ + СЕТКА) И ВРАЩЕНИЕ 360°
+     * 6. ПАРАЛЛАКС, СЛЕЖЕНИЕ ГОЛОВЫ ЗА КУРСОРОМ И ВРАЩЕНИЕ 360°
      *************************************************************************/
     let targetYaw = 0;
     let currentYaw = 0;
@@ -2111,6 +2719,8 @@
     let mouseNormY = 0;
     let smoothParallaxX = 0;
     let smoothParallaxY = 0;
+    let smoothHeadYaw = 0;
+    let smoothHeadPitch = 0;
 
     let isDragging = false;
     let dragStartX = 0;
@@ -2156,6 +2766,8 @@
       dragStartX = e.clientX;
       dragStartY = e.clientY;
       totalDragDist = 0;
+      mouseNormX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseNormY = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
     window.addEventListener('pointermove', (e) => {
@@ -2202,8 +2814,25 @@
     });
 
     /*************************************************************************
-     * 7. ПОДСВЕТКА ПАНЕЛЕЙ И УПРАВЛЕНИЕ ВКЛАДКАМИ
+     * 7. ПОДСВЕТКА ПАНЕЛЕЙ, ТАЙМЕР ДО 1 НОЯБРЯ И УПРАВЛЕНИЕ ВКЛАДКАМИ
      *************************************************************************/
+    function updateExclusiveCountdown() {
+      const el = document.getElementById('exclusive-countdown-timer');
+      if (!el) return;
+      const diff = EXCLUSIVE_NOV1_DEADLINE - Date.now();
+      if (diff <= 0) {
+        el.textContent = 'ИВЕНТ ЗАВЕРШЁН';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+      el.textContent = `ДО 1 НОЯБРЯ: ${days}Д ${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    setInterval(updateExclusiveCountdown, 1000);
+    setTimeout(updateExclusiveCountdown, 100);
+
     function setupPanelSpotlight(cardId, glareId) {
       const card = document.getElementById(cardId);
       const glare = document.getElementById(glareId);
@@ -2343,11 +2972,14 @@
       if (!list) return;
       list.innerHTML = '';
       const { pInfo } = getStats();
+      const isBeforeNov1 = Date.now() < EXCLUSIVE_NOV1_DEADLINE;
+
       SKINS_DATA.forEach(s => {
         const owned = state.ownedSkins.includes(s.id);
         const equipped = state.equippedSkin === s.id;
         const phaseOk = pInfo.current.num >= s.minPhase;
-        const canUnlock = !owned && phaseOk && state.score >= s.cost;
+        const expired = s.isExclusiveNov1 && !isBeforeNov1 && !owned;
+        const canUnlock = !owned && !expired && phaseOk && state.score >= s.cost;
 
         let btnLabel = 'ВЫБРАТЬ';
         let btnStyle = 'bg-indigo-600 hover:bg-indigo-500 text-white';
@@ -2355,9 +2987,15 @@
           btnLabel = 'АКТИВЕН ✓';
           btnStyle = 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
         } else if (!owned) {
-          if (!phaseOk) {
+          if (expired) {
+            btnLabel = 'ИВЕНТ ЗАВЕРШЁН';
+            btnStyle = 'bg-slate-900 text-rose-400 border border-rose-900 cursor-not-allowed';
+          } else if (!phaseOk) {
             btnLabel = `ФАЗА ${s.minPhase}`;
             btnStyle = 'bg-slate-900 text-slate-500 border border-slate-800 cursor-not-allowed';
+          } else if (s.isExclusiveNov1) {
+            btnLabel = 'ЗАБРАТЬ БЕСПЛАТНО 🎃';
+            btnStyle = 'bg-gradient-to-r from-orange-500 to-purple-600 text-white font-black shadow-lg';
           } else {
             btnLabel = `${formatMass(s.cost)} КГ`;
             btnStyle = canUnlock ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800';
@@ -2365,14 +3003,16 @@
         }
 
         const card = document.createElement('div');
-        card.className = `skin-card rounded-xl p-2.5 flex items-center justify-between gap-2.5 ${equipped ? 'equipped' : ''}`;
+        card.className = `skin-card rounded-xl p-2.5 flex items-center justify-between gap-2.5 ${equipped ? 'equipped' : ''} ${s.isExclusiveNov1 ? 'exclusive-card' : ''}`;
         card.innerHTML = `
           <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-9 h-9 rounded-lg shrink-0 border border-white/20" style="background:${s.swatch}"></div>
+            <div class="w-10 h-10 rounded-lg shrink-0 border border-white/25 shadow-md" style="background:${s.swatch}"></div>
             <div class="min-w-0">
               <div class="text-xs font-bold text-white truncate">${s.name}</div>
-              <div class="text-[9px] text-slate-300 truncate">${s.desc}</div>
-              <div class="text-[8px] text-indigo-300 mt-0.5 uppercase">Требуется Фаза ${s.minPhase}/1000</div>
+              <div class="text-[9px] text-slate-300 leading-tight">${s.desc}</div>
+              <div class="text-[8px] ${s.isExclusiveNov1 ? 'text-orange-300 font-bold' : 'text-indigo-300'} mt-0.5 uppercase">
+                ${s.isExclusiveNov1 ? '🔥 ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ • ФАЗА 500' : `Требуется Фаза ${s.minPhase}/1000`}
+              </div>
             </div>
           </div>
           <button type="button" class="px-2.5 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider shrink-0 ${btnStyle}">${btnLabel}</button>
@@ -2383,7 +3023,7 @@
             applyActiveSkinTo3D();
             renderSkinsList();
             saveProgress(true);
-          } else if (phaseOk && state.score >= s.cost) {
+          } else if (canUnlock) {
             state.score -= s.cost;
             state.ownedSkins.push(s.id);
             state.equippedSkin = s.id;
@@ -2392,6 +3032,7 @@
             renderSkinsList();
             update3DAnatomyAndHUD();
             saveProgress(true);
+            showToast(`✨ СКИН РАЗБЛОКИРОВАН: ${s.name}`, 'border-emerald-400 text-emerald-300');
           }
         });
         list.appendChild(card);
@@ -2469,6 +3110,11 @@
       setDeviceLayout(currentDeviceMode === 'pc' ? 'mobile' : 'pc');
     });
 
+    document.getElementById('btn-head-track-toggle')?.addEventListener('click', (e) => {
+      headTrackingEnabled = !headTrackingEnabled;
+      e.currentTarget.textContent = headTrackingEnabled ? '👀 ГОЛОВА: СЛЕДИТ' : '👀 ГОЛОВА: СТАТИКА';
+    });
+
     const openAuthModal = () => {
       document.getElementById('auth-modal')?.classList.remove('hidden');
       updateAuthUI();
@@ -2481,13 +3127,11 @@
       document.getElementById('auth-modal')?.classList.add('hidden');
     });
 
-    // Кнопки выхода из аккаунта и отвязки сервисов
     document.getElementById('btn-logout')?.addEventListener('click', logoutAccount);
     document.getElementById('btn-modal-logout')?.addEventListener('click', logoutAccount);
     document.getElementById('btn-unlink-tg')?.addEventListener('click', () => unlinkProvider('telegram'));
     document.getElementById('btn-unlink-google')?.addEventListener('click', () => unlinkProvider('google'));
 
-    // Кнопки установки PWA
     document.getElementById('btn-install-pwa-top')?.addEventListener('click', triggerPWAInstall);
     document.getElementById('btn-modal-install-pwa')?.addEventListener('click', triggerPWAInstall);
     document.getElementById('btn-tab-install-pwa')?.addEventListener('click', triggerPWAInstall);
@@ -2627,6 +3271,7 @@
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(0.1, clock.getDelta());
+      const elapsed = clock.getElapsedTime();
 
       if (autoSpin && !isDragging) targetYaw += dt * 0.65;
 
@@ -2635,9 +3280,15 @@
       characterPivot.rotation.y = currentYaw;
       characterPivot.rotation.x = currentPitch;
 
-      // Плавная интерполяция многослойного параллакса (камера + панели + фон)
+      // Плавная интерполяция многослойного параллакса
       smoothParallaxX += (mouseNormX - smoothParallaxX) * 0.08;
       smoothParallaxY += (mouseNormY - smoothParallaxY) * 0.08;
+
+      // Плавная интерполяция слежения головы 3D-персонажа за курсором
+      const targetHeadYaw = headTrackingEnabled ? Math.max(-0.48, Math.min(0.48, mouseNormX * 0.44)) : 0;
+      const targetHeadPitch = headTrackingEnabled ? Math.max(-0.28, Math.min(0.28, mouseNormY * 0.25)) : 0;
+      smoothHeadYaw += (targetHeadYaw - smoothHeadYaw) * 0.12;
+      smoothHeadPitch += (targetHeadPitch - smoothHeadPitch) * 0.12;
 
       camera.position.x = smoothParallaxX * 0.28;
       camera.position.y = baseCameraY - smoothParallaxY * 0.18;
@@ -2662,9 +3313,19 @@
       if (pumpImpulse > 0.001) pumpImpulse *= Math.pow(0.04, dt);
       else pumpImpulse = 0;
 
+      // Передача времени, пампа и поворота головы в шейдер 3D-модели
       customShaderUniformsList.forEach(u => {
         u.uPumpPulse.value = pumpImpulse;
+        u.uTime.value = elapsed;
+        u.uHeadLook.value.set(smoothHeadYaw, smoothHeadPitch);
       });
+
+      // Поворачиваем головные 3D-аксессуары (рога, визор, нимб) синхронно с головой!
+      skinHeadAttachments.rotation.y = -smoothHeadYaw;
+      skinHeadAttachments.rotation.x = smoothHeadPitch;
+
+      // Анимация вращения орбитальных 3D-элементов скина
+      skinBodyAttachments.rotation.y = elapsed * 0.85;
 
       const { pInfo } = getStats();
       const g = pInfo.globalGrowth;
@@ -2709,7 +3370,6 @@
       pullStateFromCloud();
     }
 
-    // Пассивный прирост массы каждую 0.25 сек
     setInterval(() => {
       const { passivePower, maxEnergy, regenRate } = getStats();
       if (passivePower > 0) {
