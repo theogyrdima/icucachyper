@@ -543,6 +543,7 @@
             </div>
           </div>
 
+          <!-- 6 карточек биометрии -->
           <div class="grid grid-cols-2 gap-2">
             <div class="stat-box-3d p-2.5 rounded-lg bg-slate-950/70 border border-slate-800/90">
               <div class="text-[8px] text-slate-400 uppercase">ОБХВАТ ГРУДИ</div>
@@ -570,6 +571,7 @@
             </div>
           </div>
 
+          <!-- Энергия швов -->
           <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
             <div class="flex justify-between items-center text-[9px]">
               <span class="text-slate-300 uppercase font-bold">⚡ ЦЕЛОСТНОСТЬ ШВОВ РУБАШКИ</span>
@@ -584,6 +586,7 @@
             </div>
           </div>
 
+          <!-- Управление ракурсом и слежением головы -->
           <div class="grid grid-cols-2 gap-1.5">
             <button type="button" id="btn-left-reset-cam" class="py-2 px-2 rounded-lg bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/40 text-[9px] font-bold text-indigo-200 uppercase">
               🔄 СБРОС КАМЕРЫ
@@ -958,7 +961,7 @@
     }
 
     /*************************************************************************
-     * 1. ДАННЫЕ: 1000 ФАЗ, 25 3D-ШЕЙДЕРНЫХ СКИНОВ (ВКЛЮЧАЯ ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ)
+     * 1. ДАННЫЕ: 1000 ФАЗ, 25 3D-ШЕЙДЕРНЫХ СКИНОВ, 10 МОДУЛЕЙ
      *************************************************************************/
     const EPOCHS = [
       { id: 1, range: [1, 100], name: 'ЭПОХА 1' },
@@ -1249,19 +1252,2092 @@
       },
       {
         id: 'blood_moon',
-        name: 'Алый Лунатик [Кровавая Луна]',
-        desc: 'Багровое лунное сияние с пульсирующими алыми прожилками и парящими осколками.',
-        cost: 3000000000,
-        minPhase: 600,
-        shaderMode: 9,
-        colorA: 0xdc2626,
-        colorB: 0x450a0a,
-        metal: 0.62,
-        rough: 0.2,
+        name: 'Алый Берсерк [Затмение]',
+        desc: 'Чёрный обсидиан с багровым контурным свечением и кровавым ореолом.',
+        cost: 3800000000,
+        minPhase: 590,
+        shaderMode: 7,
+        colorA: 0xf43f5e,
+        colorB: 0x09090b,
+        metal: 0.5,
+        rough: 0.28,
         attachment: 'crimson_aura',
-        swatch: 'linear-gradient(135deg, #ef4444, #450a0a)'
+        swatch: 'linear-gradient(135deg, #f43f5e, #09090b)'
+      },
+      {
+        id: 'quantum_ghost',
+        name: 'Квантовый Глитч [Фазовый Сдвиг]',
+        desc: 'Голографическая интерференция волн и квантовые кольца телепортации.',
+        cost: 11000000000,
+        minPhase: 660,
+        shaderMode: 11,
+        colorA: 0x38bdf8,
+        colorB: 0xf43f5e,
+        metal: 0.65,
+        rough: 0.2,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #38bdf8, #f43f5e)'
+      },
+      {
+        id: 'obsidian_void',
+        name: 'Монолит Пустоты [Vantablack]',
+        desc: 'Поглощает 99% света, оставляя только электрический фиолетовый контур.',
+        cost: 35000000000,
+        minPhase: 730,
+        shaderMode: 7,
+        colorA: 0x818cf8,
+        colorB: 0x030712,
+        metal: 0.8,
+        rough: 0.15,
+        attachment: 'void_monoliths',
+        swatch: 'linear-gradient(135deg, #6366f1, #020617)'
+      },
+      {
+        id: 'solar_flare',
+        name: 'Солнечная Корона [Звезда Гелиос]',
+        desc: 'Термоядерная плазма на поверхности тела и солнечная корона вокруг головы.',
+        cost: 105000000000,
+        minPhase: 800,
+        shaderMode: 3,
+        colorA: 0xfde047,
+        colorB: 0xd97706,
+        metal: 0.7,
+        rough: 0.18,
+        attachment: 'solar_crown',
+        swatch: 'linear-gradient(135deg, #fef08a, #ea580c)'
+      },
+      {
+        id: 'nebula_cosmos',
+        name: 'Галактическая Туманность [Вечность]',
+        desc: 'Живое звёздное скопление и пульсирующие созвездия прямо внутри тела.',
+        cost: 320000000000,
+        minPhase: 860,
+        shaderMode: 5,
+        colorA: 0x38bdf8,
+        colorB: 0x4c1d95,
+        metal: 0.75,
+        rough: 0.2,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #38bdf8, #4c1d95)'
+      },
+      {
+        id: 'antimatter_core',
+        name: 'Антиматерия [Горизонт Событий]',
+        desc: 'Инвертированный цветовой спектр с гравитационными кольцами сингулярности.',
+        cost: 980000000000,
+        minPhase: 920,
+        shaderMode: 11,
+        colorA: 0xec4899,
+        colorB: 0x020617,
+        metal: 0.88,
+        rough: 0.14,
+        attachment: 'void_monoliths',
+        swatch: 'linear-gradient(135deg, #ec4899, #090d16)'
+      },
+      {
+        id: 'divine_marble',
+        name: 'Император Пантеона [Божественный Мрамор]',
+        desc: 'Античный белый мрамор с золотыми молниями и двойным венцом триумфатора.',
+        cost: 3000000000000,
+        minPhase: 965,
+        shaderMode: 6,
+        colorA: 0xfacc15,
+        colorB: 0xe2e8f0,
+        metal: 0.5,
+        rough: 0.25,
+        attachment: 'gold_halo',
+        swatch: 'linear-gradient(135deg, #f8fafc, #eab308)'
+      },
+      {
+        id: 'omega_ychuchacovich',
+        name: 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ [Ω-1000]',
+        desc: 'Финальная форма 1000-й фазы: квантовая плазма, 3D-крылья архонта и корона абсолюта.',
+        cost: 10000000000000,
+        minPhase: 1000,
+        shaderMode: 5,
+        colorA: 0x00f0ff,
+        colorB: 0xfbbf24,
+        metal: 0.92,
+        rough: 0.12,
+        attachment: 'omega_ascended',
+        swatch: 'linear-gradient(135deg, #00f0ff, #fbbf24, #7c3aed)'
       }
     ];
+
+    const UPGRADES_DATA = [
+      { id: 'u_buttons', name: 'Титановые пуговицы МК-2', desc: '+1.5 КГ к клику, +120 прочности швов', type: 'click', power: 1.5, energyBonus: 120, baseCost: 15, mult: 1.52, code: 'MOD-01' },
+      { id: 'u_creatine', name: 'Микронизированный Креатин', desc: '+2.5 КГ/сек пассивного синтеза', type: 'passive', power: 2.5, energyBonus: 0, baseCost: 30, mult: 1.55, code: 'BIO-02' },
+      { id: 'u_shirt_xs', name: 'Нано-стретч рубашка XS', desc: '+7 КГ к клику, +300 прочности швов', type: 'click', power: 7, energyBonus: 300, baseCost: 140, mult: 1.58, code: 'MOD-03' },
+      { id: 'u_isolate', name: 'Изолят Сыворотки 99%', desc: '+15 КГ/сек пассивного синтеза', type: 'passive', power: 15, energyBonus: 0, baseCost: 520, mult: 1.6, code: 'BIO-04' },
+      { id: 'u_gaze', name: 'Гипно-Фокусировка Взгляда', desc: '+38 КГ к клику, +600 прочности швов', type: 'click', power: 38, energyBonus: 600, baseCost: 2100, mult: 1.62, code: 'OPT-05' },
+      { id: 'u_myostatin', name: 'Блокатор Миостатина CRISPR', desc: '+95 КГ/сек пассивного синтеза', type: 'passive', power: 95, energyBonus: 0, baseCost: 8800, mult: 1.65, code: 'GEN-06' },
+      { id: 'u_piston', name: 'Гидро-привод бицепса', desc: '+240 КГ к клику, +1500 прочности швов', type: 'click', power: 240, energyBonus: 1500, baseCost: 38000, mult: 1.68, code: 'MEC-07' },
+      { id: 'u_chamber', name: 'Камера Гипер-Гравитации 10G', desc: '+680 КГ/сек пассивного синтеза', type: 'passive', power: 680, energyBonus: 0, baseCost: 175000, mult: 1.7, code: 'LAB-08' },
+      { id: 'u_synth_core', name: 'Квантовый Синтезатор Волокон', desc: '+2100 КГ к клику, +4000 прочности швов', type: 'click', power: 2100, energyBonus: 4000, baseCost: 950000, mult: 1.74, code: 'QNT-09' },
+      { id: 'u_monolith', name: 'Реактор ЫЦУЦАЦОВИЧА Ω', desc: '+7500 КГ/сек пассивного синтеза', type: 'passive', power: 7500, energyBonus: 0, baseCost: 5200000, mult: 1.78, code: 'OMG-10' }
+    ];
+
+    /*************************************************************************
+     * 2. СОСТОЯНИЕ, ПРОГРЕССИЯ, ЦЕНТР АККАУНТА И FIREBASE CLOUD
+     *************************************************************************/
+    const STORAGE_KEY = 'ychuchacovich_1000_v4_save';
+    const AUTH_STORAGE_KEY = 'ychuchacovich_unified_account_v2';
+
+    function getDefaultState() {
+      return {
+        score: 0,
+        totalEarned: 0,
+        energy: 1000,
+        soundOn: true,
+        equippedSkin: 'indigo_107',
+        ownedSkins: ['indigo_107'],
+        upgrades: {
+          u_buttons: 0, u_creatine: 0, u_shirt_xs: 0, u_isolate: 0, u_gaze: 0,
+          u_myostatin: 0, u_piston: 0, u_chamber: 0, u_synth_core: 0, u_monolith: 0
+        },
+        highestPhase: 1,
+        selectedEpoch: 1,
+        lastSavedAt: Date.now()
+      };
+    }
+
+    let state = getDefaultState();
+    let currentAccount = null;
+    let activeTab = 'upgrades';
+    let isDrawerOpen = false;
+    let currentDeviceMode = 'pc';
+    let autoSpin = false;
+    let studioLightPreset = 0;
+    let headTrackingEnabled = true;
+    const shaderHypertrophyEnabled = true;
+
+    function getPhaseInfo() {
+      let currentIdx = 0;
+      for (let i = PHASES_1000.length - 1; i >= 0; i--) {
+        if (state.totalEarned >= PHASES_1000[i].req) {
+          currentIdx = i;
+          break;
+        }
+      }
+      const current = PHASES_1000[currentIdx];
+      const next = PHASES_1000[Math.min(999, currentIdx + 1)];
+      let subProgress = 1;
+      if (currentIdx < 999) {
+        const span = Math.max(1, next.req - current.req);
+        subProgress = Math.min(1, Math.max(0, (state.totalEarned - current.req) / span));
+      }
+      const globalGrowth = Math.min(1, (currentIdx + subProgress) / 999);
+      return { currentIdx, current, next, subProgress, globalGrowth };
+    }
+
+    function getPhaseMultiplier(phaseNum) {
+      let mult = 1 + (phaseNum - 1) * 0.012;
+      mult *= Math.pow(1.15, Math.floor(phaseNum / 25));
+      if (phaseNum >= 500) mult *= 1.5;
+      if (phaseNum >= 1000) mult *= 2.5;
+      return mult;
+    }
+
+    function getStats() {
+      let clickBase = 1;
+      let passiveBase = 0;
+      let maxEnergy = 1000;
+      UPGRADES_DATA.forEach(u => {
+        const lvl = state.upgrades[u.id] || 0;
+        if (u.type === 'click') clickBase += lvl * u.power;
+        if (u.type === 'passive') passiveBase += lvl * u.power;
+        if (u.energyBonus) maxEnergy += lvl * u.energyBonus;
+      });
+      const pInfo = getPhaseInfo();
+      const mult = getPhaseMultiplier(pInfo.current.num);
+      const clickPower = clickBase * mult;
+      const passivePower = passiveBase * mult;
+      const regenRate = Math.max(25, Math.floor(maxEnergy * 0.038));
+      return { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo };
+    }
+
+    function formatMass(n) {
+      if (n >= 1e15) return (n / 1e15).toFixed(2) + ' квадрлн';
+      if (n >= 1e12) return (n / 1e12).toFixed(2) + ' трлн';
+      if (n >= 1e9) return (n / 1e9).toFixed(2) + ' млрд';
+      if (n >= 1e6) return (n / 1e6).toFixed(2) + ' млн';
+      if (n >= 1e4) return (n / 1e3).toFixed(1) + ' тыс';
+      return Number.isInteger(n) ? n.toString() : n.toFixed(1);
+    }
+
+    function showToast(msg, borderClass = 'border-cyan-400 text-cyan-300') {
+      const layer = document.getElementById('toast-layer');
+      if (!layer) return;
+      const el = document.createElement('div');
+      el.className = `px-3.5 py-2 rounded-lg bg-slate-950/95 border ${borderClass} text-[10px] md:text-xs font-bold tracking-wider uppercase shadow-2xl transition-all duration-300`;
+      el.textContent = msg;
+      layer.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-8px)';
+        setTimeout(() => el.remove(), 300);
+      }, 2400);
+    }
+
+    function sanitizeFirebaseKey(key) {
+      return String(key).replace(/[.#$[\]/]/g, '_');
+    }
+
+    function mergeGameStates(stateA, stateB) {
+      const a = stateA || getDefaultState();
+      const b = stateB || getDefaultState();
+      const mergedUpgrades = { ...getDefaultState().upgrades };
+      Object.keys(mergedUpgrades).forEach(k => {
+        mergedUpgrades[k] = Math.max(a.upgrades?.[k] || 0, b.upgrades?.[k] || 0);
+      });
+      const mergedSkins = Array.from(new Set([...(a.ownedSkins || ['indigo_107']), ...(b.ownedSkins || ['indigo_107'])]));
+      const useBPrimary = (b.totalEarned || 0) > (a.totalEarned || 0);
+      return {
+        ...getDefaultState(),
+        score: useBPrimary ? b.score : a.score,
+        totalEarned: Math.max(a.totalEarned || 0, b.totalEarned || 0),
+        energy: Math.max(a.energy || 1000, b.energy || 1000),
+        soundOn: a.soundOn ?? true,
+        equippedSkin: useBPrimary ? (b.equippedSkin || 'indigo_107') : (a.equippedSkin || 'indigo_107'),
+        ownedSkins: mergedSkins,
+        upgrades: mergedUpgrades,
+        highestPhase: Math.max(a.highestPhase || 1, b.highestPhase || 1),
+        selectedEpoch: useBPrimary ? (b.selectedEpoch || 1) : (a.selectedEpoch || 1),
+        lastSavedAt: Date.now()
+      };
+    }
+
+    function addLoaderLog(msg, cls = 'text-slate-300') {
+      const log = document.getElementById('loader-log');
+      if (!log) return;
+      const div = document.createElement('div');
+      div.className = cls;
+      div.textContent = msg;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function setLoaderProgress(pct, statusText, titleText = null, stopSpinner = false) {
+      const bar = document.getElementById('loader-progress-bar');
+      const pctEl = document.getElementById('loader-pct-text');
+      const stepEl = document.getElementById('loader-step-text');
+      const titleEl = document.getElementById('loader-title');
+      const spinner = document.getElementById('loader-spinner');
+      if (bar) bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+      if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
+      if (stepEl && statusText) stepEl.textContent = statusText;
+      if (titleEl && titleText) titleEl.textContent = titleText;
+      if (spinner) spinner.classList.toggle('animate-spin', !stopSpinner);
+    }
+
+    function hideLoaderModal() {
+      const modal = document.getElementById('model-loader-modal');
+      if (!modal) return;
+      modal.style.opacity = '0';
+      modal.style.pointerEvents = 'none';
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function loadProgress() {
+      try {
+        const savedAcc = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (savedAcc) currentAccount = JSON.parse(savedAcc);
+      } catch (e) {}
+
+      try {
+        const key = currentAccount ? `${STORAGE_KEY}_${currentAccount.masterId}` : STORAGE_KEY;
+        const raw = localStorage.getItem(key) || localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        state = {
+          ...getDefaultState(),
+          ...parsed,
+          upgrades: { ...getDefaultState().upgrades, ...(parsed.upgrades || {}) },
+          ownedSkins: Array.isArray(parsed.ownedSkins) && parsed.ownedSkins.length ? parsed.ownedSkins : ['indigo_107']
+        };
+      } catch (e) {}
+    }
+
+    async function saveProgress(syncCloud = true) {
+      try {
+        state.lastSavedAt = Date.now();
+        const serialized = JSON.stringify(state);
+        localStorage.setItem(STORAGE_KEY, serialized);
+        if (currentAccount) {
+          localStorage.setItem(`${STORAGE_KEY}_${currentAccount.masterId}`, serialized);
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentAccount));
+        }
+
+        const timeStr = new Date(state.lastSavedAt).toLocaleTimeString('ru-RU');
+        const timeEl = document.getElementById('last-save-time');
+        if (timeEl) timeEl.textContent = 'Сохранено в ' + timeStr;
+
+        const badge = document.getElementById('autosave-badge');
+        if (badge) {
+          badge.textContent = currentAccount ? '☁ СИНХР: 5С' : '💾 АВТО: 5С';
+        }
+
+        if (syncCloud && currentAccount && AUTH_CONFIG.FIREBASE_DB_URL) {
+          await pushStateToCloud();
+        }
+      } catch (e) {}
+    }
+
+    async function pushStateToCloud() {
+      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return;
+      try {
+        const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
+        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
+
+        await fetch(`${cleanUrl}/users/${masterKey}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account: currentAccount,
+            gameState: state,
+            updatedAt: Date.now()
+          })
+        });
+
+        if (currentAccount.providers?.telegram?.key) {
+          const tgKey = sanitizeFirebaseKey(currentAccount.providers.telegram.key);
+          await fetch(`${cleanUrl}/identity_map/${tgKey}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
+          });
+        }
+        if (currentAccount.providers?.google?.key) {
+          const gKey = sanitizeFirebaseKey(currentAccount.providers.google.key);
+          await fetch(`${cleanUrl}/identity_map/${gKey}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
+          });
+        }
+
+        const nowTime = new Date().toLocaleTimeString('ru-RU');
+        const stEl = document.getElementById('account-sync-status');
+        if (stEl) stEl.textContent = '☁ Синхр: ' + nowTime;
+        const modalSyncEl = document.getElementById('modal-sync-timestamp');
+        if (modalSyncEl) modalSyncEl.textContent = '☁ Облако синхронизировано в ' + nowTime;
+      } catch (e) {}
+    }
+
+    async function fetchCloudNode(path) {
+      if (!AUTH_CONFIG.FIREBASE_DB_URL) return null;
+      try {
+        const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
+        const resp = await fetch(`${cleanUrl}/${path}.json`);
+        if (!resp.ok) return null;
+        return await resp.json();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function pullStateFromCloud() {
+      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return false;
+      try {
+        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
+        const data = await fetchCloudNode(`users/${masterKey}`);
+        if (data && data.gameState) {
+          state = mergeGameStates(state, data.gameState);
+          if (data.account && data.account.providers) {
+            currentAccount.providers = {
+              telegram: data.account.providers.telegram || currentAccount.providers?.telegram || null,
+              google: data.account.providers.google || currentAccount.providers?.google || null
+            };
+          }
+          await saveProgress(false);
+          updateAuthUI();
+          applyActiveSkinTo3D();
+          renderUpgradesList();
+          renderSkinsList();
+          renderPhasesList();
+          update3DAnatomyAndHUD();
+          showToast('☁ ПРОГРЕСС СИНХРОНИЗИРОВАН ИЗ ОБЛАКА!', 'border-cyan-400 text-cyan-300');
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    async function authenticateOrLinkProvider(providerType, providerInfo) {
+      const providerKey = sanitizeFirebaseKey(providerInfo.key);
+
+      let mappedMasterId = providerKey;
+      const mapEntry = await fetchCloudNode(`identity_map/${providerKey}`);
+      if (mapEntry && mapEntry.masterId) {
+        mappedMasterId = mapEntry.masterId;
+      }
+
+      if (currentAccount) {
+        const existingOtherCloud = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
+        if (existingOtherCloud && existingOtherCloud.gameState) {
+          state = mergeGameStates(state, existingOtherCloud.gameState);
+        }
+
+        currentAccount.providers = currentAccount.providers || { telegram: null, google: null };
+        currentAccount.providers[providerType] = providerInfo;
+        if (!currentAccount.avatarUrl && providerInfo.avatar) {
+          currentAccount.avatarUrl = providerInfo.avatar;
+        }
+
+        await saveProgress(true);
+        updateAuthUI();
+        applyActiveSkinTo3D();
+        renderUpgradesList();
+        renderSkinsList();
+        renderPhasesList();
+        update3DAnatomyAndHUD();
+        showToast(`🔗 ${providerType.toUpperCase()} УСПЕШНО ПРИВЯЗАН К ВАШЕМУ ПРОФИЛЮ!`, 'border-emerald-400 text-emerald-300');
+        return;
+      }
+
+      const cloudRecord = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
+      if (cloudRecord && cloudRecord.gameState) {
+        state = mergeGameStates(state, cloudRecord.gameState);
+      }
+
+      const existingProviders = cloudRecord?.account?.providers || { telegram: null, google: null };
+      existingProviders[providerType] = providerInfo;
+
+      currentAccount = {
+        masterId: mappedMasterId,
+        displayName: cloudRecord?.account?.displayName || providerInfo.name,
+        avatarUrl: providerInfo.avatar || cloudRecord?.account?.avatarUrl || '',
+        providers: existingProviders
+      };
+
+      await saveProgress(true);
+      updateAuthUI();
+      applyActiveSkinTo3D();
+      renderUpgradesList();
+      renderSkinsList();
+      renderPhasesList();
+      update3DAnatomyAndHUD();
+      showToast(`✅ ВХОД ВЫПОЛНЕН: ${currentAccount.displayName}`, 'border-emerald-400 text-emerald-300');
+    }
+
+    async function unlinkProvider(providerType) {
+      if (!currentAccount || !currentAccount.providers) return;
+      const hasTg = !!currentAccount.providers.telegram;
+      const hasGoogle = !!currentAccount.providers.google;
+      if ((providerType === 'telegram' && !hasGoogle) || (providerType === 'google' && !hasTg)) {
+        showToast('⚠️ Нельзя отвязать единственный сервис! Используйте кнопку «Выйти»', 'border-amber-400 text-amber-300');
+        return;
+      }
+      currentAccount.providers[providerType] = null;
+      await saveProgress(true);
+      updateAuthUI();
+      showToast(`🔓 Сервис ${providerType.toUpperCase()} отвязан от профиля`, 'border-slate-400 text-slate-300');
+    }
+
+    function logoutAccount() {
+      currentAccount = null;
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      updateAuthUI();
+      showToast('🚪 ВЫ ВЫШЛИ ИЗ АККАУНТА', 'border-rose-400 text-rose-200');
+    }
+
+    function updateAuthUI() {
+      const topLabel = document.getElementById('auth-top-label');
+      const topIcon = document.getElementById('auth-top-icon');
+      const outView = document.getElementById('account-logged-out-view');
+      const inView = document.getElementById('account-logged-in-view');
+      const nameEl = document.getElementById('account-user-name');
+      const idEl = document.getElementById('account-user-id');
+      const statusEl = document.getElementById('account-sync-status');
+
+      const modalProfileCard = document.getElementById('modal-profile-card');
+      const modalUserName = document.getElementById('modal-user-name');
+      const modalMasterId = document.getElementById('modal-user-master-id');
+      const modalLinkedBadge = document.getElementById('modal-linked-count-badge');
+      const modalAvatarImg = document.getElementById('modal-user-avatar');
+      const modalAvatarFallback = document.getElementById('modal-user-avatar-fallback');
+      const modalHintBadge = document.getElementById('modal-auth-hint-badge');
+
+      const tgInfo = currentAccount?.providers?.telegram || null;
+      const googleInfo = currentAccount?.providers?.google || null;
+      const linkedCount = (tgInfo ? 1 : 0) + (googleInfo ? 1 : 0);
+
+      const tgCard = document.getElementById('slot-card-telegram');
+      const tgPill = document.getElementById('tg-status-pill');
+      const tgSub = document.getElementById('tg-account-subtext');
+      const tgWidgetBox = document.getElementById('telegram-widget-container');
+      const btnUnlinkTg = document.getElementById('btn-unlink-tg');
+      const tabStatusTg = document.getElementById('tab-status-tg');
+
+      if (tgInfo) {
+        if (tgCard) tgCard.className = 'p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/50 space-y-2 transition-all';
+        if (tgPill) {
+          tgPill.textContent = '✅ ПРИВЯЗАН';
+          tgPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-emerald-500/25 text-emerald-300 font-bold uppercase';
+        }
+        if (tgSub) tgSub.textContent = `${tgInfo.name}${tgInfo.username ? ' (@' + tgInfo.username + ')' : ''}`;
+        tgWidgetBox?.classList.add('hidden');
+        btnUnlinkTg?.classList.toggle('hidden', linkedCount < 2);
+        if (tabStatusTg) {
+          tabStatusTg.textContent = 'Привязан ✓';
+          tabStatusTg.className = 'text-emerald-400';
+        }
+      } else {
+        if (tgCard) tgCard.className = 'p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2.5 transition-all';
+        if (tgPill) {
+          tgPill.textContent = currentAccount ? '🔗 ПРИВЯЗАТЬ К ПРОФИЛЮ' : 'НЕ ПРИВЯЗАН';
+          tgPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-cyan-500/20 text-cyan-300 font-bold uppercase';
+        }
+        if (tgSub) {
+          tgSub.textContent = currentAccount
+            ? 'Нажмите кнопку ниже, чтобы привязать Telegram к этому аккаунту'
+            : 'Авторизация через бота @icucacidbot';
+        }
+        tgWidgetBox?.classList.remove('hidden');
+        btnUnlinkTg?.classList.add('hidden');
+        if (tabStatusTg) {
+          tabStatusTg.textContent = 'Не привязан';
+          tabStatusTg.className = 'text-slate-400';
+        }
+      }
+
+      const gCard = document.getElementById('slot-card-google');
+      const gPill = document.getElementById('google-status-pill');
+      const gSub = document.getElementById('google-account-subtext');
+      const gWidgetBox = document.getElementById('google-gsi-button');
+      const btnUnlinkG = document.getElementById('btn-unlink-google');
+      const tabStatusG = document.getElementById('tab-status-google');
+
+      if (googleInfo) {
+        if (gCard) gCard.className = 'p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/50 space-y-2 transition-all';
+        if (gPill) {
+          gPill.textContent = '✅ ПРИВЯЗАН';
+          gPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-emerald-500/25 text-emerald-300 font-bold uppercase';
+        }
+        if (gSub) gSub.textContent = `${googleInfo.name}${googleInfo.email ? ' (' + googleInfo.email + ')' : ''}`;
+        gWidgetBox?.classList.add('hidden');
+        btnUnlinkG?.classList.toggle('hidden', linkedCount < 2);
+        if (tabStatusG) {
+          tabStatusG.textContent = 'Привязан ✓';
+          tabStatusG.className = 'text-emerald-400';
+        }
+      } else {
+        if (gCard) gCard.className = 'p-3.5 rounded-xl bg-slate-950/75 border border-slate-800 space-y-2.5 transition-all';
+        if (gPill) {
+          gPill.textContent = currentAccount ? '🔗 ПРИВЯЗАТЬ К ПРОФИЛЮ' : 'НЕ ПРИВЯЗАН';
+          gPill.className = 'px-1.5 py-0.5 text-[8px] rounded bg-indigo-500/20 text-indigo-300 font-bold uppercase';
+        }
+        if (gSub) {
+          gSub.textContent = currentAccount
+            ? 'Нажмите кнопку ниже, чтобы привязать Google к этому аккаунту'
+            : 'Синхронизация через Google OAuth 2.0';
+        }
+        gWidgetBox?.classList.remove('hidden');
+        btnUnlinkG?.classList.add('hidden');
+        if (tabStatusG) {
+          tabStatusG.textContent = 'Не привязан';
+          tabStatusG.className = 'text-slate-400';
+        }
+      }
+
+      if (currentAccount) {
+        const icon = linkedCount === 2 ? '🔗' : tgInfo ? '✈️' : '🌐';
+        if (topIcon) topIcon.textContent = icon;
+        if (topLabel) topLabel.textContent = currentAccount.displayName;
+        outView?.classList.add('hidden');
+        inView?.classList.remove('hidden');
+        modalProfileCard?.classList.remove('hidden');
+
+        if (nameEl) nameEl.textContent = `${icon} ${currentAccount.displayName}`;
+        if (idEl) idEl.textContent = `MASTER ID: ${currentAccount.masterId}`;
+        if (modalUserName) modalUserName.textContent = currentAccount.displayName;
+        if (modalMasterId) modalMasterId.textContent = `MASTER ID: ${currentAccount.masterId}`;
+        if (modalLinkedBadge) {
+          modalLinkedBadge.textContent = linkedCount >= 2 ? '2/2 ОБЪЕДИНЕНЫ ✓' : `${linkedCount}/2 СЕРВИСА`;
+        }
+        if (modalHintBadge) {
+          modalHintBadge.textContent = linkedCount >= 2 ? 'Оба сервиса привязаны ✓' : 'Можно привязать 2-й сервис';
+        }
+
+        if (currentAccount.avatarUrl && modalAvatarImg && modalAvatarFallback) {
+          modalAvatarImg.src = currentAccount.avatarUrl;
+          modalAvatarImg.classList.remove('hidden');
+          modalAvatarFallback.classList.add('hidden');
+        } else if (modalAvatarImg && modalAvatarFallback) {
+          modalAvatarImg.classList.add('hidden');
+          modalAvatarFallback.classList.remove('hidden');
+          modalAvatarFallback.textContent = (currentAccount.displayName || 'Ы').charAt(0).toUpperCase();
+        }
+
+        if (statusEl) statusEl.textContent = '☁ Облако активно (5с)';
+      } else {
+        if (topIcon) topIcon.textContent = '👤';
+        if (topLabel) topLabel.textContent = 'АККАУНТ';
+        outView?.classList.remove('hidden');
+        inView?.classList.add('hidden');
+        modalProfileCard?.classList.add('hidden');
+        if (modalHintBadge) modalHintBadge.textContent = 'Выберите способ входа';
+        if (statusEl) statusEl.textContent = 'Локальный режим (5с)';
+      }
+    }
+
+    window.__handleTelegramLogin = (tgUser) => {
+      if (!tgUser || !tgUser.id) return;
+      const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || `TG_${tgUser.id}`;
+      authenticateOrLinkProvider('telegram', {
+        key: `tg_${tgUser.id}`,
+        id: String(tgUser.id),
+        name: fullName,
+        username: tgUser.username || '',
+        avatar: tgUser.photo_url || ''
+      });
+    };
+
+    if (window.__pendingTelegramUser) {
+      window.__handleTelegramLogin(window.__pendingTelegramUser);
+      window.__pendingTelegramUser = null;
+    }
+
+    function checkTelegramRedirectParams() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('id') && params.has('hash') && params.has('auth_date')) {
+          const tgUser = {
+            id: params.get('id'),
+            first_name: params.get('first_name') || '',
+            last_name: params.get('last_name') || '',
+            username: params.get('username') || '',
+            photo_url: params.get('photo_url') || ''
+          };
+          window.__handleTelegramLogin(tgUser);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (e) {}
+    }
+
+    let tgWidgetRendered = false;
+    let googleWidgetRendered = false;
+
+    function initAuthProviders() {
+      checkTelegramRedirectParams();
+
+      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+        window.__handleTelegramLogin(window.Telegram.WebApp.initDataUnsafe.user);
+      }
+
+      const tgContainer = document.getElementById('telegram-widget-container');
+      if (tgContainer && AUTH_CONFIG.TELEGRAM_BOT_USERNAME && !tgWidgetRendered) {
+        tgWidgetRendered = true;
+        tgContainer.innerHTML = '';
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://telegram.org/js/telegram-widget.js?22';
+        script.setAttribute('data-telegram-login', AUTH_CONFIG.TELEGRAM_BOT_USERNAME.replace(/^@/, ''));
+        script.setAttribute('data-size', 'large');
+        script.setAttribute('data-radius', '10');
+        script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+        script.setAttribute('data-auth-url', window.location.origin + window.location.pathname);
+        script.setAttribute('data-request-access', 'write');
+        tgContainer.appendChild(script);
+      }
+
+      const gBtn = document.getElementById('google-gsi-button');
+      if (gBtn && AUTH_CONFIG.GOOGLE_CLIENT_ID && !googleWidgetRendered) {
+        if (window.google?.accounts?.id) {
+          googleWidgetRendered = true;
+          gBtn.innerHTML = '';
+          window.google.accounts.id.initialize({
+            client_id: AUTH_CONFIG.GOOGLE_CLIENT_ID,
+            callback: (response) => {
+              try {
+                const payload = JSON.parse(decodeURIComponent(escape(atob(response.credential.split('.')[1]))));
+                authenticateOrLinkProvider('google', {
+                  key: `google_${payload.sub}`,
+                  id: String(payload.sub),
+                  name: payload.name || payload.email || 'Google User',
+                  email: payload.email || '',
+                  avatar: payload.picture || ''
+                });
+              } catch (e) {}
+            }
+          });
+          window.google.accounts.id.renderButton(gBtn, { theme: 'filled_blue', size: 'large', width: 280, shape: 'pill' });
+        } else {
+          setTimeout(initAuthProviders, 400);
+        }
+      }
+    }
+
+    /*************************************************************************
+     * 3. ЗВУКОВОЙ СИНТЕЗАТОР
+     *************************************************************************/
+    let audioCtx = null;
+    function getAudio() {
+      if (!state.soundOn) return null;
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playPumpHitSound(growth) {
+      const ctx = getAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(Math.max(48, 120 - growth * 55), now);
+      osc.frequency.exponentialRampToValueAtTime(28, now + 0.12);
+      gain.gain.setValueAtTime(0.24, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.14);
+    }
+
+    function playUpgradeSound() {
+      const ctx = getAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      [330, 440, 659.25].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.055);
+        g.gain.setValueAtTime(0.1, now + idx * 0.055);
+        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.055 + 0.16);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(now + idx * 0.055);
+        osc.stop(now + idx * 0.055 + 0.17);
+      });
+    }
+
+    /*************************************************************************
+     * 4. THREE.JS 0.160.0 СЦЕНА, СЛЕЖЕНИЕ ГОЛОВЫ И ПРОЦЕДУРНЫЕ ШЕЙДЕРЫ СКИНОВ
+     *************************************************************************/
+    const container = document.getElementById('webgl-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.94;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const hemiLight = new THREE.HemisphereLight(0xe2e8f0, 0x334155, 0.9);
+    hemiLight.position.set(0, 10, 0);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.35);
+    keyLight.position.set(3.5, 5.5, 5.0);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
+    scene.add(keyLight);
+
+    const leftFill = new THREE.DirectionalLight(0xc7d2fe, 0.65);
+    leftFill.position.set(-5.0, 2.5, 3.0);
+    scene.add(leftFill);
+
+    const rightFill = new THREE.DirectionalLight(0xa5f3fc, 0.65);
+    rightFill.position.set(5.0, 2.5, 3.0);
+    scene.add(rightFill);
+
+    const backRim = new THREE.DirectionalLight(0x38bdf8, 0.7);
+    backRim.position.set(0, 4.0, -5.0);
+    scene.add(backRim);
+
+    const clickFlashLight = new THREE.PointLight(0x00f0ff, 0, 7);
+    clickFlashLight.position.set(0, 0.4, 2.2);
+    scene.add(clickFlashLight);
+
+    const FLOOR_Y = -2.35;
+    const floorGrid = new THREE.GridHelper(18, 36, 0x00f0ff, 0x334155);
+    floorGrid.position.y = FLOOR_Y;
+    floorGrid.material.opacity = 0.25;
+    floorGrid.material.transparent = true;
+    scene.add(floorGrid);
+
+    const shadowPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(18, 18),
+      new THREE.ShadowMaterial({ opacity: 0.28 })
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.y = FLOOR_Y + 0.001;
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
+
+    const shockRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.3, 0.42, 48),
+      new THREE.MeshBasicMaterial({ color: 0x00f0ff, side: THREE.DoubleSide, transparent: true, opacity: 0 })
+    );
+    shockRing.rotation.x = -Math.PI / 2;
+    shockRing.position.y = FLOOR_Y + 0.02;
+    scene.add(shockRing);
+
+    const characterPivot = new THREE.Group();
+    characterPivot.position.y = FLOOR_Y;
+    scene.add(characterPivot);
+
+    const glbContainerGroup = new THREE.Group();
+    characterPivot.add(glbContainerGroup);
+
+    const skinBodyAttachments = new THREE.Group();
+    characterPivot.add(skinBodyAttachments);
+
+    const skinHeadAttachments = new THREE.Group();
+    skinHeadAttachments.position.set(0, 3.02, 0.04);
+    characterPivot.add(skinHeadAttachments);
+
+    const customShaderUniformsList = [];
+    let loadedGLBMeshes = [];
+
+    // Хранилище текущих параметров скина для немедленной инициализации в onBeforeCompile
+    const currentSkinShaderState = {
+      mode: 0,
+      colorA: new THREE.Color(0xffffff),
+      colorB: new THREE.Color(0x6366f1)
+    };
+
+    function attachHypertrophyAndSkinShader(material, boxMin, boxMax) {
+      const yMin = boxMin.y;
+      const yMax = boxMax.y;
+      const ySpan = Math.max(0.001, yMax - yMin);
+      const centerX = (boxMin.x + boxMax.x) * 0.5;
+      const centerZ = (boxMin.z + boxMax.z) * 0.5;
+      const neckY = yMin + ySpan * 0.785;
+
+      material.onBeforeCompile = (shader) => {
+        const { pInfo } = getStats();
+        shader.uniforms.uHypertrophy = { value: pInfo.globalGrowth };
+        shader.uniforms.uPumpPulse = { value: 0.0 };
+        shader.uniforms.uShaderActive = { value: 1.0 };
+        shader.uniforms.uHeadLook = { value: new THREE.Vector2(0, 0) };
+        shader.uniforms.uTime = { value: 0.0 };
+        shader.uniforms.uSkinMode = { value: currentSkinShaderState.mode };
+        shader.uniforms.uSkinColorA = { value: currentSkinShaderState.colorA.clone() };
+        shader.uniforms.uSkinColorB = { value: currentSkinShaderState.colorB.clone() };
+        customShaderUniformsList.push(shader.uniforms);
+
+        shader.vertexShader = `
+          uniform float uHypertrophy;
+          uniform float uPumpPulse;
+          uniform float uShaderActive;
+          uniform vec2 uHeadLook;
+          varying vec3 vObjPos;
+          varying vec3 vObjNorm;
+          varying float vHeightNorm;
+        ` + shader.vertexShader;
+
+        shader.vertexShader = shader.vertexShader.replace(
+          '#include <begin_vertex>',
+          `
+          #include <begin_vertex>
+          float hNorm = clamp((position.y - (${yMin.toFixed(4)})) / (${ySpan.toFixed(4)}), 0.0, 1.0);
+          vHeightNorm = hNorm;
+
+          if (uShaderActive > 0.5) {
+            float upperMask = smoothstep(0.38, 0.56, hNorm) * (1.0 - smoothstep(0.74, 0.82, hNorm));
+            float legMask = smoothstep(0.14, 0.28, hNorm) * (1.0 - smoothstep(0.38, 0.46, hNorm));
+            float mMask = upperMask + legMask * 0.45;
+
+            float inflate = (uHypertrophy * 0.042 + uPumpPulse * 0.018) * mMask;
+            transformed += objectNormal * inflate;
+            transformed.x *= 1.0 + (uHypertrophy * 0.22 + uPumpPulse * 0.06) * upperMask;
+            transformed.z *= 1.0 + (uHypertrophy * 0.18 + uPumpPulse * 0.06) * upperMask;
+          }
+
+          float headWeight = smoothstep(0.755, 0.835, hNorm);
+          if (headWeight > 0.001) {
+            vec3 neckPivot = vec3(${centerX.toFixed(4)}, ${neckY.toFixed(4)}, ${centerZ.toFixed(4)});
+            vec3 relPos = transformed - neckPivot;
+
+            float pitchA = uHeadLook.y * headWeight;
+            float cp = cos(pitchA);
+            float sp = sin(pitchA);
+            vec3 pitched = vec3(relPos.x, relPos.y * cp - relPos.z * sp, relPos.y * sp + relPos.z * cp);
+
+            float yawA = uHeadLook.x * headWeight;
+            float cy = cos(yawA);
+            float sy = sin(yawA);
+            vec3 yawed = vec3(pitched.x * cy + pitched.z * sy, pitched.y, -pitched.x * sy + pitched.z * cy);
+
+            transformed = neckPivot + yawed;
+          }
+
+          vObjPos = transformed;
+          vObjNorm = normalize(objectNormal);
+          `
+        );
+
+        shader.fragmentShader = `
+          uniform float uTime;
+          uniform float uSkinMode;
+          uniform vec3 uSkinColorA;
+          uniform vec3 uSkinColorB;
+          varying vec3 vObjPos;
+          varying vec3 vObjNorm;
+          varying float vHeightNorm;
+        ` + shader.fragmentShader;
+
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <tonemapping_fragment>',
+          `
+          if (uSkinMode > 0.5) {
+            vec3 p = vObjPos * 14.0;
+            vec3 nrm = normalize(vObjNorm);
+            float edgeFactor = pow(1.0 - abs(nrm.z), 2.0);
+
+            if (abs(uSkinMode - 1.0) < 0.2) {
+              vec3 irid = mix(uSkinColorB, uSkinColorA, edgeFactor);
+              irid += 0.18 * sin(vec3(1.0, 2.0, 3.0) + vHeightNorm * 8.0 + uTime * 2.2);
+              gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * irid * 1.45 + irid * 0.22, 0.82);
+            } else if (abs(uSkinMode - 2.0) < 0.2) {
+              float gridX = step(0.92, fract(vObjPos.x * 38.0));
+              float gridY = step(0.92, fract(vObjPos.y * 38.0));
+              float grid = clamp(gridX + gridY, 0.0, 1.0);
+              float scan = smoothstep(0.06, 0.0, abs(fract(vHeightNorm * 2.0 - uTime * 0.45) - 0.5));
+              vec3 base = gl_FragColor.rgb * uSkinColorB * 1.5;
+              gl_FragColor.rgb = base + uSkinColorA * (grid * 0.45 + scan * 0.75 + edgeFactor * 0.5);
+            } else if (abs(uSkinMode - 3.0) < 0.2) {
+              float crack = abs(sin(p.x * 1.7 + sin(p.y * 2.3 + uTime * 1.5)) * cos(p.y * 2.1 + sin(p.z * 1.9)));
+              float lava = smoothstep(0.24, 0.02, crack);
+              vec3 rock = gl_FragColor.rgb * uSkinColorB * 1.3;
+              gl_FragColor.rgb = mix(rock, uSkinColorA * (1.35 + 0.35 * sin(uTime * 4.0)), lava) + uSkinColorA * edgeFactor * 0.35;
+            } else if (abs(uSkinMode - 4.0) < 0.2) {
+              float col = floor(vObjPos.x * 55.0);
+              float spd = 1.5 + fract(sin(col * 12.9898) * 43758.5453) * 2.0;
+              float rain = fract(vHeightNorm * 6.0 + uTime * spd + sin(col));
+              float charMask = step(0.55, fract(vHeightNorm * 65.0)) * smoothstep(0.85, 0.0, rain);
+              vec3 darkBase = gl_FragColor.rgb * uSkinColorB * 0.9;
+              gl_FragColor.rgb = darkBase + uSkinColorA * (charMask * 0.95 + edgeFactor * 0.45);
+            } else if (abs(uSkinMode - 5.0) < 0.2) {
+              float nebula = 0.5 + 0.5 * sin(p.x * 0.8 + uTime) * cos(p.y * 0.9 - uTime * 0.7);
+              float starSeed = fract(sin(dot(floor(p * 4.5), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+              float stars = step(0.985, starSeed) * (0.6 + 0.4 * sin(uTime * 6.0 + starSeed * 20.0));
+              vec3 spaceCol = mix(uSkinColorB, uSkinColorA, nebula * 0.75 + edgeFactor * 0.5);
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.35 + spaceCol * 0.75 + vec3(1.0, 0.98, 0.9) * stars * 1.5;
+            } else if (abs(uSkinMode - 6.0) < 0.2) {
+              float vein = abs(sin(p.x * 1.4 + sin(p.y * 2.2 + p.z * 1.8)));
+              float goldLine = smoothstep(0.14, 0.01, vein);
+              vec3 marble = gl_FragColor.rgb * uSkinColorB * 1.1;
+              gl_FragColor.rgb = mix(marble, uSkinColorA * 1.4, goldLine) + uSkinColorA * edgeFactor * 0.4;
+            } else if (abs(uSkinMode - 7.0) < 0.2) {
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.08 + uSkinColorA * pow(edgeFactor, 1.5) * 1.45;
+            } else if (abs(uSkinMode - 8.0) < 0.2) {
+              float veins = smoothstep(0.18, 0.0, abs(sin(p.x * 2.5 + uTime * 2.0) * sin(p.y * 2.5 - uTime)));
+              gl_FragColor.rgb = gl_FragColor.rgb * uSkinColorB * 1.3 + uSkinColorA * (veins * 0.85 + edgeFactor * 0.5);
+            } else if (abs(uSkinMode - 9.0) < 0.2) {
+              float flameWave = sin(p.x * 2.2 + sin(p.y * 3.0 - uTime * 3.5)) * cos(p.z * 2.2 + uTime * 2.0);
+              float fireVein = smoothstep(0.22, 0.0, abs(flameWave));
+              float emberPulse = 0.7 + 0.3 * sin(uTime * 5.0 + vHeightNorm * 10.0);
+              vec3 cursedBase = gl_FragColor.rgb * vec3(0.18, 0.1, 0.26);
+              vec3 fireCol = mix(uSkinColorB, uSkinColorA, fireVein);
+              gl_FragColor.rgb = cursedBase + fireCol * (fireVein * 1.35 * emberPulse) + uSkinColorA * pow(edgeFactor, 1.6) * 1.25;
+            } else if (abs(uSkinMode - 10.0) < 0.2) {
+              float frost = abs(cos(p.x * 3.0) * sin(p.y * 3.0) * cos(p.z * 3.0));
+              float shard = smoothstep(0.35, 0.65, frost);
+              gl_FragColor.rgb = gl_FragColor.rgb * mix(uSkinColorB, uSkinColorA, shard) * 1.25 + vec3(0.85, 0.96, 1.0) * edgeFactor * 0.65;
+            } else if (abs(uSkinMode - 11.0) < 0.2) {
+              float slice = step(0.86, fract(vHeightNorm * 18.0 + uTime * 1.8));
+              vec3 glitchCol = mix(uSkinColorA, uSkinColorB, slice);
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.55 + glitchCol * (0.45 + edgeFactor * 0.75);
+            }
+          }
+          #include <tonemapping_fragment>
+          `
+        );
+      };
+      material.needsUpdate = true;
+    }
+
+    function addRingAttachment(mesh, y) {
+      mesh.rotation.x = Math.PI / 2;
+      mesh.position.y = y;
+      skinBodyAttachments.add(mesh);
+    }
+
+    function rebuildSkin3DAttachments(skin) {
+      while (skinBodyAttachments.children.length > 0) {
+        skinBodyAttachments.remove(skinBodyAttachments.children[0]);
+      }
+      while (skinHeadAttachments.children.length > 0) {
+        skinHeadAttachments.remove(skinHeadAttachments.children[0]);
+      }
+
+      const type = skin.attachment || 'none';
+      if (type === 'none') return;
+
+      const matA = new THREE.MeshStandardMaterial({
+        color: skin.colorA || 0x00f0ff,
+        emissive: skin.colorA || 0x00f0ff,
+        emissiveIntensity: 0.65,
+        metalness: 0.8,
+        roughness: 0.2
+      });
+      const matB = new THREE.MeshStandardMaterial({
+        color: skin.colorB || 0x6366f1,
+        emissive: skin.colorB || 0x6366f1,
+        emissiveIntensity: 0.45,
+        metalness: 0.7,
+        roughness: 0.25
+      });
+
+      if (type === 'halloween_lord') {
+        [-1, 1].forEach(side => {
+          const horn = new THREE.Mesh(new THREE.ConeGeometry(0.085, 0.46, 16), matA);
+          horn.position.set(side * 0.22, 0.62, 0.08);
+          horn.rotation.z = -side * 0.48;
+          horn.rotation.x = 0.25;
+          skinHeadAttachments.add(horn);
+        });
+        const crownRing = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.025, 12, 32), matB);
+        crownRing.rotation.x = Math.PI / 2;
+        crownRing.position.set(0, 0.56, 0.02);
+        skinHeadAttachments.add(crownRing);
+
+        for (let i = 0; i < 4; i++) {
+          const orb = new THREE.Mesh(new THREE.OctahedronGeometry(0.14, 1), matA);
+          const angle = (i / 4) * Math.PI * 2;
+          orb.position.set(Math.cos(angle) * 1.15, 1.8 + (i % 2) * 0.45, Math.sin(angle) * 1.15);
+          skinBodyAttachments.add(orb);
+        }
+      } else if (type === 'cyber_visor') {
+        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.09, 0.22), matA);
+        visor.position.set(0, 0.34, 0.22);
+        skinHeadAttachments.add(visor);
+
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.018, 12, 48), matA);
+        addRingAttachment(ring, 1.9);
+      } else if (type === 'gold_halo') {
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.028, 16, 48), matA);
+        halo.rotation.x = Math.PI * 0.42;
+        halo.position.set(0, 0.68, -0.04);
+        skinHeadAttachments.add(halo);
+      } else if (type === 'solar_crown') {
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.03, 16, 48), matA);
+        halo.position.set(0, 0.45, -0.15);
+        skinHeadAttachments.add(halo);
+        for (let i = 0; i < 8; i++) {
+          const ray = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.22, 8), matA);
+          const a = (i / 8) * Math.PI * 2;
+          ray.position.set(Math.cos(a) * 0.45, 0.45 + Math.sin(a) * 0.45, -0.15);
+          ray.rotation.z = a - Math.PI / 2;
+          skinHeadAttachments.add(ray);
+        }
+      } else if (type === 'magma_rocks' || type === 'cryo_shards' || type === 'crystal_shards' || type === 'bio_orbs') {
+        const geo = type === 'bio_orbs'
+          ? new THREE.SphereGeometry(0.11, 16, 16)
+          : new THREE.OctahedronGeometry(0.13, 0);
+        for (let i = 0; i < 5; i++) {
+          const m = new THREE.Mesh(geo, i % 2 === 0 ? matA : matB);
+          const a = (i / 5) * Math.PI * 2;
+          m.position.set(Math.cos(a) * 1.12, 1.5 + (i % 3) * 0.35, Math.sin(a) * 1.12);
+          skinBodyAttachments.add(m);
+        }
+      } else if (type === 'gyro_rings' || type === 'matrix_rings' || type === 'energy_ring' || type === 'crimson_aura') {
+        const r1 = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.02, 12, 56), matA);
+        r1.rotation.x = Math.PI / 2.3;
+        r1.position.y = 1.95;
+        skinBodyAttachments.add(r1);
+
+        const r2 = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.015, 12, 56), matB);
+        r2.rotation.x = -Math.PI / 2.6;
+        r2.position.y = 1.45;
+        skinBodyAttachments.add(r2);
+      } else if (type === 'void_monoliths') {
+        for (let i = 0; i < 4; i++) {
+          const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.65, 0.08), matA);
+          const a = (i / 4) * Math.PI * 2;
+          pillar.position.set(Math.cos(a) * 1.2, 1.9, Math.sin(a) * 1.2);
+          skinBodyAttachments.add(pillar);
+        }
+      } else if (type === 'omega_ascended') {
+        const crown = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.03, 16, 48), matA);
+        crown.rotation.x = Math.PI / 2;
+        crown.position.set(0, 0.66, 0);
+        skinHeadAttachments.add(crown);
+
+        [-1, 1].forEach(side => {
+          for (let j = 0; j < 3; j++) {
+            const wingBlade = new THREE.Mesh(new THREE.BoxGeometry(0.95 - j * 0.18, 0.09, 0.04), j % 2 === 0 ? matA : matB);
+            wingBlade.position.set(side * (0.75 + j * 0.12), 2.55 - j * 0.28, -0.35);
+            wingBlade.rotation.z = side * (0.35 - j * 0.15);
+            skinBodyAttachments.add(wingBlade);
+          }
+        });
+      }
+    }
+
+    function mountGLTFScene(gltf, sourceName) {
+      while (glbContainerGroup.children.length > 0) {
+        glbContainerGroup.remove(glbContainerGroup.children[0]);
+      }
+      loadedGLBMeshes = [];
+      customShaderUniformsList.length = 0;
+
+      const root = gltf.scene;
+      const box = new THREE.Box3().setFromObject(root);
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
+
+      let totalVerts = 0;
+
+      root.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+          if (child.geometry) {
+            child.geometry.computeBoundingBox();
+            if (child.geometry.attributes?.position) {
+              totalVerts += child.geometry.attributes.position.count;
+            }
+          }
+          const mat = child.material;
+          if (mat) {
+            child.userData.origColor = mat.color ? mat.color.clone() : new THREE.Color(0xffffff);
+            child.userData.origMetalness = mat.metalness ?? 0.08;
+            child.userData.origRoughness = mat.roughness ?? 0.52;
+            const geoBox = child.geometry?.boundingBox || box;
+            attachHypertrophyAndSkinShader(mat, geoBox.min, geoBox.max);
+          }
+          loadedGLBMeshes.push(child);
+        }
+      });
+
+      const targetHeight = 3.8;
+      const baseScale = targetHeight / Math.max(0.01, size.y);
+      root.position.set(-center.x * baseScale, -box.min.y * baseScale, -center.z * baseScale);
+      root.scale.setScalar(baseScale);
+
+      glbContainerGroup.add(root);
+
+      const vEl = document.getElementById('vertex-count-label');
+      if (vEl) vEl.textContent = totalVerts.toLocaleString('ru-RU');
+
+      applyActiveSkinTo3D();
+      update3DAnatomyAndHUD();
+      setLoaderProgress(100, `Модель готова (${totalVerts.toLocaleString('ru-RU')} вершин)`, '✅ 3D-МОДЕЛЬ ЗАГРУЖЕНА!', true);
+      addLoaderLog(`✅ Успешно: ${sourceName} (${totalVerts.toLocaleString('ru-RU')} вершин)`, 'text-emerald-400');
+      setTimeout(hideLoaderModal, 350);
+    }
+
+    async function loadGLBModelFromRepo() {
+      document.getElementById('btn-retry-load')?.classList.add('hidden');
+      setLoaderProgress(12, 'Инициализация WebAssembly декодера Meshopt...', 'ЗАГРУЗКА 3D-МОДЕЛИ...');
+
+      try {
+        await MeshoptDecoder.ready;
+        addLoaderLog('✓ Декодер EXT_meshopt_compression готов', 'text-emerald-400');
+      } catch (e) {
+        addLoaderLog('⚠️ Предупреждение инициализации Meshopt: ' + e.message, 'text-amber-300');
+      }
+
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+      gltfLoader.setDRACOLoader(dracoLoader);
+
+      const candidateUrls = [
+        './model.glb',
+        'model.glb',
+        './tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb',
+        './Model.glb'
+      ];
+
+      if (window.location.hostname.endsWith('github.io')) {
+        try {
+          const owner = window.location.hostname.split('.')[0];
+          const pathParts = window.location.pathname.split('/').filter(Boolean);
+          const repo = pathParts[0];
+          if (owner && repo) {
+            const apiResp = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/`);
+            if (apiResp.ok) {
+              const files = await apiResp.json();
+              if (Array.isArray(files)) {
+                files.forEach(f => {
+                  if (f.name && f.name.toLowerCase().endsWith('.glb')) {
+                    if (!candidateUrls.includes('./' + f.name)) candidateUrls.unshift('./' + f.name);
+                    if (f.download_url && !candidateUrls.includes(f.download_url)) candidateUrls.push(f.download_url);
+                  }
+                });
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      const tryLoadSingleUrl = (url) => {
+        return new Promise((resolve, reject) => {
+          addLoaderLog(`🌐 Загрузка ${url}...`, 'text-cyan-300');
+          gltfLoader.load(
+            url,
+            (gltf) => resolve({ gltf, url }),
+            (xhr) => {
+              if (xhr.total > 0) {
+                const pct = 20 + (xhr.loaded / xhr.total) * 75;
+                const mbLoaded = (xhr.loaded / (1024 * 1024)).toFixed(1);
+                const mbTotal = (xhr.total / (1024 * 1024)).toFixed(1);
+                setLoaderProgress(pct, `Скачивание ${url}: ${mbLoaded} / ${mbTotal} МБ`);
+              } else if (xhr.loaded > 0) {
+                const mbLoaded = (xhr.loaded / (1024 * 1024)).toFixed(1);
+                setLoaderProgress(60, `Скачано ${mbLoaded} МБ (${url})...`);
+              }
+            },
+            (err) => reject(err)
+          );
+        });
+      };
+
+      for (const url of candidateUrls) {
+        try {
+          const { gltf } = await tryLoadSingleUrl(url);
+          mountGLTFScene(gltf, url);
+          return;
+        } catch (err) {
+          addLoaderLog(`• Не удалось загрузить ${url}`, 'text-slate-400');
+        }
+      }
+
+      setLoaderProgress(100, 'Не удалось найти файл model.glb рядом с index.html на сервере.', '⚠️ ОЖИДАНИЕ MODEL.GLB', true);
+      addLoaderLog('❌ Проверьте, что файл в репозитории назван точно model.glb', 'text-rose-400');
+      document.getElementById('btn-retry-load')?.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-retry-load')?.addEventListener('click', loadGLBModelFromRepo);
+
+    /*************************************************************************
+     * 5. ПРИМЕНЕНИЕ 3D-ШЕЙДЕРНЫХ СКИНОВ, ОСВЕЩЕНИЯ И ПРОГРЕССИИ 1000 ФАЗ
+     *************************************************************************/
+    function applyActiveSkinTo3D() {
+      const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[1];
+
+      currentSkinShaderState.mode = skin.shaderMode || 0;
+      currentSkinShaderState.colorA.setHex(skin.colorA || 0xffffff);
+      currentSkinShaderState.colorB.setHex(skin.colorB || 0x6366f1);
+
+      loadedGLBMeshes.forEach(mesh => {
+        const mat = mesh.material;
+        if (!mat) return;
+        if (skin.preserveOriginalTexture) {
+          if (mesh.userData && mesh.userData.origColor) mat.color.copy(mesh.userData.origColor);
+          else mat.color.setHex(0xffffff);
+          mat.metalness = mesh.userData.origMetalness ?? 0.08;
+          mat.roughness = mesh.userData.origRoughness ?? 0.52;
+        } else {
+          mat.color.setHex(0xffffff);
+          mat.metalness = skin.metal ?? 0.35;
+          mat.roughness = Math.max(0.12, skin.rough ?? 0.3);
+        }
+        mat.needsUpdate = true;
+      });
+
+      customShaderUniformsList.forEach(u => {
+        u.uSkinMode.value = currentSkinShaderState.mode;
+        u.uSkinColorA.value.copy(currentSkinShaderState.colorA);
+        u.uSkinColorB.value.copy(currentSkinShaderState.colorB);
+      });
+
+      rebuildSkin3DAttachments(skin);
+    }
+
+    function applyStudioLightingPreset(presetIdx) {
+      studioLightPreset = presetIdx % 3;
+      const btn = document.getElementById('btn-light-mode');
+      if (studioLightPreset === 0) {
+        renderer.toneMappingExposure = 0.94;
+        hemiLight.intensity = 0.9;
+        keyLight.intensity = 1.35;
+        if (btn) btn.textContent = '☀ СВЕТ: СТУДИЯ';
+      } else if (studioLightPreset === 1) {
+        renderer.toneMappingExposure = 0.85;
+        hemiLight.intensity = 0.55;
+        keyLight.intensity = 1.65;
+        if (btn) btn.textContent = '☀ СВЕТ: РЕЛЬЕФ';
+      } else {
+        renderer.toneMappingExposure = 0.9;
+        hemiLight.intensity = 1.15;
+        keyLight.intensity = 0.9;
+        if (btn) btn.textContent = '☀ СВЕТ: МЯГКИЙ';
+      }
+    }
+
+    let pumpImpulse = 0;
+    let shockwaveProgress = 0;
+
+    function update3DAnatomyAndHUD() {
+      const { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo } = getStats();
+      const g = pInfo.globalGrowth;
+
+      if (pInfo.current.num > state.highestPhase) {
+        state.highestPhase = pInfo.current.num;
+        showToast(`🧬 ФАЗА ${pInfo.current.num}/1000: ${pInfo.current.title}!`, 'border-amber-400 text-amber-300');
+      }
+
+      if (pInfo.current.num >= 500 && Date.now() < EXCLUSIVE_NOV1_DEADLINE && !state.ownedSkins.includes('halloween_cursed_500')) {
+        state.ownedSkins.push('halloween_cursed_500');
+        showToast('🎃 РАЗБЛОКИРОВАН ЭКСКЛЮЗИВНЫЙ СКИН 500-Й ФАЗЫ!', 'border-orange-400 text-orange-300');
+        renderSkinsList();
+      }
+
+      customShaderUniformsList.forEach(u => {
+        u.uHypertrophy.value = g;
+        u.uShaderActive.value = 1.0;
+      });
+
+      const scaleY = 0.82 + g * 0.42;
+      const scaleXZ = 0.80 + g * 0.68;
+      characterPivot.position.y = FLOOR_Y;
+      characterPivot.scale.set(scaleXZ, scaleY, scaleXZ);
+
+      const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+      const setWidth = (id, pct) => {
+        const el = document.getElementById(id);
+        if (el) el.style.width = pct + '%';
+      };
+
+      setTxt('hud-score', formatMass(state.score));
+      setTxt('hud-passive', formatMass(passivePower));
+      setTxt('hud-phase-num', pInfo.current.num);
+
+      const epochObj = EPOCHS.find(e => pInfo.current.num >= e.range[0] && pInfo.current.num <= e.range[1]) || EPOCHS[0];
+      setTxt('pc-epoch-tag', epochObj.name);
+      setTxt('pc-phase-num', pInfo.current.num);
+      setTxt('pc-phase-title', pInfo.current.title);
+      setTxt('pc-next-phase-num', pInfo.next.num);
+      setTxt('pc-subphase-pct', Math.floor(pInfo.subProgress * 100) + '%');
+      setWidth('pc-subphase-bar', Math.floor(pInfo.subProgress * 100));
+      setTxt('pc-total-mass', formatMass(state.totalEarned) + ' КГ');
+      setTxt('pc-next-mass', formatMass(pInfo.next.req) + ' КГ');
+      setTxt('pc-global-pct', (g * 100).toFixed(1) + '%');
+      setWidth('pc-global-bar', Math.max(0.2, g * 100).toFixed(1));
+
+      setTxt('mob-phase-num', pInfo.current.num);
+      setTxt('mob-phase-title', pInfo.current.title);
+      setTxt('mob-next-req', `${formatMass(state.totalEarned)} / ${formatMass(pInfo.next.req)} КГ`);
+      setWidth('mob-subphase-bar', Math.floor(pInfo.subProgress * 100));
+
+      const ePct = Math.min(100, Math.max(0, (state.energy / maxEnergy) * 100));
+      setTxt('pc-energy-text', `${Math.floor(state.energy)} / ${maxEnergy}`);
+      setWidth('pc-energy-bar', ePct);
+      setTxt('pc-tap-power', '+' + formatMass(clickPower) + ' КГ');
+      setTxt('pc-regen-rate', '+' + regenRate + '/С');
+      setTxt('lbl-tap-power', formatMass(clickPower));
+
+      setTxt('bio-chest', (88 + g * 124).toFixed(1) + ' СМ');
+      setTxt('bio-biceps', (29 + g * 58).toFixed(1) + ' СМ');
+      setTxt('bio-shoulders', (43 + g * 68).toFixed(1) + ' СМ');
+      setTxt('bio-legs', (48 + g * 64).toFixed(1) + ' СМ');
+      setTxt('bio-pressure', (1.05 + g * 48.5).toFixed(2) + ' МПа');
+      setTxt('bio-multiplier', 'x' + mult.toFixed(2));
+
+      document.querySelectorAll('.skins-count-label').forEach(el => {
+        el.textContent = `${state.ownedSkins.length}/${SKINS_DATA.length}`;
+      });
+      setTxt('phases-unlocked-badge', `${pInfo.current.num} / 1000`);
+
+      UPGRADES_DATA.forEach(u => {
+        const card = document.getElementById(`upg-card-${u.id}`);
+        if (!card) return;
+        const lvl = state.upgrades[u.id] || 0;
+        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
+        card.classList.toggle('disabled', state.score < cost);
+      });
+    }
+
+    /*************************************************************************
+     * 6. ПАРАЛЛАКС, СЛЕЖЕНИЕ ГОЛОВЫ ЗА КУРСОРОМ И ВРАЩЕНИЕ 360°
+     *************************************************************************/
+    let targetYaw = 0;
+    let currentYaw = 0;
+    let targetPitch = 0.05;
+    let currentPitch = 0.05;
+    let cameraZoomOffset = 0;
+
+    let mouseNormX = 0;
+    let mouseNormY = 0;
+    let smoothParallaxX = 0;
+    let smoothParallaxY = 0;
+    let smoothHeadYaw = 0;
+    let smoothHeadPitch = 0;
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let totalDragDist = 0;
+
+    function triggerPumpClick(clientX, clientY) {
+      const { clickPower, pInfo } = getStats();
+      const cost = Math.min(8, Math.max(1, Math.ceil(clickPower * 0.015)));
+      if (state.energy < cost) {
+        showToast('⚡ НЕДОСТАТОЧНО РЕСУРСА ШВОВ!', 'border-rose-500 text-rose-300');
+        return;
+      }
+
+      state.energy = Math.max(0, state.energy - cost);
+      state.score += clickPower;
+      state.totalEarned += clickPower;
+
+      pumpImpulse = 1.0;
+      shockwaveProgress = 0.01;
+      clickFlashLight.intensity = 1.5;
+
+      playPumpHitSound(pInfo.globalGrowth);
+      spawnFloatingNumber(clientX, clientY, `+${formatMass(clickPower)} КГ`);
+      update3DAnatomyAndHUD();
+    }
+
+    function spawnFloatingNumber(x, y, text) {
+      const layer = document.getElementById('particles-layer');
+      if (!layer) return;
+      const el = document.createElement('div');
+      el.className = 'float-particle text-sm md:text-lg text-cyan-300';
+      el.style.left = `${x + (Math.random() - 0.5) * 32}px`;
+      el.style.top = `${y - 12}px`;
+      el.style.textShadow = '0 0 12px rgba(0,240,255,0.85), 0 2px 4px #000';
+      el.textContent = text;
+      layer.appendChild(el);
+      setTimeout(() => el.remove(), 850);
+    }
+
+    container.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      totalDragDist = 0;
+      mouseNormX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseNormY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      mouseNormX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseNormY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      totalDragDist += Math.abs(dx) + Math.abs(dy);
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+
+      targetYaw += dx * 0.011;
+      targetPitch = Math.max(-0.65, Math.min(0.85, targetPitch + dy * 0.008));
+
+      const angleEl = document.getElementById('cam-angle-label');
+      if (angleEl) {
+        const degY = Math.round(((targetYaw * 180) / Math.PI) % 360);
+        const degP = Math.round((targetPitch * 180) / Math.PI);
+        angleEl.textContent = `${degY}° / ${degP}°`;
+      }
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      if (totalDragDist < 12 && e.target === renderer.domElement) {
+        triggerPumpClick(e.clientX, e.clientY);
+      }
+    });
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      cameraZoomOffset = Math.max(-2.8, Math.min(4.2, cameraZoomOffset + e.deltaY * 0.003));
+      syncResponsiveCamera();
+    }, { passive: false });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !['TEXTAREA', 'INPUT'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        triggerPumpClick(window.innerWidth / 2, window.innerHeight * 0.45);
+      }
+    });
+
+    /*************************************************************************
+     * 7. ПОДСВЕТКА ПАНЕЛЕЙ, ТАЙМЕР ДО 1 НОЯБРЯ И УПРАВЛЕНИЕ ВКЛАДКАМИ
+     *************************************************************************/
+    function updateExclusiveCountdown() {
+      const el = document.getElementById('exclusive-countdown-timer');
+      if (!el) return;
+      const diff = EXCLUSIVE_NOV1_DEADLINE - Date.now();
+      if (diff <= 0) {
+        el.textContent = 'ИВЕНТ ЗАВЕРШЁН';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / (1000 * 60)) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+      el.textContent = `ДО 1 НОЯБРЯ: ${days}Д ${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    setInterval(updateExclusiveCountdown, 1000);
+    setTimeout(updateExclusiveCountdown, 100);
+
+    function setupPanelSpotlight(cardId, glareId) {
+      const card = document.getElementById(cardId);
+      const glare = document.getElementById(glareId);
+      if (!card || !glare) return;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        glare.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(0, 240, 255, 0.16) 0%, transparent 55%)`;
+      });
+    }
+    setupPanelSpotlight('holo-card-left', 'glare-left');
+    setupPanelSpotlight('holo-card-right', 'glare-right');
+
+    let baseCameraY = -0.25;
+    let baseLookAtY = -0.35;
+    let baseCameraZ = 6.5;
+
+    function syncResponsiveCamera() {
+      const aspect = window.innerWidth / window.innerHeight;
+      camera.aspect = aspect;
+      if (currentDeviceMode === 'mobile') {
+        camera.fov = aspect < 0.65 ? 52 : 46;
+        baseCameraY = isDrawerOpen ? -0.8 : -0.25;
+        baseLookAtY = isDrawerOpen ? -0.95 : -0.35;
+        baseCameraZ = (aspect < 0.65 ? 7.6 : 6.8) + cameraZoomOffset;
+      } else {
+        camera.fov = 40;
+        baseCameraY = -0.25;
+        baseLookAtY = -0.35;
+        baseCameraZ = 6.5 + cameraZoomOffset;
+      }
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', syncResponsiveCamera);
+
+    function setDeviceLayout(mode) {
+      currentDeviceMode = mode;
+      document.body.setAttribute('data-device', mode);
+      const badge = document.getElementById('device-mode-badge');
+      const btn = document.getElementById('btn-toggle-layout');
+      if (mode === 'pc') {
+        if (badge) badge.textContent = 'ПК';
+        if (btn) btn.textContent = '📱 МОБ. ВИД';
+      } else {
+        if (badge) badge.textContent = 'ТЕЛЕФОН';
+        if (btn) btn.textContent = '🖥 ПК ВИД';
+      }
+      mountActiveTabPanel();
+      syncResponsiveCamera();
+    }
+
+    function mountActiveTabPanel() {
+      const holder = document.getElementById('shared-panels-holder');
+      const pcTarget = document.getElementById('pc-tab-container');
+      const mobTarget = document.getElementById('mob-tab-container');
+      ['upgrades', 'skins', 'phases', 'save'].forEach(t => {
+        const el = document.getElementById(`panel-${t}`);
+        if (el && el.parentElement !== holder) holder.appendChild(el);
+      });
+      const activePanel = document.getElementById(`panel-${activeTab}`);
+      if (!activePanel) return;
+      if (currentDeviceMode === 'pc') pcTarget.appendChild(activePanel);
+      else mobTarget.appendChild(activePanel);
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.className = `tab-btn py-2.5 text-[9px] font-bold tracking-wider uppercase rounded-lg border ${
+          active ? 'border-cyan-500/50 bg-indigo-600/30 text-cyan-300' : 'border-transparent text-slate-300 hover:text-white'
+        }`;
+      });
+      document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.className = `mob-tab-btn py-2 px-1 rounded-lg text-[9px] font-bold tracking-wider uppercase flex items-center justify-center gap-1 border ${
+          active ? 'bg-indigo-600/30 text-cyan-300 border-cyan-500/40' : 'text-slate-400 border-transparent'
+        }`;
+      });
+      mountActiveTabPanel();
+    }
+
+    function setMobileDrawerOpen(open) {
+      isDrawerOpen = open;
+      const drawer = document.getElementById('bottom-drawer');
+      const btn = document.getElementById('btn-drawer-toggle');
+      if (drawer) drawer.classList.toggle('collapsed', !open);
+      if (btn) btn.textContent = open ? '▼ СВЕРНУТЬ' : '▲ МЕНЮ';
+      syncResponsiveCamera();
+    }
+
+    function renderUpgradesList() {
+      const list = document.getElementById('upgrades-list');
+      if (!list) return;
+      list.innerHTML = '';
+      UPGRADES_DATA.forEach(u => {
+        const lvl = state.upgrades[u.id] || 0;
+        const cost = Math.floor(u.baseCost * Math.pow(u.mult, lvl));
+        const canBuy = state.score >= cost;
+        const card = document.createElement('div');
+        card.id = `upg-card-${u.id}`;
+        card.className = `module-card rounded-xl p-2.5 flex items-center justify-between gap-2 ${canBuy ? '' : 'disabled'}`;
+        card.innerHTML = `
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[8px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-cyan-400 border border-slate-700">${u.code}</span>
+              <span class="text-xs font-bold text-white truncate">${u.name}</span>
+            </div>
+            <div class="text-[10px] text-slate-300 mt-0.5">${u.desc}</div>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="text-[10px] font-bold text-amber-400">ЦЕНА: ${formatMass(cost)} КГ</span>
+              <span class="text-[9px] text-slate-400">| УР. <b class="text-white">${lvl}</b></span>
+            </div>
+          </div>
+          <div class="px-2.5 py-1.5 rounded-lg bg-indigo-500/20 border border-indigo-400/40 text-[9px] font-display font-bold text-indigo-200 shrink-0">+УР</div>
+        `;
+        card.addEventListener('click', () => {
+          const curLvl = state.upgrades[u.id] || 0;
+          const curCost = Math.floor(u.baseCost * Math.pow(u.mult, curLvl));
+          if (state.score < curCost) return;
+          state.score -= curCost;
+          state.upgrades[u.id] = curLvl + 1;
+          if (u.energyBonus) state.energy += u.energyBonus;
+          playUpgradeSound();
+          renderUpgradesList();
+          update3DAnatomyAndHUD();
+          saveProgress(true);
+        });
+        list.appendChild(card);
+      });
+    }
+
+    function renderSkinsList() {
+      const list = document.getElementById('skins-list');
+      if (!list) return;
+      list.innerHTML = '';
+      const { pInfo } = getStats();
+      const isBeforeNov1 = Date.now() < EXCLUSIVE_NOV1_DEADLINE;
+
+      SKINS_DATA.forEach(s => {
+        const owned = state.ownedSkins.includes(s.id);
+        const equipped = state.equippedSkin === s.id;
+        const phaseOk = pInfo.current.num >= s.minPhase;
+        const expired = s.isExclusiveNov1 && !isBeforeNov1 && !owned;
+        const canUnlock = !owned && !expired && phaseOk && state.score >= s.cost;
+
+        let btnLabel = 'ВЫБРАТЬ';
+        let btnStyle = 'bg-indigo-600 hover:bg-indigo-500 text-white';
+        if (equipped) {
+          btnLabel = 'АКТИВЕН ✓';
+          btnStyle = 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50';
+        } else if (!owned) {
+          if (expired) {
+            btnLabel = 'ИВЕНТ ЗАВЕРШЁН';
+            btnStyle = 'bg-slate-900 text-rose-400 border border-rose-900 cursor-not-allowed';
+          } else if (!phaseOk) {
+            btnLabel = `ФАЗА ${s.minPhase}`;
+            btnStyle = 'bg-slate-900 text-slate-500 border border-slate-800 cursor-not-allowed';
+          } else if (s.isExclusiveNov1) {
+            btnLabel = 'ЗАБРАТЬ БЕСПЛАТНО 🎃';
+            btnStyle = 'bg-gradient-to-r from-orange-500 to-purple-600 text-white font-black shadow-lg';
+          } else {
+            btnLabel = `${formatMass(s.cost)} КГ`;
+            btnStyle = canUnlock ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800';
+          }
+        }
+
+        const card = document.createElement('div');
+        card.className = `skin-card rounded-xl p-2.5 flex items-center justify-between gap-2.5 ${equipped ? 'equipped' : ''} ${s.isExclusiveNov1 ? 'exclusive-card' : ''}`;
+        card.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-10 h-10 rounded-lg shrink-0 border border-white/25 shadow-md" style="background:${s.swatch}"></div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white truncate">${s.name}</div>
+              <div class="text-[9px] text-slate-300 leading-tight">${s.desc}</div>
+              <div class="text-[8px] ${s.isExclusiveNov1 ? 'text-orange-300 font-bold' : 'text-indigo-300'} mt-0.5 uppercase">
+                ${s.isExclusiveNov1 ? '🔥 ЭКСКЛЮЗИВ ДО 1 НОЯБРЯ • ФАЗА 500' : `Требуется Фаза ${s.minPhase}/1000`}
+              </div>
+            </div>
+          </div>
+          <button type="button" class="px-2.5 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider shrink-0 ${btnStyle}">${btnLabel}</button>
+        `;
+        card.querySelector('button').addEventListener('click', () => {
+          if (owned) {
+            state.equippedSkin = s.id;
+            applyActiveSkinTo3D();
+            renderSkinsList();
+            saveProgress(true);
+          } else if (canUnlock) {
+            state.score -= s.cost;
+            state.ownedSkins.push(s.id);
+            state.equippedSkin = s.id;
+            playUpgradeSound();
+            applyActiveSkinTo3D();
+            renderSkinsList();
+            update3DAnatomyAndHUD();
+            saveProgress(true);
+            showToast(`✨ СКИН РАЗБЛОКИРОВАН: ${s.name}`, 'border-emerald-400 text-emerald-300');
+          }
+        });
+        list.appendChild(card);
+      });
+    }
+
+    function renderEpochFilterBar() {
+      const bar = document.getElementById('epoch-filter-bar');
+      if (!bar) return;
+      bar.innerHTML = '';
+      EPOCHS.forEach(ep => {
+        const active = state.selectedEpoch === ep.id;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `px-2 py-1 rounded text-[8px] font-bold uppercase border ${
+          active ? 'bg-cyan-500/25 border-cyan-400 text-cyan-300' : 'bg-slate-900 border-slate-800 text-slate-400'
+        }`;
+        btn.textContent = `${ep.range[0]}-${ep.range[1]}`;
+        btn.addEventListener('click', () => {
+          state.selectedEpoch = ep.id;
+          renderEpochFilterBar();
+          renderPhasesList();
+        });
+        bar.appendChild(btn);
+      });
+    }
+
+    function renderPhasesList() {
+      const list = document.getElementById('phases-list');
+      if (!list) return;
+      list.innerHTML = '';
+      const { pInfo } = getStats();
+      const ep = EPOCHS.find(e => e.id === state.selectedEpoch) || EPOCHS[0];
+      const subset = PHASES_1000.slice(ep.range[0] - 1, ep.range[1]);
+
+      subset.forEach(p => {
+        const unlocked = p.num <= pInfo.current.num;
+        const isCurrent = p.num === pInfo.current.num;
+        const row = document.createElement('div');
+        row.className = `phase-item p-2 rounded-lg border flex items-center justify-between text-[10px] ${
+          isCurrent
+            ? 'bg-indigo-950/80 border-cyan-400 text-white'
+            : unlocked
+              ? 'bg-slate-900/75 border-indigo-500/30 text-slate-200'
+              : 'bg-slate-950/40 border-slate-800/60 text-slate-500 opacity-60'
+        }`;
+        row.innerHTML = `
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="px-1.5 py-0.5 rounded font-display text-[9px] font-bold ${isCurrent ? 'bg-cyan-400 text-slate-950' : 'bg-slate-800 text-slate-300'}">#${p.num}</span>
+            <span class="font-bold truncate">${p.title}</span>
+          </div>
+          <span class="text-[9px] font-bold shrink-0 ml-2">${unlocked ? 'ОТКРЫТО ✓' : formatMass(p.req) + ' КГ'}</span>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    // Привязка кнопок интерфейса, Центра Аккаунта и PWA
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+    document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        if (activeTab === tab && isDrawerOpen) setMobileDrawerOpen(false);
+        else {
+          switchTab(tab);
+          setMobileDrawerOpen(true);
+        }
+      });
+    });
+
+    document.getElementById('btn-drawer-toggle')?.addEventListener('click', () => setMobileDrawerOpen(!isDrawerOpen));
+    document.getElementById('btn-toggle-layout')?.addEventListener('click', () => {
+      setDeviceLayout(currentDeviceMode === 'pc' ? 'mobile' : 'pc');
+    });
+
+    document.getElementById('btn-head-track-toggle')?.addEventListener('click', (e) => {
+      headTrackingEnabled = !headTrackingEnabled;
+      e.currentTarget.textContent = headTrackingEnabled ? '👀 ГОЛОВА: СЛЕДИТ' : '👀 ГОЛОВА: СТАТИКА';
+    });
+
+    const openAuthModal = () => {
+      document.getElementById('auth-modal')?.classList.remove('hidden');
+      updateAuthUI();
+      initAuthProviders();
+    };
+    document.getElementById('btn-open-auth-top')?.addEventListener('click', openAuthModal);
+    document.getElementById('btn-tab-open-auth')?.addEventListener('click', openAuthModal);
+    document.getElementById('btn-tab-manage-links')?.addEventListener('click', openAuthModal);
+    document.getElementById('btn-close-auth')?.addEventListener('click', () => {
+      document.getElementById('auth-modal')?.classList.add('hidden');
+    });
+
+    document.getElementById('btn-logout')?.addEventListener('click', logoutAccount);
+    document.getElementById('btn-modal-logout')?.addEventListener('click', logoutAccount);
+    document.getElementById('btn-unlink-tg')?.addEventListener('click', () => unlinkProvider('telegram'));
+    document.getElementById('btn-unlink-google')?.addEventListener('click', () => unlinkProvider('google'));
+
+    document.getElementById('btn-install-pwa-top')?.addEventListener('click', triggerPWAInstall);
+    document.getElementById('btn-modal-install-pwa')?.addEventListener('click', triggerPWAInstall);
+    document.getElementById('btn-tab-install-pwa')?.addEventListener('click', triggerPWAInstall);
+    document.getElementById('btn-download-sw')?.addEventListener('click', downloadServiceWorkerFile);
+
+    document.getElementById('btn-link-account-id')?.addEventListener('click', () => {
+      const inp = document.getElementById('input-custom-account-id');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        showToast('⚠️ ВВЕДИТЕ ВАШ @USERNAME ИЛИ MASTER ID', 'border-rose-500 text-rose-300');
+        return;
+      }
+      const isTg = val.startsWith('@');
+      authenticateOrLinkProvider(isTg ? 'telegram' : 'google', {
+        key: (isTg ? 'tg_' : 'id_') + val.toLowerCase().replace(/[^a-z0-9_@.-]/gi, ''),
+        id: val,
+        name: val,
+        username: isTg ? val.slice(1) : ''
+      });
+    });
+
+    document.getElementById('btn-cloud-push')?.addEventListener('click', async () => {
+      await saveProgress(true);
+      showToast('⬆ ПРОГРЕСС ОТПРАВЛЕН В ОБЛАКО!', 'border-cyan-400 text-cyan-300');
+    });
+
+    document.getElementById('btn-cloud-pull')?.addEventListener('click', async () => {
+      const ok = await pullStateFromCloud();
+      if (!ok) showToast('ℹ ДАННЫЕ В ОБЛАКЕ СОВПАДАЮТ С ТЕКУЩИМИ', 'border-slate-400 text-slate-300');
+    });
+
+    const resetCamHandler = () => {
+      targetYaw = 0;
+      targetPitch = 0.05;
+      cameraZoomOffset = 0;
+      syncResponsiveCamera();
+    };
+    document.getElementById('btn-reset-cam')?.addEventListener('click', resetCamHandler);
+    document.getElementById('btn-left-reset-cam')?.addEventListener('click', resetCamHandler);
+
+    document.getElementById('btn-auto-spin')?.addEventListener('click', (e) => {
+      autoSpin = !autoSpin;
+      e.currentTarget.textContent = autoSpin ? '🌀 АВТО: ВКЛ' : '🌀 АВТО: ВЫКЛ';
+    });
+    document.getElementById('btn-light-mode')?.addEventListener('click', () => {
+      applyStudioLightingPreset(studioLightPreset + 1);
+    });
+    document.getElementById('btn-zoom-in')?.addEventListener('click', () => {
+      cameraZoomOffset = Math.max(-2.8, cameraZoomOffset - 0.5);
+      syncResponsiveCamera();
+    });
+    document.getElementById('btn-zoom-out')?.addEventListener('click', () => {
+      cameraZoomOffset = Math.min(4.2, cameraZoomOffset + 0.5);
+      syncResponsiveCamera();
+    });
+    document.getElementById('btn-sound')?.addEventListener('click', (e) => {
+      state.soundOn = !state.soundOn;
+      e.currentTarget.textContent = state.soundOn ? '🔊' : '🔇';
+      saveProgress(false);
+    });
+    document.getElementById('btn-quick-save')?.addEventListener('click', () => {
+      saveProgress(true);
+      showToast('💾 ПРОГРЕСС СОХРАНЁН!', 'border-emerald-400 text-emerald-300');
+    });
+    document.getElementById('btn-manual-save')?.addEventListener('click', () => {
+      saveProgress(true);
+      showToast('💾 ПРОГРЕСС СОХРАНЁН!', 'border-emerald-400 text-emerald-300');
+    });
+    document.getElementById('btn-export-save')?.addEventListener('click', () => {
+      saveProgress(false);
+      const code = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+      const area = document.getElementById('save-code-textarea');
+      if (area) area.value = code;
+      navigator.clipboard?.writeText(code).catch(() => {});
+      showToast('📋 КОД СКОПИРОВАН!', 'border-indigo-400 text-indigo-200');
+    });
+    document.getElementById('btn-import-save')?.addEventListener('click', () => {
+      const area = document.getElementById('save-code-textarea');
+      const raw = area ? area.value.trim() : '';
+      if (!raw) return;
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(raw))));
+        state = { ...getDefaultState(), ...decoded };
+        saveProgress(true);
+        applyActiveSkinTo3D();
+        renderUpgradesList();
+        renderSkinsList();
+        renderPhasesList();
+        update3DAnatomyAndHUD();
+        showToast('✅ ПРОГРЕСС ВОССТАНОВЛЕН!', 'border-emerald-400 text-emerald-300');
+      } catch (e) {
+        showToast('❌ ОШИБКА КОДА!', 'border-rose-500 text-rose-300');
+      }
+    });
+    document.getElementById('btn-wipe-save')?.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      if (currentAccount) localStorage.removeItem(`${STORAGE_KEY}_${currentAccount.masterId}`);
+      state = getDefaultState();
+      saveProgress(true);
+      applyActiveSkinTo3D();
+      renderUpgradesList();
+      renderSkinsList();
+      renderPhasesList();
+      update3DAnatomyAndHUD();
+      showToast('🗑 ПРОГРЕСС СБРОШЕН', 'border-amber-400 text-amber-300');
+    });
+
+    // Осциллограф
+    const ecgCanvas = document.getElementById('ecg-canvas');
+    const ecgCtx = ecgCanvas ? ecgCanvas.getContext('2d') : null;
+    let ecgPhase = 0;
+    function drawECG() {
+      if (!ecgCtx || currentDeviceMode !== 'pc') return;
+      const w = ecgCanvas.width;
+      const h = ecgCanvas.height;
+      ecgCtx.clearRect(0, 0, w, h);
+      ecgCtx.strokeStyle = '#00f0ff';
+      ecgCtx.lineWidth = 1.5;
+      ecgCtx.beginPath();
+      ecgPhase += 0.14 + pumpImpulse * 0.35;
+      for (let x = 0; x < w; x += 3) {
+        const amp = 4 + pumpImpulse * 10;
+        const y = h / 2 + Math.sin(x * 0.08 + ecgPhase) * amp * Math.sin(x * 0.02);
+        if (x === 0) ecgCtx.moveTo(x, y);
+        else ecgCtx.lineTo(x, y);
+      }
+      ecgCtx.stroke();
+    }
+
+    const leftCardEl = document.getElementById('holo-card-left');
+    const rightCardEl = document.getElementById('holo-card-right');
+    const gridEl = document.getElementById('parallax-grid');
+    const topBarEl = document.getElementById('hud-top-bar');
+
+    // Главный цикл 60 FPS
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(0.1, clock.getDelta());
+      const elapsed = clock.getElapsedTime();
+
+      if (autoSpin && !isDragging) targetYaw += dt * 0.65;
+
+      currentYaw += (targetYaw - currentYaw) * 0.14;
+      currentPitch += (targetPitch - currentPitch) * 0.14;
+      characterPivot.rotation.y = currentYaw;
+      characterPivot.rotation.x = currentPitch;
+
+      // Плавная интерполяция многослойного параллакса
+      smoothParallaxX += (mouseNormX - smoothParallaxX) * 0.08;
+      smoothParallaxY += (mouseNormY - smoothParallaxY) * 0.08;
+
+      // Плавная интерполяция слежения головы 3D-персонажа за курсором
+      const targetHeadYaw = headTrackingEnabled ? Math.max(-0.48, Math.min(0.48, mouseNormX * 0.44)) : 0;
+      const targetHeadPitch = headTrackingEnabled ? Math.max(-0.28, Math.min(0.28, mouseNormY * 0.25)) : 0;
+      smoothHeadYaw += (targetHeadYaw - smoothHeadYaw) * 0.12;
+      smoothHeadPitch += (targetHeadPitch - smoothHeadPitch) * 0.12;
+
+      camera.position.x = smoothParallaxX * 0.28;
+      camera.position.y = baseCameraY - smoothParallaxY * 0.18;
+      camera.position.z = baseCameraZ;
+      camera.lookAt(0, baseLookAtY, 0);
+
+      if (currentDeviceMode === 'pc') {
+        if (leftCardEl) {
+          leftCardEl.style.transform = `translate3d(${(smoothParallaxX * -10).toFixed(1)}px, ${(smoothParallaxY * -8).toFixed(1)}px, 0)`;
+        }
+        if (rightCardEl) {
+          rightCardEl.style.transform = `translate3d(${(smoothParallaxX * -10).toFixed(1)}px, ${(smoothParallaxY * -8).toFixed(1)}px, 0)`;
+        }
+        if (topBarEl) {
+          topBarEl.style.transform = `translate3d(${(smoothParallaxX * -4).toFixed(1)}px, ${(smoothParallaxY * -3).toFixed(1)}px, 0)`;
+        }
+      }
+      if (gridEl) {
+        gridEl.style.transform = `translate3d(${(smoothParallaxX * 18).toFixed(1)}px, ${(smoothParallaxY * 18).toFixed(1)}px, 0)`;
+      }
+
+      if (pumpImpulse > 0.001) pumpImpulse *= Math.pow(0.04, dt);
+      else pumpImpulse = 0;
+
+      customShaderUniformsList.forEach(u => {
+        u.uPumpPulse.value = pumpImpulse;
+        u.uTime.value = elapsed;
+        u.uHeadLook.value.set(smoothHeadYaw, smoothHeadPitch);
+      });
+
+      skinHeadAttachments.rotation.y = -smoothHeadYaw;
+      skinHeadAttachments.rotation.x = smoothHeadPitch;
+      skinBodyAttachments.rotation.y = elapsed * 0.85;
+
+      const { pInfo } = getStats();
+      const g = pInfo.globalGrowth;
+      const baseScaleY = 0.82 + g * 0.42;
+      const baseScaleXZ = (0.80 + g * 0.68) * (1 + pumpImpulse * 0.045);
+      characterPivot.scale.set(baseScaleXZ, baseScaleY * (1 + pumpImpulse * 0.02), baseScaleXZ);
+
+      if (clickFlashLight.intensity > 0.01) clickFlashLight.intensity *= Math.pow(0.01, dt);
+      else clickFlashLight.intensity = 0;
+
+      if (shockwaveProgress > 0) {
+        shockwaveProgress += dt * 2.8;
+        const s = 1 + shockwaveProgress * 5.2;
+        shockRing.scale.set(s, s, 1);
+        shockRing.material.opacity = Math.max(0, 0.85 * (1 - shockwaveProgress));
+        if (shockwaveProgress >= 1) {
+          shockwaveProgress = 0;
+          shockRing.material.opacity = 0;
+        }
+      }
+
+      drawECG();
+      renderer.render(scene, camera);
+    }
+
+    // Инициализация
+    setupPWAManifestAndSW();
+    loadProgress();
+    updateAuthUI();
+    setDeviceLayout(window.innerWidth < 1024 ? 'mobile' : 'pc');
+    applyStudioLightingPreset(0);
+    renderUpgradesList();
+    renderSkinsList();
+    renderEpochFilterBar();
+    renderPhasesList();
+    update3DAnatomyAndHUD();
+    animate();
+    loadGLBModelFromRepo();
+    setTimeout(initAuthProviders, 300);
+
+    if (currentAccount) {
+      pullStateFromCloud();
+    }
+
+    setInterval(() => {
+      const { passivePower, maxEnergy, regenRate } = getStats();
+      if (passivePower > 0) {
+        const gain = passivePower * 0.25;
+        state.score += gain;
+        state.totalEarned += gain;
+      }
+      if (state.energy < maxEnergy) {
+        state.energy = Math.min(maxEnergy, state.energy + regenRate * 0.25);
+      }
+      update3DAnatomyAndHUD();
+    }, 250);
+
+    // АВТОСОХРАНЕНИЕ И ОБЛАЧНАЯ СИНХРОНИЗАЦИЯ КАЖДЫЕ 5 СЕКУНД (5000 мс)
+    setInterval(() => {
+      saveProgress(true);
+    }, 5000);
   </script>
 </body>
 </html>
