@@ -4,15 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#04060b" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>ЫЦУЦАЦОВИЧ // CYBERPUNK 2077 // 1000 ФАЗ</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Глобальный перехватчик авторизации Telegram -->
+  <!-- Глобальный перехватчик Telegram Auth -->
   <script>
     window.onTelegramAuth = function(user) {
       if (window.__handleTelegramLogin) window.__handleTelegramLogin(user);
@@ -23,7 +22,10 @@
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!-- Three.js 0.160.0 -->
+  <!-- Стабильная библиотека MeshoptDecoder UMD (без сбоев модулей) -->
+  <script src="https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"></script>
+
+  <!-- Three.js Importmap -->
   <script type="importmap">
   {
     "imports": {
@@ -38,10 +40,8 @@
       --cp-yellow: #fcee0a;
       --cp-cyan: #00f0ff;
       --cp-magenta: #ff0055;
-      --cp-blue: #05d9e8;
-      --cp-dark: #07090e;
-      --cp-card: rgba(8, 12, 20, 0.92);
-      --cp-border: rgba(0, 240, 255, 0.4);
+      --cp-card: rgba(8, 12, 20, 0.94);
+      --cp-border: rgba(0, 240, 255, 0.45);
     }
 
     * {
@@ -118,7 +118,7 @@
       z-index: 25;
       background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
       background-size: 100% 4px;
-      opacity: 0.65;
+      opacity: 0.6;
     }
 
     .cyber-panel {
@@ -133,6 +133,22 @@
     .cyber-panel:hover {
       border-color: var(--cp-yellow);
       box-shadow: 0 0 35px rgba(252, 238, 10, 0.22), inset 0 0 25px rgba(0, 240, 255, 0.08);
+    }
+
+    .cyber-side-panel {
+      position: relative;
+      background: linear-gradient(155deg, rgba(16, 23, 42, 0.94) 0%, rgba(9, 13, 25, 0.92) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.45);
+      border-radius: 16px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.1), inset 0 0 24px rgba(99, 102, 241, 0.12);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      overflow: hidden;
+      will-change: transform;
+    }
+
+    .cyber-side-panel:hover {
+      border-color: rgba(0, 240, 255, 0.7);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75), 0 0 32px rgba(0, 240, 255, 0.18), inset 0 0 28px rgba(99, 102, 241, 0.16);
     }
 
     .glitch-bar-top {
@@ -264,26 +280,26 @@
             <span class="w-2 h-2 bg-[#ff0055] inline-block animate-pulse"></span>
             ARASAKA BIO-FEED // MESHOPT GLB
           </div>
-          <h2 id="loader-title" class="font-cyber text-sm md:text-base font-black text-white">ПОДКЛЮЧЕНИЕ НЕЙРО-СВЯЗИ...</h2>
+          <h2 id="loader-title" class="font-cyber text-sm md:text-base font-black text-white">ЗАГРУЗКА MODEL.GLB...</h2>
         </div>
       </div>
 
       <div class="space-y-1.5">
         <div class="flex justify-between text-[11px] font-bold font-mono">
-          <span id="loader-step-text" class="text-cyan-300">Синхронизация кибер-мышечного каркаса...</span>
-          <span id="loader-pct-text" class="text-[#fcee0a]">15%</span>
+          <span id="loader-step-text" class="text-cyan-300">Инициализация потока...</span>
+          <span id="loader-pct-text" class="text-[#fcee0a]">0%</span>
         </div>
         <div class="w-full h-3 bg-slate-950 p-0.5 border border-cyan-500/50 clip-chamfer-btn">
-          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-[#ff0055] via-[#fcee0a] to-[#00f0ff] transition-all duration-200" style="width: 15%"></div>
+          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-[#ff0055] via-[#fcee0a] to-[#00f0ff] transition-all duration-200" style="width: 5%"></div>
         </div>
       </div>
 
       <div id="loader-log" class="bg-black/90 border border-slate-800 p-2.5 text-[9px] font-mono text-slate-300 space-y-1 max-h-28 overflow-y-auto">
-        <div class="text-cyan-300">> Инициализация параметров физики Найт-Сити...</div>
+        <div class="text-cyan-300">> Старт загрузки...</div>
       </div>
 
       <button type="button" id="btn-retry-load" class="hidden clip-chamfer-btn w-full py-2.5 px-4 bg-cyan-500/20 hover:bg-cyan-500/40 border border-cyan-400 text-cyan-200 font-bold text-[10px] uppercase tracking-wider">
-        🔄 ПЕРЕЗАПУСК НЕЙРО-КАНАЛА
+        🔄 ПОВТОРИТЬ ЗАГРУЗКУ
       </button>
     </div>
   </div>
@@ -432,10 +448,6 @@
         </div>
 
         <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" id="btn-install-pwa-top" class="clip-chamfer-btn interactive-btn px-2.5 py-1.5 border border-[#fcee0a]/60 bg-[#fcee0a]/20 text-[9px] md:text-[10px] font-bold text-[#fcee0a] tracking-wider uppercase flex items-center gap-1">
-            <span>📲</span>
-            <span class="hidden sm:inline">PWA</span>
-          </button>
           <button type="button" id="btn-open-auth-top" class="clip-chamfer-btn interactive-btn px-2.5 py-1.5 border border-cyan-400/60 bg-cyan-500/20 text-[9px] md:text-[10px] font-bold text-cyan-200 tracking-wider uppercase flex items-center gap-1.5">
             <span id="auth-top-icon">👤</span>
             <span id="auth-top-label">ПРОФИЛЬ</span>
@@ -470,13 +482,12 @@
     </div>
   </header>
 
-  <!-- ОСНОВНАЯ ОБЛАСТЬ (3D ПАРАЛЛАКС-КОКПИТ НА ПК) -->
+  <!-- ОСНОВНАЯ ОБЛАСТЬ (ПАРАЛЛАКС-КОКПИТ НА ПК) -->
   <main id="main-workspace" class="relative z-30 flex-1 max-w-[1640px] w-full mx-auto px-4 pb-4 flex items-stretch justify-between gap-5 overflow-hidden pointer-events-none">
 
     <!-- ЛЕВАЯ КИБЕРПАНЕЛЬ -->
     <aside id="pc-left-panel" class="w-[350px] flex flex-col justify-between pointer-events-auto shrink-0 my-1 z-30">
       <div id="holo-card-left" class="cyber-side-panel clip-corner-tl h-full p-4 flex flex-col justify-between gap-3 overflow-y-auto">
-        <div id="glare-left" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
         <div class="holo-corner hc-bl"></div>
@@ -591,7 +602,6 @@
     <!-- ПРАВАЯ КИБЕРПАНЕЛЬ -->
     <aside id="pc-right-panel" class="w-[410px] flex flex-col pointer-events-auto shrink-0 my-1 z-30">
       <div id="holo-card-right" class="cyber-side-panel clip-corner-br h-full flex flex-col overflow-hidden">
-        <div id="glare-right" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
         <div class="holo-corner hc-bl"></div>
@@ -762,6 +772,7 @@
         </div>
       </div>
 
+      <!-- Установка PWA -->
       <div class="p-3 bg-[#00f0ff]/10 border border-cyan-500/40 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-[10px] font-bold text-[#fcee0a] uppercase">📲 ВЕБ-КЛИЕНТ НАЙТ-СИТИ</span>
@@ -780,6 +791,7 @@
         </div>
       </div>
 
+      <!-- Резервный код -->
       <div class="p-3 bg-black/85 border border-slate-800 space-y-2">
         <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
           <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider font-mono">💾 РЕЗЕРВНЫЙ КОД</span>
@@ -813,7 +825,6 @@
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
     /*************************************************************************
      * 0. АВТОРИЗАЦИОННЫЕ ДАННЫЕ
@@ -826,560 +837,11 @@
 
     const EXCLUSIVE_NOV1_DEADLINE = new Date('2026-11-01T00:00:00').getTime();
 
-    /*************************************************************************
-     * 0.5. PWA ИНИЦИАЛИЗАЦИЯ
-     *************************************************************************/
-    let deferredInstallPrompt = null;
+    let targetYaw = 0, currentYaw = 0, targetPitch = 0.05, currentPitch = 0.05, cameraZoomOffset = 0;
+    let mouseNormX = 0, mouseNormY = 0, smoothParallaxX = 0, smoothParallaxY = 0, smoothHeadYaw = 0, smoothHeadPitch = 0;
+    let isDragging = false, dragStartX = 0, dragStartY = 0, totalDragDist = 0;
+    let pumpImpulse = 0, shockwaveProgress = 0;
 
-    function generatePWAIcon(size) {
-      const cvs = document.createElement('canvas');
-      cvs.width = size; cvs.height = size;
-      const ctx = cvs.getContext('2d');
-      ctx.fillStyle = '#07090e';
-      ctx.fillRect(0, 0, size, size);
-      ctx.strokeStyle = '#00f0ff';
-      ctx.lineWidth = Math.max(4, size * 0.04);
-      ctx.strokeRect(size * 0.06, size * 0.06, size * 0.88, size * 0.88);
-      ctx.fillStyle = '#fcee0a';
-      ctx.font = `900 ${Math.floor(size * 0.45)}px Unbounded, sans-serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('Ы', size * 0.5, size * 0.52);
-      return cvs.toDataURL('image/png');
-    }
-
-    function setupPWAManifestAndSW() {
-      try {
-        const icon192 = generatePWAIcon(192);
-        const icon512 = generatePWAIcon(512);
-        const manifestObj = {
-          id: window.location.pathname || '/',
-          name: 'ЫЦУЦАЦОВИЧ // CYBERPUNK 2077',
-          short_name: 'ЫЦУЦАЦОВИЧ',
-          start_url: window.location.origin + window.location.pathname,
-          scope: window.location.origin + window.location.pathname,
-          display: 'standalone',
-          orientation: 'any',
-          background_color: '#04060b',
-          theme_color: '#04060b',
-          icons: [
-            { src: icon192, sizes: '192x192', type: 'image/png' },
-            { src: icon512, sizes: '512x512', type: 'image/png' }
-          ]
-        };
-        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
-        const linkEl = document.createElement('link');
-        linkEl.rel = 'manifest';
-        linkEl.href = URL.createObjectURL(manifestBlob);
-        document.head.appendChild(linkEl);
-
-        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-          navigator.serviceWorker.register('./sw.js').catch(() => {});
-        }
-      } catch (e) {}
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredInstallPrompt = e;
-    });
-
-    async function triggerPWAInstall() {
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        const { outcome } = await deferredInstallPrompt.userChoice;
-        if (outcome === 'accepted') deferredInstallPrompt = null;
-      } else {
-        showToast('📲 Установите веб-приложение через меню браузера (или добавьте sw.js в репозиторий)', 'border-cyan-400 text-cyan-300');
-      }
-    }
-
-    function downloadServiceWorkerFile() {
-      const swContent = `self.addEventListener('install', () => self.skipWaiting());\nself.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));\nself.addEventListener('fetch', () => {});\n`;
-      const blob = new Blob([swContent], { type: 'application/javascript' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'sw.js';
-      a.click();
-      showToast('📥 Файл sw.js сохранён! Положите его рядом с index.html на GitHub', 'border-emerald-400 text-emerald-300');
-    }
-
-    /*************************************************************************
-     * 1. СОСТОЯНИЕ И ОБЛАЧНЫЙ СИНТЕЗ
-     *************************************************************************/
-    const STORAGE_KEY = 'ychuchacovich_cp_v5';
-    const AUTH_STORAGE_KEY = 'ychuchacovich_cp_acc_v5';
-
-    function getDefaultState() {
-      return {
-        score: 0,
-        totalEarned: 0,
-        energy: 1000,
-        soundOn: true,
-        equippedSkin: 'indigo_107',
-        ownedSkins: ['indigo_107'],
-        upgrades: {
-          u_buttons: 0, u_creatine: 0, u_shirt_xs: 0, u_isolate: 0, u_gaze: 0,
-          u_myostatin: 0, u_piston: 0, u_chamber: 0, u_synth_core: 0, u_monolith: 0
-        },
-        highestPhase: 1,
-        selectedEpoch: 1,
-        lastSavedAt: Date.now()
-      };
-    }
-
-    let state = getDefaultState();
-    let currentAccount = null;
-    let activeTab = 'upgrades';
-    let isDrawerOpen = false;
-    let currentDeviceMode = 'pc';
-    let autoSpin = false;
-    let studioLightPreset = 0;
-    let headTrackingEnabled = true;
-
-    function sanitizeFirebaseKey(k) {
-      return String(k).replace(/[.#$[\]/]/g, '_');
-    }
-
-    function mergeGameStates(stateA, stateB) {
-      const a = stateA || getDefaultState();
-      const b = stateB || getDefaultState();
-      const mergedUpgrades = { ...getDefaultState().upgrades };
-      Object.keys(mergedUpgrades).forEach(k => {
-        mergedUpgrades[k] = Math.max(a.upgrades?.[k] || 0, b.upgrades?.[k] || 0);
-      });
-      const mergedSkins = Array.from(new Set([...(a.ownedSkins || ['indigo_107']), ...(b.ownedSkins || ['indigo_107'])]));
-      const useBPrimary = (b.totalEarned || 0) > (a.totalEarned || 0);
-      return {
-        ...getDefaultState(),
-        score: useBPrimary ? b.score : a.score,
-        totalEarned: Math.max(a.totalEarned || 0, b.totalEarned || 0),
-        energy: Math.max(a.energy || 1000, b.energy || 1000),
-        soundOn: a.soundOn ?? true,
-        equippedSkin: useBPrimary ? (b.equippedSkin || 'indigo_107') : (a.equippedSkin || 'indigo_107'),
-        ownedSkins: mergedSkins,
-        upgrades: mergedUpgrades,
-        highestPhase: Math.max(a.highestPhase || 1, b.highestPhase || 1),
-        selectedEpoch: useBPrimary ? (b.selectedEpoch || 1) : (a.selectedEpoch || 1),
-        lastSavedAt: Date.now()
-      };
-    }
-
-    function setLoaderProgress(pct, statusText, titleText = null, stopSpinner = false) {
-      const bar = document.getElementById('loader-progress-bar');
-      const pctEl = document.getElementById('loader-pct-text');
-      const stepEl = document.getElementById('loader-step-text');
-      const titleEl = document.getElementById('loader-title');
-      const spinner = document.getElementById('loader-spinner');
-      if (bar) bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
-      if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
-      if (stepEl && statusText) stepEl.textContent = statusText;
-      if (titleEl && titleText) titleEl.textContent = titleText;
-      if (spinner) spinner.classList.toggle('animate-spin', !stopSpinner);
-    }
-
-    function hideLoaderModal() {
-      const modal = document.getElementById('model-loader-modal');
-      if (!modal) return;
-      modal.style.opacity = '0';
-      modal.style.pointerEvents = 'none';
-      setTimeout(() => modal.classList.add('hidden'), 300);
-    }
-
-    function loadProgress() {
-      try {
-        const savedAcc = localStorage.getItem(AUTH_STORAGE_KEY);
-        if (savedAcc) currentAccount = JSON.parse(savedAcc);
-      } catch (e) {}
-
-      try {
-        const key = currentAccount ? `${STORAGE_KEY}_${currentAccount.masterId}` : STORAGE_KEY;
-        const raw = localStorage.getItem(key) || localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        state = {
-          ...getDefaultState(),
-          ...parsed,
-          upgrades: { ...getDefaultState().upgrades, ...(parsed.upgrades || {}) },
-          ownedSkins: Array.isArray(parsed.ownedSkins) && parsed.ownedSkins.length ? parsed.ownedSkins : ['indigo_107']
-        };
-      } catch (e) {}
-    }
-
-    async function saveProgress(syncCloud = true) {
-      try {
-        state.lastSavedAt = Date.now();
-        const serialized = JSON.stringify(state);
-        localStorage.setItem(STORAGE_KEY, serialized);
-        if (currentAccount) {
-          localStorage.setItem(`${STORAGE_KEY}_${currentAccount.masterId}`, serialized);
-          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentAccount));
-        }
-
-        const timeStr = new Date(state.lastSavedAt).toLocaleTimeString('ru-RU');
-        const timeEl = document.getElementById('last-save-time');
-        if (timeEl) timeEl.textContent = 'Сохранено: ' + timeStr;
-
-        const badge = document.getElementById('autosave-badge');
-        if (badge) {
-          badge.textContent = currentAccount ? 'CLOUD: 5S' : 'LOCAL: 5S';
-        }
-
-        if (syncCloud && currentAccount && AUTH_CONFIG.FIREBASE_DB_URL) {
-          await pushStateToCloud();
-        }
-      } catch (e) {}
-    }
-
-    async function pushStateToCloud() {
-      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return;
-      try {
-        const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
-        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
-
-        await fetch(`${cleanUrl}/users/${masterKey}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            account: currentAccount,
-            gameState: state,
-            updatedAt: Date.now()
-          })
-        });
-
-        if (currentAccount.providers?.telegram?.key) {
-          await fetch(`${cleanUrl}/identity_map/${sanitizeFirebaseKey(currentAccount.providers.telegram.key)}.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
-          });
-        }
-        if (currentAccount.providers?.google?.key) {
-          await fetch(`${cleanUrl}/identity_map/${sanitizeFirebaseKey(currentAccount.providers.google.key)}.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
-          });
-        }
-
-        const nowTime = new Date().toLocaleTimeString('ru-RU');
-        const stEl = document.getElementById('account-sync-status');
-        if (stEl) stEl.textContent = '☁ Синхр: ' + nowTime;
-      } catch (e) {}
-    }
-
-    async function fetchCloudNode(path) {
-      if (!AUTH_CONFIG.FIREBASE_DB_URL) return null;
-      try {
-        const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
-        const resp = await fetch(`${cleanUrl}/${path}.json`);
-        if (!resp.ok) return null;
-        return await resp.json();
-      } catch (e) {
-        return null;
-      }
-    }
-
-    async function pullStateFromCloud() {
-      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return false;
-      try {
-        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
-        const data = await fetchCloudNode(`users/${masterKey}`);
-        if (data && data.gameState) {
-          state = mergeGameStates(state, data.gameState);
-          if (data.account?.providers) {
-            currentAccount.providers = {
-              telegram: data.account.providers.telegram || currentAccount.providers?.telegram || null,
-              google: data.account.providers.google || currentAccount.providers?.google || null
-            };
-          }
-          await saveProgress(false);
-          updateAuthUI();
-          applyActiveSkinTo3D();
-          renderUpgradesList();
-          renderSkinsList();
-          renderPhasesList();
-          update3DAnatomyAndHUD();
-          showToast('☁ НЕЙРО-ПРОФИЛЬ СИНХРОНИЗИРОВАН С ОБЛАКОМ!', 'border-cyan-400 text-cyan-300');
-          return true;
-        }
-      } catch (e) {}
-      return false;
-    }
-
-    async function authenticateOrLinkProvider(providerType, providerInfo) {
-      const providerKey = sanitizeFirebaseKey(providerInfo.key);
-      let mappedMasterId = providerKey;
-      const mapEntry = await fetchCloudNode(`identity_map/${providerKey}`);
-      if (mapEntry && mapEntry.masterId) {
-        mappedMasterId = mapEntry.masterId;
-      }
-
-      if (currentAccount) {
-        const existingOtherCloud = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
-        if (existingOtherCloud && existingOtherCloud.gameState) {
-          state = mergeGameStates(state, existingOtherCloud.gameState);
-        }
-
-        currentAccount.providers = currentAccount.providers || { telegram: null, google: null };
-        currentAccount.providers[providerType] = providerInfo;
-        if (!currentAccount.avatarUrl && providerInfo.avatar) {
-          currentAccount.avatarUrl = providerInfo.avatar;
-        }
-
-        await saveProgress(true);
-        updateAuthUI();
-        showToast(`🔗 КАНАЛ ${providerType.toUpperCase()} ПРИВЯЗАН К ПРОФИЛЮ!`, 'border-emerald-400 text-emerald-300');
-        return;
-      }
-
-      const cloudRecord = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
-      if (cloudRecord && cloudRecord.gameState) {
-        state = mergeGameStates(state, cloudRecord.gameState);
-      }
-
-      const existingProviders = cloudRecord?.account?.providers || { telegram: null, google: null };
-      existingProviders[providerType] = providerInfo;
-
-      currentAccount = {
-        masterId: mappedMasterId,
-        displayName: cloudRecord?.account?.displayName || providerInfo.name,
-        avatarUrl: providerInfo.avatar || cloudRecord?.account?.avatarUrl || '',
-        providers: existingProviders
-      };
-
-      await saveProgress(true);
-      updateAuthUI();
-      showToast(`⚡ АКТИВИРОВАН НЕЙРО-ПРОФИЛЬ: ${currentAccount.displayName}`, 'border-[#fcee0a] text-[#fcee0a]');
-    }
-
-    async function unlinkProvider(providerType) {
-      if (!currentAccount?.providers) return;
-      const hasTg = !!currentAccount.providers.telegram;
-      const hasGoogle = !!currentAccount.providers.google;
-      if ((providerType === 'telegram' && !hasGoogle) || (providerType === 'google' && !hasTg)) {
-        showToast('⚠️ Нельзя отключить единственный канал связи!', 'border-[#ff0055] text-rose-300');
-        return;
-      }
-      currentAccount.providers[providerType] = null;
-      await saveProgress(true);
-      updateAuthUI();
-      showToast(`🔓 Канал ${providerType.toUpperCase()} отвязан`, 'border-slate-400 text-slate-300');
-    }
-
-    function logoutAccount() {
-      currentAccount = null;
-      localStorage.removeItem(AUTH_STORAGE_KEY);
-      updateAuthUI();
-      showToast('🚪 НЕЙРО-СВЯЗЬ РАЗОРВАНА', 'border-[#ff0055] text-rose-300');
-    }
-
-    function updateAuthUI() {
-      const topLabel = document.getElementById('auth-top-label');
-      const topIcon = document.getElementById('auth-top-icon');
-      const outView = document.getElementById('account-logged-out-view');
-      const inView = document.getElementById('account-logged-in-view');
-      const nameEl = document.getElementById('account-user-name');
-      const idEl = document.getElementById('account-user-id');
-      const statusEl = document.getElementById('account-sync-status');
-
-      const modalProfileCard = document.getElementById('modal-profile-card');
-      const modalUserName = document.getElementById('modal-user-name');
-      const modalMasterId = document.getElementById('modal-user-master-id');
-      const modalLinkedBadge = document.getElementById('modal-linked-count-badge');
-      const modalAvatarImg = document.getElementById('modal-user-avatar');
-      const modalAvatarFallback = document.getElementById('modal-user-avatar-fallback');
-
-      const tgInfo = currentAccount?.providers?.telegram || null;
-      const googleInfo = currentAccount?.providers?.google || null;
-      const linkedCount = (tgInfo ? 1 : 0) + (googleInfo ? 1 : 0);
-
-      const tgPill = document.getElementById('tg-status-pill');
-      const btnUnlinkTg = document.getElementById('btn-unlink-tg');
-      const tabStatusTg = document.getElementById('tab-status-tg');
-      const tgWidgetBox = document.getElementById('telegram-widget-container');
-
-      if (tgInfo) {
-        if (tgPill) { tgPill.textContent = 'АКТИВЕН ✓'; tgPill.className = 'px-1.5 py-0.5 text-[8px] bg-cyan-500/20 text-cyan-300 font-bold'; }
-        tgWidgetBox?.classList.add('hidden');
-        btnUnlinkTg?.classList.toggle('hidden', linkedCount < 2);
-        if (tabStatusTg) { tabStatusTg.textContent = 'ONLINE ✓'; tabStatusTg.className = 'text-cyan-300'; }
-      } else {
-        if (tgPill) { tgPill.textContent = 'НЕ АКТИВЕН'; tgPill.className = 'px-1.5 py-0.5 text-[8px] bg-slate-900 text-slate-400 font-bold'; }
-        tgWidgetBox?.classList.remove('hidden');
-        btnUnlinkTg?.classList.add('hidden');
-        if (tabStatusTg) { tabStatusTg.textContent = 'НЕТ'; tabStatusTg.className = 'text-slate-500'; }
-      }
-
-      const gPill = document.getElementById('google-status-pill');
-      const btnUnlinkG = document.getElementById('btn-unlink-google');
-      const tabStatusG = document.getElementById('tab-status-google');
-      const gWidgetBox = document.getElementById('google-gsi-button');
-
-      if (googleInfo) {
-        if (gPill) { gPill.textContent = 'АКТИВЕН ✓'; gPill.className = 'px-1.5 py-0.5 text-[8px] bg-cyan-500/20 text-cyan-300 font-bold'; }
-        gWidgetBox?.classList.add('hidden');
-        btnUnlinkG?.classList.toggle('hidden', linkedCount < 2);
-        if (tabStatusG) { tabStatusG.textContent = 'ONLINE ✓'; tabStatusG.className = 'text-cyan-300'; }
-      } else {
-        if (gPill) { gPill.textContent = 'НЕ АКТИВЕН'; gPill.className = 'px-1.5 py-0.5 text-[8px] bg-slate-900 text-slate-400 font-bold'; }
-        gWidgetBox?.classList.remove('hidden');
-        btnUnlinkG?.classList.add('hidden');
-        if (tabStatusG) { tabStatusG.textContent = 'НЕТ'; tabStatusG.className = 'text-slate-500'; }
-      }
-
-      if (currentAccount) {
-        const icon = linkedCount === 2 ? '🔗' : tgInfo ? '✈️' : '🌐';
-        if (topIcon) topIcon.textContent = icon;
-        if (topLabel) topLabel.textContent = currentAccount.displayName;
-        outView?.classList.add('hidden');
-        inView?.classList.remove('hidden');
-        modalProfileCard?.classList.remove('hidden');
-
-        if (nameEl) nameEl.textContent = `${icon} ${currentAccount.displayName}`;
-        if (idEl) idEl.textContent = `CYBER-KEY: ${currentAccount.masterId}`;
-        if (modalUserName) modalUserName.textContent = currentAccount.displayName;
-        if (modalMasterId) modalMasterId.textContent = `MASTER-ID: ${currentAccount.masterId}`;
-        if (modalLinkedBadge) modalLinkedBadge.textContent = linkedCount >= 2 ? '2/2 СВЯЗАНО ✓' : `${linkedCount}/2 ЛИНК`;
-
-        if (currentAccount.avatarUrl && modalAvatarImg && modalAvatarFallback) {
-          modalAvatarImg.src = currentAccount.avatarUrl;
-          modalAvatarImg.classList.remove('hidden');
-          modalAvatarFallback.classList.add('hidden');
-        } else if (modalAvatarImg && modalAvatarFallback) {
-          modalAvatarImg.classList.add('hidden');
-          modalAvatarFallback.classList.remove('hidden');
-          modalAvatarFallback.textContent = (currentAccount.displayName || 'Ы').charAt(0).toUpperCase();
-        }
-        if (statusEl) statusEl.textContent = '☁ ARASAKA CLOUD (5S)';
-      } else {
-        if (topIcon) topIcon.textContent = '👤';
-        if (topLabel) topLabel.textContent = 'ПРОФИЛЬ';
-        outView?.classList.remove('hidden');
-        inView?.classList.add('hidden');
-        modalProfileCard?.classList.add('hidden');
-        if (statusEl) statusEl.textContent = 'ЛОКАЛЬНЫЙ (5С)';
-      }
-    }
-
-    window.__handleTelegramLogin = (tgUser) => {
-      if (!tgUser?.id) return;
-      const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || `TG_${tgUser.id}`;
-      authenticateOrLinkProvider('telegram', {
-        key: `tg_${tgUser.id}`,
-        id: String(tgUser.id),
-        name: fullName,
-        username: tgUser.username || '',
-        avatar: tgUser.photo_url || ''
-      });
-    };
-
-    if (window.__pendingTelegramUser) {
-      window.__handleTelegramLogin(window.__pendingTelegramUser);
-      window.__pendingTelegramUser = null;
-    }
-
-    let tgWidgetRendered = false;
-    let googleWidgetRendered = false;
-
-    function initAuthProviders() {
-      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-        window.__handleTelegramLogin(window.Telegram.WebApp.initDataUnsafe.user);
-      }
-
-      const tgContainer = document.getElementById('telegram-widget-container');
-      if (tgContainer && AUTH_CONFIG.TELEGRAM_BOT_USERNAME && !tgWidgetRendered) {
-        tgWidgetRendered = true;
-        tgContainer.innerHTML = '';
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://telegram.org/js/telegram-widget.js?22';
-        script.setAttribute('data-telegram-login', AUTH_CONFIG.TELEGRAM_BOT_USERNAME.replace(/^@/, ''));
-        script.setAttribute('data-size', 'large');
-        script.setAttribute('data-radius', '4');
-        script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-        script.setAttribute('data-request-access', 'write');
-        tgContainer.appendChild(script);
-      }
-
-      const gBtn = document.getElementById('google-gsi-button');
-      if (gBtn && AUTH_CONFIG.GOOGLE_CLIENT_ID && !googleWidgetRendered) {
-        if (window.google?.accounts?.id) {
-          googleWidgetRendered = true;
-          gBtn.innerHTML = '';
-          window.google.accounts.id.initialize({
-            client_id: AUTH_CONFIG.GOOGLE_CLIENT_ID,
-            callback: (response) => {
-              try {
-                const payload = JSON.parse(decodeURIComponent(escape(atob(response.credential.split('.')[1]))));
-                authenticateOrLinkProvider('google', {
-                  key: `google_${payload.sub}`,
-                  id: String(payload.sub),
-                  name: payload.name || payload.email || 'Google User',
-                  email: payload.email || '',
-                  avatar: payload.picture || ''
-                });
-              } catch (e) {}
-            }
-          });
-          window.google.accounts.id.renderButton(gBtn, { theme: 'filled_black', size: 'large', width: 280, shape: 'rectangular' });
-        } else {
-          setTimeout(initAuthProviders, 400);
-        }
-      }
-    }
-
-    /*************************************************************************
-     * 3. КИБЕРНЕТИЧЕСКИЙ ЗВУКОВОЙ СИНТЕЗАТОР
-     *************************************************************************/
-    let audioCtx = null;
-    function getAudio() {
-      if (!state.soundOn) return null;
-      if (!audioCtx) {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) audioCtx = new AC();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-      return audioCtx;
-    }
-
-    function playPumpHitSound(growth) {
-      const ctx = getAudio();
-      if (!ctx) return;
-      const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(Math.max(60, 160 - growth * 70), now);
-      osc.frequency.exponentialRampToValueAtTime(32, now + 0.12);
-      gain.gain.setValueAtTime(0.28, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.14);
-    }
-
-    function playUpgradeSound() {
-      const ctx = getAudio();
-      if (!ctx) return;
-      const now = ctx.currentTime;
-      [440, 659.25, 880].forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
-        g.gain.setValueAtTime(0.12, now + idx * 0.05);
-        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.15);
-        osc.connect(g);
-        g.connect(ctx.destination);
-        osc.start(now + idx * 0.05);
-        osc.stop(now + idx * 0.05 + 0.16);
-      });
-    }
-
-    /*************************************************************************
-     * 4. THREE.JS 0.160.0 СЦЕНА // СЛЕЖЕНИЕ ГОЛОВЫ // GLTF MESHOPT
-     *************************************************************************/
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -1555,16 +1017,19 @@
             } else if (abs(uSkinMode - 3.0) < 0.2) {
               float crack = abs(sin(p.x * 1.7 + sin(p.y * 2.3 + uTime * 1.5)) * cos(p.y * 2.1 + sin(p.z * 1.9)));
               float lava = smoothstep(0.24, 0.02, crack);
-              gl_FragColor.rgb = mix(gl_FragColor.rgb * uSkinColorB * 1.3, uSkinColorA * (1.35 + 0.35 * sin(uTime * 4.0)), lava) + uSkinColorA * edgeFactor * 0.35;
+              vec3 rock = gl_FragColor.rgb * uSkinColorB * 1.3;
+              gl_FragColor.rgb = mix(rock, uSkinColorA * (1.35 + 0.35 * sin(uTime * 4.0)), lava) + uSkinColorA * edgeFactor * 0.35;
             } else if (abs(uSkinMode - 4.0) < 0.2) {
               float col = floor(vObjPos.x * 55.0);
               float rain = fract(vHeightNorm * 6.0 + uTime * (1.5 + fract(sin(col * 12.9898) * 43758.5453) * 2.0) + sin(col));
               float charMask = step(0.55, fract(vHeightNorm * 65.0)) * smoothstep(0.85, 0.0, rain);
-              gl_FragColor.rgb = gl_FragColor.rgb * uSkinColorB * 0.9 + uSkinColorA * (charMask * 0.95 + edgeFactor * 0.45);
+              gl_FragColor.rgb = darkBase = gl_FragColor.rgb * uSkinColorB * 0.9;
+              gl_FragColor.rgb = darkBase + uSkinColorA * (charMask * 0.95 + edgeFactor * 0.45);
             } else if (abs(uSkinMode - 5.0) < 0.2) {
               float nebula = 0.5 + 0.5 * sin(p.x * 0.8 + uTime) * cos(p.y * 0.9 - uTime * 0.7);
               float stars = step(0.985, fract(sin(dot(floor(p * 4.5), vec3(12.9898, 78.233, 37.719))) * 43758.5453));
-              gl_FragColor.rgb = gl_FragColor.rgb * 0.35 + mix(uSkinColorB, uSkinColorA, nebula * 0.75 + edgeFactor * 0.5) * 0.75 + vec3(1.0) * stars * 1.5;
+              vec3 spaceCol = mix(uSkinColorB, uSkinColorA, nebula * 0.75 + edgeFactor * 0.5);
+              gl_FragColor.rgb = gl_FragColor.rgb * 0.35 + spaceCol * 0.75 + vec3(1.0) * stars * 1.5;
             } else if (abs(uSkinMode - 6.0) < 0.2) {
               float vein = abs(sin(p.x * 1.4 + sin(p.y * 2.2 + p.z * 1.8)));
               gl_FragColor.rgb = mix(gl_FragColor.rgb * uSkinColorB * 1.1, uSkinColorA * 1.4, smoothstep(0.14, 0.01, vein)) + uSkinColorA * edgeFactor * 0.4;
@@ -1577,7 +1042,9 @@
               float flameWave = sin(p.x * 2.2 + sin(p.y * 3.0 - uTime * 3.5)) * cos(p.z * 2.2 + uTime * 2.0);
               float fireVein = smoothstep(0.22, 0.0, abs(flameWave));
               float emberPulse = 0.7 + 0.3 * sin(uTime * 5.0 + vHeightNorm * 10.0);
-              gl_FragColor.rgb = gl_FragColor.rgb * vec3(0.18, 0.1, 0.26) + mix(uSkinColorB, uSkinColorA, fireVein) * (fireVein * 1.35 * emberPulse) + uSkinColorA * pow(edgeFactor, 1.6) * 1.25;
+              vec3 cursedBase = gl_FragColor.rgb * vec3(0.18, 0.1, 0.26);
+              vec3 fireCol = mix(uSkinColorB, uSkinColorA, fireVein);
+              gl_FragColor.rgb = cursedBase + fireCol * (fireVein * 1.35 * emberPulse) + uSkinColorA * pow(edgeFactor, 1.6) * 1.25;
             } else if (abs(uSkinMode - 10.0) < 0.2) {
               float frost = abs(cos(p.x * 3.0) * sin(p.y * 3.0) * cos(p.z * 3.0));
               float shard = smoothstep(0.35, 0.65, frost);
@@ -1751,67 +1218,43 @@
 
     async function loadGLBModelFromRepo() {
       document.getElementById('btn-retry-load')?.classList.add('hidden');
-      setLoaderProgress(15, 'Запуск WebAssembly декодера Meshopt...', 'ЗАГРУЗКА 3D-МОДЕЛИ...');
-
-      try {
-        const readyPromise = MeshoptDecoder.ready;
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('WASM Timeout')), 4000));
-        await Promise.race([readyPromise, timeoutPromise]);
-        addLoaderLog('> WASM-декодер Meshopt готов');
-      } catch (e) {
-        addLoaderLog('> Предупреждение WASM декодера: ' + e.message, 'text-[#ff0055]');
-      }
+      setLoaderProgress(20, 'Подключение Meshopt декодера...', 'ЗАГРУЗКА 3D-МОДЕЛИ...');
 
       const gltfLoader = new GLTFLoader();
-      gltfLoader.setMeshoptDecoder(MeshoptDecoder);
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
-      gltfLoader.setDRACOLoader(dracoLoader);
-
-      const pathname = window.location.pathname;
-      const baseDir = pathname.substring(0, pathname.lastIndexOf('/') + 1);
-
-      const candidateUrls = [
-        `${baseDir}model.glb`,
-        './model.glb',
-        'model.glb',
-        `${baseDir}tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb`,
-        './tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb',
-        `${baseDir}Model.glb`,
-        './Model.glb'
-      ];
-
-      const tryLoadSingleUrl = (url) => {
-        return new Promise((resolve, reject) => {
-          addLoaderLog(`> Запрос ${url}...`);
-          gltfLoader.load(
-            url,
-            (gltf) => resolve({ gltf, url }),
-            (xhr) => {
-              if (xhr.total > 0) {
-                const pct = 20 + (xhr.loaded / xhr.total) * 75;
-                const mbLoaded = (xhr.loaded / (1024 * 1024)).toFixed(1);
-                const mbTotal = (xhr.total / (1024 * 1024)).toFixed(1);
-                setLoaderProgress(pct, `Загрузка ${url}: ${mbLoaded} / ${mbTotal} МБ`);
-              }
-            },
-            (err) => reject(err)
-          );
-        });
-      };
-
-      for (const url of candidateUrls) {
-        try {
-          const { gltf } = await tryLoadSingleUrl(url);
-          mountGLTFScene(gltf, url);
-          return;
-        } catch (err) {
-          addLoaderLog(`> ${url} не найден, следующий канал...`, 'text-slate-500');
-        }
+      
+      // Надежное подключение MeshoptDecoder (из глобальной window.MeshoptDecoder)
+      if (window.MeshoptDecoder) {
+        gltfLoader.setMeshoptDecoder(window.MeshoptDecoder);
+        addLoaderLog('> MeshoptDecoder подключен');
       }
 
-      setLoaderProgress(100, 'Файл model.glb не найден на сервере. Убедитесь, что он залит в репозиторий.', 'СБОЙ НЕЙРО-КАНАЛА', true);
-      document.getElementById('btn-retry-load')?.classList.remove('hidden');
+      // Строим точный абсолютный путь относительно текущей страницы
+      const targetModelUrl = new URL('model.glb', window.location.href).href;
+      addLoaderLog(`> Скачивание: ${targetModelUrl}`);
+
+      gltfLoader.load(
+        targetModelUrl,
+        (gltf) => {
+          mountGLTFScene(gltf, 'model.glb');
+        },
+        (xhr) => {
+          if (xhr.total > 0) {
+            const pct = 20 + (xhr.loaded / xhr.total) * 75;
+            const mbLoaded = (xhr.loaded / 1048576).toFixed(1);
+            const mbTotal = (xhr.total / 1048576).toFixed(1);
+            setLoaderProgress(pct, `Загрузка: ${mbLoaded} / ${mbTotal} МБ`);
+          } else if (xhr.loaded > 0) {
+            const mbLoaded = (xhr.loaded / 1048576).toFixed(1);
+            setLoaderProgress(60, `Загрузка: ${mbLoaded} МБ...`);
+          }
+        },
+        (err) => {
+          console.error(err);
+          setLoaderProgress(100, 'Сбой загрузки model.glb. Проверьте сетевую консоль.', 'ОШИБКА СЕТИ', true);
+          addLoaderLog(`❌ Ошибка загрузки: ${err.message || '404 Not Found'}`, 'text-[#ff0055]');
+          document.getElementById('btn-retry-load')?.classList.remove('hidden');
+        }
+      );
     }
 
     document.getElementById('btn-retry-load')?.addEventListener('click', loadGLBModelFromRepo);
@@ -1868,9 +1311,6 @@
         if (btn) btn.textContent = '☀ СВЕТ: МЯГКИЙ';
       }
     }
-
-    let pumpImpulse = 0;
-    let shockwaveProgress = 0;
 
     function update3DAnatomyAndHUD() {
       const { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo } = getStats();
@@ -1954,27 +1394,6 @@
         card.classList.toggle('disabled', state.score < cost);
       });
     }
-
-    /*************************************************************************
-     * 6. ПАРАЛЛАКС ЭФФЕКТ (КАМЕРА + ПАНЕЛИ + ГОЛОВА + ФОН)
-     *************************************************************************/
-    let targetYaw = 0;
-    let currentYaw = 0;
-    let targetPitch = 0.05;
-    let currentPitch = 0.05;
-    let cameraZoomOffset = 0;
-
-    let mouseNormX = 0;
-    let mouseNormY = 0;
-    let smoothParallaxX = 0;
-    let smoothParallaxY = 0;
-    let smoothHeadYaw = 0;
-    let smoothHeadPitch = 0;
-
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let totalDragDist = 0;
 
     function triggerPumpClick(clientX, clientY) {
       const { clickPower, pInfo } = getStats();
@@ -2062,9 +1481,6 @@
       }
     });
 
-    /*************************************************************************
-     * 7. ПОДСВЕТКА И ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
-     *************************************************************************/
     function updateExclusiveCountdown() {
       const el = document.getElementById('exclusive-countdown-timer');
       if (!el) return;
@@ -2081,20 +1497,6 @@
     }
     setInterval(updateExclusiveCountdown, 1000);
     setTimeout(updateExclusiveCountdown, 100);
-
-    function setupPanelSpotlight(cardId, glareId) {
-      const card = document.getElementById(cardId);
-      const glare = document.getElementById(glareId);
-      if (!card || !glare) return;
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        glare.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(0, 240, 255, 0.18) 0%, transparent 60%)`;
-      });
-    }
-    setupPanelSpotlight('holo-card-left', 'glare-left');
-    setupPanelSpotlight('holo-card-right', 'glare-right');
 
     let baseCameraY = -0.25;
     let baseLookAtY = -0.35;
@@ -2339,7 +1741,7 @@
       });
     }
 
-    // Привязка UI событий
+    // Привязка событий интерфейса
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
@@ -2486,7 +1888,6 @@
       showToast('🗑 ПРОГРЕСС СБРОШЕН', 'border-amber-400 text-amber-300');
     });
 
-    // Осциллограф
     const ecgCanvas = document.getElementById('ecg-canvas');
     const ecgCtx = ecgCanvas ? ecgCanvas.getContext('2d') : null;
     let ecgPhase = 0;
@@ -2514,7 +1915,6 @@
     const bgGridEl = document.getElementById('parallax-bg-grid');
     const topBarEl = document.getElementById('hud-top-bar');
 
-    // Главный цикл 60 FPS
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
@@ -2528,42 +1928,27 @@
       characterPivot.rotation.y = currentYaw;
       characterPivot.rotation.x = currentPitch;
 
-      // ГЛУБОКИЙ ПАРАЛЛАКС: плавное отслеживание курсора
       smoothParallaxX += (mouseNormX - smoothParallaxX) * 0.08;
       smoothParallaxY += (mouseNormY - smoothParallaxY) * 0.08;
 
-      // Слежение головы 3D-модели за курсором
       const targetHeadYaw = headTrackingEnabled ? Math.max(-0.48, Math.min(0.48, mouseNormX * 0.44)) : 0;
       const targetHeadPitch = headTrackingEnabled ? Math.max(-0.28, Math.min(0.28, mouseNormY * 0.25)) : 0;
       smoothHeadYaw += (targetHeadYaw - smoothHeadYaw) * 0.12;
       smoothHeadPitch += (targetHeadPitch - smoothHeadPitch) * 0.12;
 
-      // 1. Параллакс 3D-камеры
       camera.position.x = smoothParallaxX * 0.35;
       camera.position.y = baseCameraY - smoothParallaxY * 0.22;
       camera.position.z = baseCameraZ;
       camera.lookAt(0, baseLookAtY, 0);
 
-      // 2. Параллакс боковых кибер-панелей и HUD
       if (currentDeviceMode === 'pc') {
-        if (leftCardEl) {
-          leftCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
-        }
-        if (rightCardEl) {
-          rightCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -8).toFixed(1)}px, 0)`;
-        }
-        if (topBarEl) {
-          topBarEl.style.transform = `translate3d(${(smoothParallaxX * -6).toFixed(1)}px, ${(smoothParallaxY * -4).toFixed(1)}px, 0)`;
-        }
+        if (leftCardEl) leftCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
+        if (rightCardEl) rightCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
+        if (topBarEl) topBarEl.style.transform = `translate3d(${(smoothParallaxX * -6).toFixed(1)}px, ${(smoothParallaxY * -4).toFixed(1)}px, 0)`;
       }
 
-      // 3. Параллакс фоновых слоев Найт-Сити
-      if (bgGridEl) {
-        bgGridEl.style.transform = `translate3d(${(smoothParallaxX * 22).toFixed(1)}px, ${(smoothParallaxY * 22).toFixed(1)}px, 0)`;
-      }
-      if (bgStarsEl) {
-        bgStarsEl.style.transform = `translate3d(${(smoothParallaxX * 10).toFixed(1)}px, ${(smoothParallaxY * 10).toFixed(1)}px, 0)`;
-      }
+      if (bgGridEl) bgGridEl.style.transform = `translate3d(${(smoothParallaxX * 22).toFixed(1)}px, ${(smoothParallaxY * 22).toFixed(1)}px, 0)`;
+      if (bgStarsEl) bgStarsEl.style.transform = `translate3d(${(smoothParallaxX * 10).toFixed(1)}px, ${(smoothParallaxY * 10).toFixed(1)}px, 0)`;
 
       if (pumpImpulse > 0.001) pumpImpulse *= Math.pow(0.04, dt);
       else pumpImpulse = 0;
@@ -2574,11 +1959,8 @@
         u.uHeadLook.value.set(smoothHeadYaw, smoothHeadPitch);
       });
 
-      // Поворот головных 3D-объектов синхронно с головой
       skinHeadAttachments.rotation.y = -smoothHeadYaw;
       skinHeadAttachments.rotation.x = smoothHeadPitch;
-
-      // Вращение орбитальных объектов скина
       skinBodyAttachments.rotation.y = elapsed * 0.9;
 
       const { pInfo } = getStats();
@@ -2605,7 +1987,6 @@
       renderer.render(scene, camera);
     }
 
-    // Старт
     setupPWAManifestAndSW();
     loadProgress();
     updateAuthUI();
@@ -2637,7 +2018,6 @@
       update3DAnatomyAndHUD();
     }, 250);
 
-    // Автосохранение каждые 5 секунд
     setInterval(() => {
       saveProgress(true);
     }, 5000);
