@@ -4,14 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#04060b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>ЫЦУЦАЦОВИЧ // CYBERPUNK 2077 // 1000 ФАЗ</title>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Глобальный перехватчик Telegram Auth -->
+  <!-- Глобальный перехватчик авторизации Telegram -->
   <script>
     window.onTelegramAuth = function(user) {
       if (window.__handleTelegramLogin) window.__handleTelegramLogin(user);
@@ -22,10 +23,7 @@
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!-- Стабильная библиотека MeshoptDecoder UMD (без сбоев модулей) -->
-  <script src="https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js"></script>
-
-  <!-- Three.js Importmap -->
+  <!-- Единый Three.js 0.160.0 -->
   <script type="importmap">
   {
     "imports": {
@@ -40,8 +38,10 @@
       --cp-yellow: #fcee0a;
       --cp-cyan: #00f0ff;
       --cp-magenta: #ff0055;
-      --cp-card: rgba(8, 12, 20, 0.94);
-      --cp-border: rgba(0, 240, 255, 0.45);
+      --cp-blue: #05d9e8;
+      --cp-dark: #07090e;
+      --cp-card: rgba(8, 12, 20, 0.92);
+      --cp-border: rgba(0, 240, 255, 0.4);
     }
 
     * {
@@ -137,19 +137,44 @@
 
     .cyber-side-panel {
       position: relative;
-      background: linear-gradient(155deg, rgba(16, 23, 42, 0.94) 0%, rgba(9, 13, 25, 0.92) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.45);
-      border-radius: 16px;
-      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 240, 255, 0.1), inset 0 0 24px rgba(99, 102, 241, 0.12);
+      background: linear-gradient(155deg, rgba(12, 18, 32, 0.94) 0%, rgba(6, 9, 18, 0.92) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.42);
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 28px rgba(0, 240, 255, 0.12), inset 0 0 24px rgba(0, 240, 255, 0.06);
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
       overflow: hidden;
       will-change: transform;
     }
 
     .cyber-side-panel:hover {
-      border-color: rgba(0, 240, 255, 0.7);
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.75), 0 0 32px rgba(0, 240, 255, 0.18), inset 0 0 28px rgba(99, 102, 241, 0.16);
+      border-color: var(--cp-yellow);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.8), 0 0 32px rgba(252, 238, 10, 0.2);
     }
+
+    .holo-glare {
+      position: absolute;
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .cyber-side-panel:hover .holo-glare {
+      opacity: 1;
+    }
+
+    .holo-corner {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      pointer-events: none !important;
+      z-index: 2;
+      border-color: #00f0ff;
+      opacity: 0.85;
+    }
+    .hc-tl { top: 6px; left: 6px; border-top: 2px solid; border-left: 2px solid; }
+    .hc-tr { top: 6px; right: 6px; border-top: 2px solid; border-right: 2px solid; }
+    .hc-bl { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
+    .hc-br { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
 
     .glitch-bar-top {
       position: absolute;
@@ -165,7 +190,8 @@
     .interactive-btn,
     .module-card,
     .skin-card,
-    .phase-item {
+    .phase-item,
+    .stat-box-3d {
       position: relative;
       z-index: 10;
       cursor: pointer;
@@ -181,6 +207,7 @@
       transform: scale(1.05) translateY(-2px) !important;
       box-shadow: 0 0 20px rgba(252, 238, 10, 0.4), 0 0 8px rgba(0, 240, 255, 0.8) !important;
       border-color: var(--cp-yellow) !important;
+      z-index: 25;
     }
 
     button:active:not(:disabled),
@@ -190,10 +217,12 @@
 
     .module-card:hover:not(.disabled),
     .skin-card:hover,
-    .phase-item:hover {
+    .phase-item:hover,
+    .stat-box-3d:hover {
       transform: scale(1.025) translateY(-1px) !important;
       border-color: var(--cp-cyan) !important;
       box-shadow: 0 0 25px rgba(0, 240, 255, 0.3) !important;
+      z-index: 20;
     }
 
     .module-card {
@@ -214,10 +243,15 @@
       border-color: var(--cp-yellow) !important;
       box-shadow: 0 0 25px rgba(252, 238, 10, 0.4), inset 0 0 15px rgba(252, 238, 10, 0.15) !important;
     }
+    .skin-card.exclusive-card {
+      background: linear-gradient(135deg, rgba(67, 20, 7, 0.9) 0%, rgba(30, 10, 45, 0.95) 100%);
+      border: 1px solid rgba(255, 0, 85, 0.65);
+      box-shadow: 0 0 25px rgba(255, 0, 85, 0.2);
+    }
 
     .float-particle {
       position: fixed;
-      pointer-events: none;
+      pointer-events: none !important;
       z-index: 60;
       font-family: 'Unbounded', sans-serif;
       font-weight: 900;
@@ -273,33 +307,36 @@
   <div id="model-loader-modal" class="fixed inset-0 z-50 bg-[#04060b]/70 backdrop-blur-[3px] flex items-center justify-center p-4 transition-opacity duration-300">
     <div class="cyber-panel clip-corner-both max-w-md w-full p-6 border-2 border-[#00f0ff] space-y-4 shadow-[0_0_50px_rgba(0,240,255,0.3)]">
       <div class="glitch-bar-top"></div>
-      <div class="flex items-center gap-3 border-b border-cyan-500/30 pb-3">
-        <div id="loader-spinner" class="w-6 h-6 rounded-none border-2 border-[#fcee0a] border-t-transparent animate-spin shrink-0"></div>
-        <div>
-          <div class="text-[10px] font-bold text-[#fcee0a] uppercase tracking-widest flex items-center gap-1.5">
-            <span class="w-2 h-2 bg-[#ff0055] inline-block animate-pulse"></span>
-            ARASAKA BIO-FEED // MESHOPT GLB
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <div class="flex items-center gap-3">
+          <div id="loader-spinner" class="w-6 h-6 rounded-none border-2 border-[#fcee0a] border-t-transparent animate-spin shrink-0"></div>
+          <div>
+            <div class="text-[10px] font-bold text-[#fcee0a] uppercase tracking-widest flex items-center gap-1.5">
+              <span class="w-2 h-2 bg-[#ff0055] inline-block animate-pulse"></span>
+              ARASAKA BIO-FEED // MESHOPT GLB
+            </div>
+            <h2 id="loader-title" class="font-cyber text-sm md:text-base font-black text-white">ПОДКЛЮЧЕНИЕ НЕЙРО-СВЯЗИ...</h2>
           </div>
-          <h2 id="loader-title" class="font-cyber text-sm md:text-base font-black text-white">ЗАГРУЗКА MODEL.GLB...</h2>
         </div>
+        <button type="button" id="btn-force-close-loader" class="px-2 py-1 bg-slate-900 border border-slate-700 text-[10px] text-slate-400 hover:text-white" title="Закрыть окно">✕</button>
       </div>
 
       <div class="space-y-1.5">
         <div class="flex justify-between text-[11px] font-bold font-mono">
-          <span id="loader-step-text" class="text-cyan-300">Инициализация потока...</span>
-          <span id="loader-pct-text" class="text-[#fcee0a]">0%</span>
+          <span id="loader-step-text" class="text-cyan-300">Синхронизация кибер-мышечного каркаса...</span>
+          <span id="loader-pct-text" class="text-[#fcee0a]">15%</span>
         </div>
         <div class="w-full h-3 bg-slate-950 p-0.5 border border-cyan-500/50 clip-chamfer-btn">
-          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-[#ff0055] via-[#fcee0a] to-[#00f0ff] transition-all duration-200" style="width: 5%"></div>
+          <div id="loader-progress-bar" class="h-full bg-gradient-to-r from-[#ff0055] via-[#fcee0a] to-[#00f0ff] transition-all duration-200" style="width: 15%"></div>
         </div>
       </div>
 
       <div id="loader-log" class="bg-black/90 border border-slate-800 p-2.5 text-[9px] font-mono text-slate-300 space-y-1 max-h-28 overflow-y-auto">
-        <div class="text-cyan-300">> Старт загрузки...</div>
+        <div class="text-cyan-300">> Инициализация параметров физики Найт-Сити...</div>
       </div>
 
       <button type="button" id="btn-retry-load" class="hidden clip-chamfer-btn w-full py-2.5 px-4 bg-cyan-500/20 hover:bg-cyan-500/40 border border-cyan-400 text-cyan-200 font-bold text-[10px] uppercase tracking-wider">
-        🔄 ПОВТОРИТЬ ЗАГРУЗКУ
+        🔄 ПЕРЕЗАПУСК НЕЙРО-КАНАЛА
       </button>
     </div>
   </div>
@@ -448,6 +485,10 @@
         </div>
 
         <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" id="btn-install-pwa-top" class="clip-chamfer-btn interactive-btn px-2.5 py-1.5 border border-[#fcee0a]/60 bg-[#fcee0a]/20 text-[9px] md:text-[10px] font-bold text-[#fcee0a] tracking-wider uppercase flex items-center gap-1">
+            <span>📲</span>
+            <span class="hidden sm:inline">PWA</span>
+          </button>
           <button type="button" id="btn-open-auth-top" class="clip-chamfer-btn interactive-btn px-2.5 py-1.5 border border-cyan-400/60 bg-cyan-500/20 text-[9px] md:text-[10px] font-bold text-cyan-200 tracking-wider uppercase flex items-center gap-1.5">
             <span id="auth-top-icon">👤</span>
             <span id="auth-top-label">ПРОФИЛЬ</span>
@@ -482,12 +523,13 @@
     </div>
   </header>
 
-  <!-- ОСНОВНАЯ ОБЛАСТЬ (ПАРАЛЛАКС-КОКПИТ НА ПК) -->
+  <!-- ОСНОВНАЯ ОБЛАСТЬ (3D ПАРАЛЛАКС-КОКПИТ НА ПК) -->
   <main id="main-workspace" class="relative z-30 flex-1 max-w-[1640px] w-full mx-auto px-4 pb-4 flex items-stretch justify-between gap-5 overflow-hidden pointer-events-none">
 
     <!-- ЛЕВАЯ КИБЕРПАНЕЛЬ -->
     <aside id="pc-left-panel" class="w-[350px] flex flex-col justify-between pointer-events-auto shrink-0 my-1 z-30">
       <div id="holo-card-left" class="cyber-side-panel clip-corner-tl h-full p-4 flex flex-col justify-between gap-3 overflow-y-auto">
+        <div id="glare-left" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
         <div class="holo-corner hc-bl"></div>
@@ -602,6 +644,7 @@
     <!-- ПРАВАЯ КИБЕРПАНЕЛЬ -->
     <aside id="pc-right-panel" class="w-[410px] flex flex-col pointer-events-auto shrink-0 my-1 z-30">
       <div id="holo-card-right" class="cyber-side-panel clip-corner-br h-full flex flex-col overflow-hidden">
+        <div id="glare-right" class="holo-glare"></div>
         <div class="holo-corner hc-tl"></div>
         <div class="holo-corner hc-tr"></div>
         <div class="holo-corner hc-bl"></div>
@@ -825,6 +868,7 @@
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
     /*************************************************************************
      * 0. АВТОРИЗАЦИОННЫЕ ДАННЫЕ
@@ -837,11 +881,1070 @@
 
     const EXCLUSIVE_NOV1_DEADLINE = new Date('2026-11-01T00:00:00').getTime();
 
-    let targetYaw = 0, currentYaw = 0, targetPitch = 0.05, currentPitch = 0.05, cameraZoomOffset = 0;
-    let mouseNormX = 0, mouseNormY = 0, smoothParallaxX = 0, smoothParallaxY = 0, smoothHeadYaw = 0, smoothHeadPitch = 0;
-    let isDragging = false, dragStartX = 0, dragStartY = 0, totalDragDist = 0;
-    let pumpImpulse = 0, shockwaveProgress = 0;
+    /*************************************************************************
+     * 1. ПОЛНЫЕ ДАННЫЕ ИГРЫ: 1000 ФАЗ, 25 СКИНОВ, 10 МОДУЛЕЙ
+     *************************************************************************/
+    const EPOCHS = [
+      { id: 1, range: [1, 100], name: 'ЭПОХА 1' },
+      { id: 2, range: [101, 200], name: 'ЭПОХА 2' },
+      { id: 3, range: [201, 300], name: 'ЭПОХА 3' },
+      { id: 4, range: [301, 400], name: 'ЭПОХА 4' },
+      { id: 5, range: [401, 500], name: 'ЭПОХА 5' },
+      { id: 6, range: [501, 600], name: 'ЭПОХА 6' },
+      { id: 7, range: [601, 700], name: 'ЭПОХА 7' },
+      { id: 8, range: [701, 800], name: 'ЭПОХА 8' },
+      { id: 9, range: [801, 900], name: 'ЭПОХА 9' },
+      { id: 10, range: [901, 1000], name: 'ЭПОХА 10' }
+    ];
 
+    const NOUN_ROOTS = [
+      'Дрищ из Коридора', 'Синтез Волокна', 'Натяжение Рубашки', 'Первичный Памп', 'Пик Бицепса',
+      'Дельта-Импульс', 'Грудной Монолит', 'Трапеция Титана', 'Стальной Хват', 'Венозный Контур',
+      'Крылья Спины', 'Квадрицепс-Молот', 'Титановый Шов', 'Индиго-Пресс', 'Гипер-Рельеф',
+      'Анаболический Реактор', 'Миофибриллярный Взрыв', 'Сверхплотный Торс', 'Атлант #107', 'Голиаф Качалки'
+    ];
+
+    const RANK_SUFFIXES = [
+      'I ступени', 'II ступени', 'III ступени', 'IV ступени', 'V ступени',
+      'Альфа', 'Бета', 'Гамма', 'Сигма', 'Омега-Предел'
+    ];
+
+    const PHASES_1000 = Array.from({ length: 1000 }, (_, idx) => {
+      const num = idx + 1;
+      let req = 0;
+      if (num > 1) {
+        req = Math.floor(20 * Math.pow(num - 1, 1.85) * Math.pow(1.018, num - 1));
+      }
+      let title = '';
+      if (num === 1) title = 'Нано-Дрищ из Коридора';
+      else if (num === 100) title = 'Мастер Натянутой Рубашки';
+      else if (num === 250) title = 'Колосс Кабинета #107';
+      else if (num === 500) title = 'Сверхновый Кибер-Ыцуцацович';
+      else if (num === 750) title = 'Галактический Боди-Архитектор';
+      else if (num === 1000) title = 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ Ω';
+      else {
+        const root = NOUN_ROOTS[Math.floor((num - 1) / 10) % NOUN_ROOTS.length];
+        const suf = RANK_SUFFIXES[(num - 1) % RANK_SUFFIXES.length];
+        title = `${root} ${suf}`;
+      }
+      return { num, title, req };
+    });
+
+    const SKINS_DATA = [
+      {
+        id: 'halloween_cursed_500',
+        name: '🎃 ЖНЕЦ ТЫКВЕННОГО ПАМПА [ДО 1 НОЯБРЯ]',
+        desc: 'ЭКСКЛЮЗИВ: Шейдер проклятого пламени, огненные жилы, 3D-демонические рога и сферы адского огня!',
+        cost: 0,
+        minPhase: 500,
+        isExclusiveNov1: true,
+        shaderMode: 9,
+        colorA: 0xff5500,
+        colorB: 0x7e22ce,
+        metal: 0.45,
+        rough: 0.28,
+        attachment: 'halloween_lord',
+        swatch: 'linear-gradient(135deg, #f97316 0%, #7e22ce 60%, #090d16 100%)'
+      },
+      {
+        id: 'indigo_107',
+        name: 'Оригинал GLB [#107]',
+        desc: 'Оригинальная PBR-текстура вашей 3D-модели без шейдерных модификаций.',
+        cost: 0,
+        minPhase: 1,
+        preserveOriginalTexture: true,
+        shaderMode: 0,
+        colorA: 0xffffff,
+        colorB: 0x6366f1,
+        metal: 0.08,
+        rough: 0.52,
+        attachment: 'none',
+        swatch: 'linear-gradient(135deg, #6a78d1, #312e81)'
+      },
+      {
+        id: 'office_sky',
+        name: 'Кобальтовый Импульс [Электро-Контур]',
+        desc: 'Энергетический Френель-контур вокруг мышц и вращающийся 3D-индикатор.',
+        cost: 250,
+        minPhase: 3,
+        shaderMode: 1,
+        colorA: 0x38bdf8,
+        colorB: 0x1d4ed8,
+        metal: 0.35,
+        rough: 0.32,
+        attachment: 'energy_ring',
+        swatch: 'linear-gradient(135deg, #38bdf8, #1d4ed8)'
+      },
+      {
+        id: 'charcoal_stretch',
+        name: 'Карбоновый Стелс [Тактическая Броня]',
+        desc: 'Диагональное переплетение углеродного волокна с титановым отливом.',
+        cost: 900,
+        minPhase: 8,
+        shaderMode: 2,
+        colorA: 0x94a3b8,
+        colorB: 0x0f172a,
+        metal: 0.65,
+        rough: 0.25,
+        attachment: 'none',
+        swatch: 'linear-gradient(135deg, #475569, #090d16)'
+      },
+      {
+        id: 'tactical_olive',
+        name: 'Изумрудный Био-Реактор [Токсин]',
+        desc: 'Пульсирующие био-люминесцентные артерии и парящие капсулы синтеза.',
+        cost: 2800,
+        minPhase: 15,
+        shaderMode: 8,
+        colorA: 0x10b981,
+        colorB: 0x064e3b,
+        metal: 0.3,
+        rough: 0.35,
+        attachment: 'bio_orbs',
+        swatch: 'linear-gradient(135deg, #10b981, #064e3b)'
+      },
+      {
+        id: 'crimson_pump',
+        name: 'Артериальный Овердрайв [Гипер-Памп]',
+        desc: 'Термо-карта мышечного напряжения с пульсацией в ритме сердцебиения.',
+        cost: 8500,
+        minPhase: 25,
+        shaderMode: 3,
+        colorA: 0xef4444,
+        colorB: 0x7f1d1d,
+        metal: 0.28,
+        rough: 0.34,
+        attachment: 'crimson_aura',
+        swatch: 'linear-gradient(135deg, #ef4444, #450a0a)'
+      },
+      {
+        id: 'emerald_venom',
+        name: 'Кислотный Мутаген [Хим-Лаборатория]',
+        desc: 'Органический шейдер клеточного деления и радиоактивный 3D-ореол.',
+        cost: 25000,
+        minPhase: 40,
+        shaderMode: 8,
+        colorA: 0x84cc16,
+        colorB: 0x14532d,
+        metal: 0.25,
+        rough: 0.3,
+        attachment: 'bio_orbs',
+        swatch: 'linear-gradient(135deg, #a3e635, #14532d)'
+      },
+      {
+        id: 'royal_velvet',
+        name: 'Аметистовый Хамелеон [Перламутр]',
+        desc: 'Двухцветный оптический перелив от глубокого индиго к неоновой фуксии.',
+        cost: 75000,
+        minPhase: 60,
+        shaderMode: 1,
+        colorA: 0xe879f9,
+        colorB: 0x3b0764,
+        metal: 0.55,
+        rough: 0.22,
+        attachment: 'crystal_shards',
+        swatch: 'linear-gradient(135deg, #e879f9, #3b0764)'
+      },
+      {
+        id: 'copper_mech',
+        name: 'Гефест-Автоматон [Раскалённая Бронза]',
+        desc: 'Кованая медь с внутренним горнилом и вращающимися шестернями-кольцами.',
+        cost: 220000,
+        minPhase: 85,
+        shaderMode: 3,
+        colorA: 0xf59e0b,
+        colorB: 0x451a03,
+        metal: 0.82,
+        rough: 0.24,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #f59e0b, #78350f)'
+      },
+      {
+        id: 'chrome_mk4',
+        name: 'Жидкий Терминатор [T-1000 Хром]',
+        desc: 'Зеркальный ртутный сплав с радужным преломлением света и 3D-визором.',
+        cost: 650000,
+        minPhase: 120,
+        shaderMode: 1,
+        colorA: 0xf8fafc,
+        colorB: 0x38bdf8,
+        metal: 0.96,
+        rough: 0.1,
+        attachment: 'cyber_visor',
+        swatch: 'linear-gradient(135deg, #f8fafc, #64748b)'
+      },
+      {
+        id: 'arctic_cryo',
+        name: 'Крио-Монолит [Абсолютный Ноль]',
+        desc: 'Морозный узор вечной мерзлоты и парящие вокруг тела 3D-осколки льда.',
+        cost: 1800000,
+        minPhase: 160,
+        shaderMode: 10,
+        colorA: 0x7dd3fc,
+        colorB: 0x0c4a6e,
+        metal: 0.6,
+        rough: 0.18,
+        attachment: 'cryo_shards',
+        swatch: 'linear-gradient(135deg, #e0f2fe, #0284c7)'
+      },
+      {
+        id: 'cyber_2099',
+        name: 'Кибер-Синтетик [Неон 2099]',
+        desc: 'Бегущие лазерные линии сканирования и 3D-голографический визор на лице.',
+        cost: 5500000,
+        minPhase: 210,
+        shaderMode: 2,
+        colorA: 0x00f0ff,
+        colorB: 0x1e1b4b,
+        metal: 0.55,
+        rough: 0.22,
+        attachment: 'cyber_visor',
+        swatch: 'linear-gradient(135deg, #00f0ff, #4f46e5)'
+      },
+      {
+        id: 'lava_magma',
+        name: 'Вулканический Титан [Тектоника]',
+        desc: 'Треснувший базальт с текущей внутри лавой и парящими огненными глыбами.',
+        cost: 16000000,
+        minPhase: 260,
+        shaderMode: 3,
+        colorA: 0xff6b00,
+        colorB: 0x1c1917,
+        metal: 0.4,
+        rough: 0.42,
+        attachment: 'magma_rocks',
+        swatch: 'linear-gradient(135deg, #ff6b00, #27272a)'
+      },
+      {
+        id: 'gold_olymp',
+        name: 'Золотой Олимпиец [Аурум 24К]',
+        desc: 'Белый мрамор с литыми золотыми жилами и парящим золотым венцом над головой.',
+        cost: 48000000,
+        minPhase: 320,
+        shaderMode: 6,
+        colorA: 0xfbbf24,
+        colorB: 0xf8fafc,
+        metal: 0.88,
+        rough: 0.18,
+        attachment: 'gold_halo',
+        swatch: 'linear-gradient(135deg, #fbbf24, #fef08a)'
+      },
+      {
+        id: 'gamma_mutant',
+        name: 'Гамма-Коллайдер [Сверх-Мутация]',
+        desc: 'Искажение био-поля с неоново-зелёными разрядами и плазменными сферами.',
+        cost: 140000000,
+        minPhase: 380,
+        shaderMode: 8,
+        colorA: 0x22c55e,
+        colorB: 0x3b0764,
+        metal: 0.35,
+        rough: 0.32,
+        attachment: 'bio_orbs',
+        swatch: 'linear-gradient(135deg, #22c55e, #581c87)'
+      },
+      {
+        id: 'matrix_code',
+        name: 'Матричный Архитектор [Исходный Код]',
+        desc: 'Вертикальные потоки цифрового кода по рельефу мышц и 3D-кольца данных.',
+        cost: 420000000,
+        minPhase: 450,
+        shaderMode: 4,
+        colorA: 0x10b981,
+        colorB: 0x022c22,
+        metal: 0.45,
+        rough: 0.25,
+        attachment: 'matrix_rings',
+        swatch: 'linear-gradient(135deg, #10b981, #022c22)'
+      },
+      {
+        id: 'amethyst_geode',
+        name: 'Призма Кварца [Кристаллический Титан]',
+        desc: 'Многогранное спектральное преломление и парящие кристаллы аметиста.',
+        cost: 1250000000,
+        minPhase: 520,
+        shaderMode: 10,
+        colorA: 0xd946ef,
+        colorB: 0x2e1065,
+        metal: 0.78,
+        rough: 0.15,
+        attachment: 'crystal_shards',
+        swatch: 'linear-gradient(135deg, #f0abfc, #581c87)'
+      },
+      {
+        id: 'blood_moon',
+        name: 'Алый Берсерк [Затмение]',
+        desc: 'Чёрный обсидиан с багровым контурным свечением и кровавым ореолом.',
+        cost: 3800000000,
+        minPhase: 590,
+        shaderMode: 7,
+        colorA: 0xf43f5e,
+        colorB: 0x09090b,
+        metal: 0.5,
+        rough: 0.28,
+        attachment: 'crimson_aura',
+        swatch: 'linear-gradient(135deg, #f43f5e, #09090b)'
+      },
+      {
+        id: 'quantum_ghost',
+        name: 'Квантовый Глитч [Фазовый Сдвиг]',
+        desc: 'Голографическая интерференция волн и квантовые кольца телепортации.',
+        cost: 11000000000,
+        minPhase: 660,
+        shaderMode: 11,
+        colorA: 0x38bdf8,
+        colorB: 0xf43f5e,
+        metal: 0.65,
+        rough: 0.2,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #38bdf8, #f43f5e)'
+      },
+      {
+        id: 'obsidian_void',
+        name: 'Монолит Пустоты [Vantablack]',
+        desc: 'Поглощает 99% света, оставляя только электрический фиолетовый контур.',
+        cost: 35000000000,
+        minPhase: 730,
+        shaderMode: 7,
+        colorA: 0x818cf8,
+        colorB: 0x030712,
+        metal: 0.8,
+        rough: 0.15,
+        attachment: 'void_monoliths',
+        swatch: 'linear-gradient(135deg, #6366f1, #020617)'
+      },
+      {
+        id: 'solar_flare',
+        name: 'Солнечная Корона [Звезда Гелиос]',
+        desc: 'Термоядерная плазма на поверхности тела и солнечная корона вокруг головы.',
+        cost: 105000000000,
+        minPhase: 800,
+        shaderMode: 3,
+        colorA: 0xfde047,
+        colorB: 0xd97706,
+        metal: 0.7,
+        rough: 0.18,
+        attachment: 'solar_crown',
+        swatch: 'linear-gradient(135deg, #fef08a, #ea580c)'
+      },
+      {
+        id: 'nebula_cosmos',
+        name: 'Галактическая Туманность [Вечность]',
+        desc: 'Живое звёздное скопление и пульсирующие созвездия прямо внутри тела.',
+        cost: 320000000000,
+        minPhase: 860,
+        shaderMode: 5,
+        colorA: 0x38bdf8,
+        colorB: 0x4c1d95,
+        metal: 0.75,
+        rough: 0.2,
+        attachment: 'gyro_rings',
+        swatch: 'linear-gradient(135deg, #38bdf8, #4c1d95)'
+      },
+      {
+        id: 'antimatter_core',
+        name: 'Антиматерия [Горизонт Событий]',
+        desc: 'Инвертированный цветовой спектр с гравитационными кольцами сингулярности.',
+        cost: 980000000000,
+        minPhase: 920,
+        shaderMode: 11,
+        colorA: 0xec4899,
+        colorB: 0x020617,
+        metal: 0.88,
+        rough: 0.14,
+        attachment: 'void_monoliths',
+        swatch: 'linear-gradient(135deg, #ec4899, #090d16)'
+      },
+      {
+        id: 'divine_marble',
+        name: 'Император Пантеона [Божественный Мрамор]',
+        desc: 'Античный белый мрамор с золотыми молниями и двойным венцом триумфатора.',
+        cost: 3000000000000,
+        minPhase: 965,
+        shaderMode: 6,
+        colorA: 0xfacc15,
+        colorB: 0xe2e8f0,
+        metal: 0.5,
+        rough: 0.25,
+        attachment: 'gold_halo',
+        swatch: 'linear-gradient(135deg, #f8fafc, #eab308)'
+      },
+      {
+        id: 'omega_ychuchacovich',
+        name: 'АБСОЛЮТНЫЙ ЫЦУЦАЦОВИЧ [Ω-1000]',
+        desc: 'Финальная форма 1000-й фазы: квантовая плазма, 3D-крылья архонта и корона абсолюта.',
+        cost: 10000000000000,
+        minPhase: 1000,
+        shaderMode: 5,
+        colorA: 0x00f0ff,
+        colorB: 0xfbbf24,
+        metal: 0.92,
+        rough: 0.12,
+        attachment: 'omega_ascended',
+        swatch: 'linear-gradient(135deg, #00f0ff, #fbbf24, #7c3aed)'
+      }
+    ];
+
+    const UPGRADES_DATA = [
+      { id: 'u_buttons', name: 'Титановые пуговицы МК-2', desc: '+1.5 КГ к клику, +120 прочности швов', type: 'click', power: 1.5, energyBonus: 120, baseCost: 15, mult: 1.52, code: 'MOD-01' },
+      { id: 'u_creatine', name: 'Микронизированный Креатин', desc: '+2.5 КГ/сек пассивного синтеза', type: 'passive', power: 2.5, energyBonus: 0, baseCost: 30, mult: 1.55, code: 'BIO-02' },
+      { id: 'u_shirt_xs', name: 'Нано-стретч рубашка XS', desc: '+7 КГ к клику, +300 прочности швов', type: 'click', power: 7, energyBonus: 300, baseCost: 140, mult: 1.58, code: 'MOD-03' },
+      { id: 'u_isolate', name: 'Изолят Сыворотки 99%', desc: '+15 КГ/сек пассивного синтеза', type: 'passive', power: 15, energyBonus: 0, baseCost: 520, mult: 1.6, code: 'BIO-04' },
+      { id: 'u_gaze', name: 'Гипно-Фокусировка Взгляда', desc: '+38 КГ к клику, +600 прочности швов', type: 'click', power: 38, energyBonus: 600, baseCost: 2100, mult: 1.62, code: 'OPT-05' },
+      { id: 'u_myostatin', name: 'Блокатор Миостатина CRISPR', desc: '+95 КГ/сек пассивного синтеза', type: 'passive', power: 95, energyBonus: 0, baseCost: 8800, mult: 1.65, code: 'GEN-06' },
+      { id: 'u_piston', name: 'Гидро-привод бицепса', desc: '+240 КГ к клику, +1500 прочности швов', type: 'click', power: 240, energyBonus: 1500, baseCost: 38000, mult: 1.68, code: 'MEC-07' },
+      { id: 'u_chamber', name: 'Камера Гипер-Гравитации 10G', desc: '+680 КГ/сек пассивного синтеза', type: 'passive', power: 680, energyBonus: 0, baseCost: 175000, mult: 1.7, code: 'LAB-08' },
+      { id: 'u_synth_core', name: 'Квантовый Синтезатор Волокон', desc: '+2100 КГ к клику, +4000 прочности швов', type: 'click', power: 2100, energyBonus: 4000, baseCost: 950000, mult: 1.74, code: 'QNT-09' },
+      { id: 'u_monolith', name: 'Реактор ЫЦУЦАЦОВИЧА Ω', desc: '+7500 КГ/сек пассивного синтеза', type: 'passive', power: 7500, energyBonus: 0, baseCost: 5200000, mult: 1.78, code: 'OMG-10' }
+    ];
+
+    /*************************************************************************
+     * 2. СОСТОЯНИЕ, ПРОГРЕССИЯ, УТИЛИТЫ И ЦЕНТР АККАУНТА
+     *************************************************************************/
+    const STORAGE_KEY = 'ychuchacovich_cp_v5';
+    const AUTH_STORAGE_KEY = 'ychuchacovich_cp_acc_v5';
+
+    function getDefaultState() {
+      return {
+        score: 0,
+        totalEarned: 0,
+        energy: 1000,
+        soundOn: true,
+        equippedSkin: 'indigo_107',
+        ownedSkins: ['indigo_107'],
+        upgrades: {
+          u_buttons: 0, u_creatine: 0, u_shirt_xs: 0, u_isolate: 0, u_gaze: 0,
+          u_myostatin: 0, u_piston: 0, u_chamber: 0, u_synth_core: 0, u_monolith: 0
+        },
+        highestPhase: 1,
+        selectedEpoch: 1,
+        lastSavedAt: Date.now()
+      };
+    }
+
+    let state = getDefaultState();
+    let currentAccount = null;
+    let activeTab = 'upgrades';
+    let isDrawerOpen = false;
+    let currentDeviceMode = 'pc';
+    let autoSpin = false;
+    let studioLightPreset = 0;
+    let headTrackingEnabled = true;
+
+    function getPhaseInfo() {
+      let currentIdx = 0;
+      for (let i = PHASES_1000.length - 1; i >= 0; i--) {
+        if (state.totalEarned >= PHASES_1000[i].req) {
+          currentIdx = i;
+          break;
+        }
+      }
+      const current = PHASES_1000[currentIdx];
+      const next = PHASES_1000[Math.min(999, currentIdx + 1)];
+      let subProgress = 1;
+      if (currentIdx < 999) {
+        const span = Math.max(1, next.req - current.req);
+        subProgress = Math.min(1, Math.max(0, (state.totalEarned - current.req) / span));
+      }
+      const globalGrowth = Math.min(1, (currentIdx + subProgress) / 999);
+      return { currentIdx, current, next, subProgress, globalGrowth };
+    }
+
+    function getPhaseMultiplier(phaseNum) {
+      let mult = 1 + (phaseNum - 1) * 0.012;
+      mult *= Math.pow(1.15, Math.floor(phaseNum / 25));
+      if (phaseNum >= 500) mult *= 1.5;
+      if (phaseNum >= 1000) mult *= 2.5;
+      return mult;
+    }
+
+    function getStats() {
+      let clickBase = 1;
+      let passiveBase = 0;
+      let maxEnergy = 1000;
+      UPGRADES_DATA.forEach(u => {
+        const lvl = state.upgrades[u.id] || 0;
+        if (u.type === 'click') clickBase += lvl * u.power;
+        if (u.type === 'passive') passiveBase += lvl * u.power;
+        if (u.energyBonus) maxEnergy += lvl * u.energyBonus;
+      });
+      const pInfo = getPhaseInfo();
+      const mult = getPhaseMultiplier(pInfo.current.num);
+      const clickPower = clickBase * mult;
+      const passivePower = passiveBase * mult;
+      const regenRate = Math.max(25, Math.floor(maxEnergy * 0.038));
+      return { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo };
+    }
+
+    function formatMass(n) {
+      if (n >= 1e15) return (n / 1e15).toFixed(2) + ' квадрлн';
+      if (n >= 1e12) return (n / 1e12).toFixed(2) + ' трлн';
+      if (n >= 1e9) return (n / 1e9).toFixed(2) + ' млрд';
+      if (n >= 1e6) return (n / 1e6).toFixed(2) + ' млн';
+      if (n >= 1e4) return (n / 1e3).toFixed(1) + ' тыс';
+      return Number.isInteger(n) ? n.toString() : n.toFixed(1);
+    }
+
+    function showToast(msg, borderClass = 'border-cyan-400 text-cyan-300') {
+      const layer = document.getElementById('toast-layer');
+      if (!layer) return;
+      const el = document.createElement('div');
+      el.className = `px-3.5 py-2 bg-black/95 border ${borderClass} text-[10px] md:text-xs font-bold tracking-wider uppercase shadow-2xl transition-all duration-300 clip-chamfer-btn`;
+      el.textContent = msg;
+      layer.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-8px)';
+        setTimeout(() => el.remove(), 300);
+      }, 2400);
+    }
+
+    function addLoaderLog(msg, cls = 'text-slate-300') {
+      const log = document.getElementById('loader-log');
+      if (!log) return;
+      const div = document.createElement('div');
+      div.className = cls;
+      div.textContent = msg;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function setLoaderProgress(pct, statusText, titleText = null, stopSpinner = false) {
+      const bar = document.getElementById('loader-progress-bar');
+      const pctEl = document.getElementById('loader-pct-text');
+      const stepEl = document.getElementById('loader-step-text');
+      const titleEl = document.getElementById('loader-title');
+      const spinner = document.getElementById('loader-spinner');
+      if (bar) bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+      if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
+      if (stepEl && statusText) stepEl.textContent = statusText;
+      if (titleEl && titleText) titleEl.textContent = titleText;
+      if (spinner) spinner.classList.toggle('animate-spin', !stopSpinner);
+    }
+
+    function hideLoaderModal() {
+      const modal = document.getElementById('model-loader-modal');
+      if (!modal) return;
+      modal.style.opacity = '0';
+      modal.style.pointerEvents = 'none';
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    document.getElementById('btn-force-close-loader')?.addEventListener('click', hideLoaderModal);
+
+    /*************************************************************************
+     * 2.5. PWA ИНИЦИАЛИЗАЦИЯ
+     *************************************************************************/
+    let deferredInstallPrompt = null;
+
+    function generatePWAIcon(size) {
+      const cvs = document.createElement('canvas');
+      cvs.width = size; cvs.height = size;
+      const ctx = cvs.getContext('2d');
+      ctx.fillStyle = '#07090e';
+      ctx.fillRect(0, 0, size, size);
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = Math.max(4, size * 0.04);
+      ctx.strokeRect(size * 0.06, size * 0.06, size * 0.88, size * 0.88);
+      ctx.fillStyle = '#fcee0a';
+      ctx.font = `900 ${Math.floor(size * 0.45)}px Unbounded, sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Ы', size * 0.5, size * 0.52);
+      return cvs.toDataURL('image/png');
+    }
+
+    function setupPWAManifestAndSW() {
+      try {
+        const icon192 = generatePWAIcon(192);
+        const icon512 = generatePWAIcon(512);
+        const manifestObj = {
+          id: window.location.pathname || '/',
+          name: 'ЫЦУЦАЦОВИЧ // CYBERPUNK 2077',
+          short_name: 'ЫЦУЦАЦОВИЧ',
+          start_url: window.location.origin + window.location.pathname,
+          scope: window.location.origin + window.location.pathname,
+          display: 'standalone',
+          orientation: 'any',
+          background_color: '#04060b',
+          theme_color: '#04060b',
+          icons: [
+            { src: icon192, sizes: '192x192', type: 'image/png' },
+            { src: icon512, sizes: '512x512', type: 'image/png' }
+          ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+        const linkEl = document.createElement('link');
+        linkEl.rel = 'manifest';
+        linkEl.href = URL.createObjectURL(manifestBlob);
+        document.head.appendChild(linkEl);
+
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    async function triggerPWAInstall() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') deferredInstallPrompt = null;
+      } else {
+        showToast('📲 Установите веб-приложение через меню браузера (или добавьте sw.js в репозиторий)', 'border-cyan-400 text-cyan-300');
+      }
+    }
+
+    function downloadServiceWorkerFile() {
+      const swContent = `self.addEventListener('install', () => self.skipWaiting());\nself.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));\nself.addEventListener('fetch', () => {});\n`;
+      const blob = new Blob([swContent], { type: 'application/javascript' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sw.js';
+      a.click();
+      showToast('📥 Файл sw.js сохранён! Положите его рядом с index.html на GitHub', 'border-emerald-400 text-emerald-300');
+    }
+
+    /*************************************************************************
+     * 2.8. СОХРАНЕНИЕ И АВТОРИЗАЦИЯ (TG + GOOGLE + FIREBASE)
+     *************************************************************************/
+    function sanitizeFirebaseKey(k) {
+      return String(k).replace(/[.#$[\]/]/g, '_');
+    }
+
+    function mergeGameStates(stateA, stateB) {
+      const a = stateA || getDefaultState();
+      const b = stateB || getDefaultState();
+      const mergedUpgrades = { ...getDefaultState().upgrades };
+      Object.keys(mergedUpgrades).forEach(k => {
+        mergedUpgrades[k] = Math.max(a.upgrades?.[k] || 0, b.upgrades?.[k] || 0);
+      });
+      const mergedSkins = Array.from(new Set([...(a.ownedSkins || ['indigo_107']), ...(b.ownedSkins || ['indigo_107'])]));
+      const useBPrimary = (b.totalEarned || 0) > (a.totalEarned || 0);
+      return {
+        ...getDefaultState(),
+        score: useBPrimary ? b.score : a.score,
+        totalEarned: Math.max(a.totalEarned || 0, b.totalEarned || 0),
+        energy: Math.max(a.energy || 1000, b.energy || 1000),
+        soundOn: a.soundOn ?? true,
+        equippedSkin: useBPrimary ? (b.equippedSkin || 'indigo_107') : (a.equippedSkin || 'indigo_107'),
+        ownedSkins: mergedSkins,
+        upgrades: mergedUpgrades,
+        highestPhase: Math.max(a.highestPhase || 1, b.highestPhase || 1),
+        selectedEpoch: useBPrimary ? (b.selectedEpoch || 1) : (a.selectedEpoch || 1),
+        lastSavedAt: Date.now()
+      };
+    }
+
+    function loadProgress() {
+      try {
+        const savedAcc = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (savedAcc) currentAccount = JSON.parse(savedAcc);
+      } catch (e) {}
+
+      try {
+        const key = currentAccount ? `${STORAGE_KEY}_${currentAccount.masterId}` : STORAGE_KEY;
+        const raw = localStorage.getItem(key) || localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        state = {
+          ...getDefaultState(),
+          ...parsed,
+          upgrades: { ...getDefaultState().upgrades, ...(parsed.upgrades || {}) },
+          ownedSkins: Array.isArray(parsed.ownedSkins) && parsed.ownedSkins.length ? parsed.ownedSkins : ['indigo_107']
+        };
+      } catch (e) {}
+    }
+
+    async function saveProgress(syncCloud = true) {
+      try {
+        state.lastSavedAt = Date.now();
+        const serialized = JSON.stringify(state);
+        localStorage.setItem(STORAGE_KEY, serialized);
+        if (currentAccount) {
+          localStorage.setItem(`${STORAGE_KEY}_${currentAccount.masterId}`, serialized);
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentAccount));
+        }
+
+        const timeStr = new Date(state.lastSavedAt).toLocaleTimeString('ru-RU');
+        const timeEl = document.getElementById('last-save-time');
+        if (timeEl) timeEl.textContent = 'Сохранено: ' + timeStr;
+
+        const badge = document.getElementById('autosave-badge');
+        if (badge) {
+          badge.textContent = currentAccount ? 'CLOUD: 5S' : 'LOCAL: 5S';
+        }
+
+        if (syncCloud && currentAccount && AUTH_CONFIG.FIREBASE_DB_URL) {
+          await pushStateToCloud();
+        }
+      } catch (e) {}
+    }
+
+    async function pushStateToCloud() {
+      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return;
+      try {
+        const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
+        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
+
+        await fetch(`${cleanUrl}/users/${masterKey}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            account: currentAccount,
+            gameState: state,
+            updatedAt: Date.now()
+          })
+        });
+
+        if (currentAccount.providers?.telegram?.key) {
+          await fetch(`${cleanUrl}/identity_map/${sanitizeFirebaseKey(currentAccount.providers.telegram.key)}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
+          });
+        }
+        if (currentAccount.providers?.google?.key) {
+          await fetch(`${cleanUrl}/identity_map/${sanitizeFirebaseKey(currentAccount.providers.google.key)}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ masterId: currentAccount.masterId, updatedAt: Date.now() })
+          });
+        }
+
+        const nowTime = new Date().toLocaleTimeString('ru-RU');
+        const stEl = document.getElementById('account-sync-status');
+        if (stEl) stEl.textContent = '☁ Синхр: ' + nowTime;
+      } catch (e) {}
+    }
+
+    async function fetchCloudNode(path) {
+      if (!AUTH_CONFIG.FIREBASE_DB_URL) return null;
+      try {
+        const cleanUrl = AUTH_CONFIG.FIREBASE_DB_URL.replace(/\/$/, '');
+        const resp = await fetch(`${cleanUrl}/${path}.json`);
+        if (!resp.ok) return null;
+        return await resp.json();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function pullStateFromCloud() {
+      if (!currentAccount || !AUTH_CONFIG.FIREBASE_DB_URL) return false;
+      try {
+        const masterKey = sanitizeFirebaseKey(currentAccount.masterId);
+        const data = await fetchCloudNode(`users/${masterKey}`);
+        if (data && data.gameState) {
+          state = mergeGameStates(state, data.gameState);
+          if (data.account?.providers) {
+            currentAccount.providers = {
+              telegram: data.account.providers.telegram || currentAccount.providers?.telegram || null,
+              google: data.account.providers.google || currentAccount.providers?.google || null
+            };
+          }
+          await saveProgress(false);
+          updateAuthUI();
+          applyActiveSkinTo3D();
+          renderUpgradesList();
+          renderSkinsList();
+          renderPhasesList();
+          update3DAnatomyAndHUD();
+          showToast('☁ НЕЙРО-ПРОФИЛЬ СИНХРОНИЗИРОВАН С ОБЛАКОМ!', 'border-cyan-400 text-cyan-300');
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    async function authenticateOrLinkProvider(providerType, providerInfo) {
+      const providerKey = sanitizeFirebaseKey(providerInfo.key);
+      let mappedMasterId = providerKey;
+      const mapEntry = await fetchCloudNode(`identity_map/${providerKey}`);
+      if (mapEntry && mapEntry.masterId) {
+        mappedMasterId = mapEntry.masterId;
+      }
+
+      if (currentAccount) {
+        const existingOtherCloud = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
+        if (existingOtherCloud && existingOtherCloud.gameState) {
+          state = mergeGameStates(state, existingOtherCloud.gameState);
+        }
+
+        currentAccount.providers = currentAccount.providers || { telegram: null, google: null };
+        currentAccount.providers[providerType] = providerInfo;
+        if (!currentAccount.avatarUrl && providerInfo.avatar) {
+          currentAccount.avatarUrl = providerInfo.avatar;
+        }
+
+        await saveProgress(true);
+        updateAuthUI();
+        applyActiveSkinTo3D();
+        renderUpgradesList();
+        renderSkinsList();
+        renderPhasesList();
+        update3DAnatomyAndHUD();
+        showToast(`🔗 КАНАЛ ${providerType.toUpperCase()} ПРИВЯЗАН К ПРОФИЛЮ!`, 'border-emerald-400 text-emerald-300');
+        return;
+      }
+
+      const cloudRecord = await fetchCloudNode(`users/${sanitizeFirebaseKey(mappedMasterId)}`);
+      if (cloudRecord && cloudRecord.gameState) {
+        state = mergeGameStates(state, cloudRecord.gameState);
+      }
+
+      const existingProviders = cloudRecord?.account?.providers || { telegram: null, google: null };
+      existingProviders[providerType] = providerInfo;
+
+      currentAccount = {
+        masterId: mappedMasterId,
+        displayName: cloudRecord?.account?.displayName || providerInfo.name,
+        avatarUrl: providerInfo.avatar || cloudRecord?.account?.avatarUrl || '',
+        providers: existingProviders
+      };
+
+      await saveProgress(true);
+      updateAuthUI();
+      applyActiveSkinTo3D();
+      renderUpgradesList();
+      renderSkinsList();
+      renderPhasesList();
+      update3DAnatomyAndHUD();
+      showToast(`⚡ АКТИВИРОВАН НЕЙРО-ПРОФИЛЬ: ${currentAccount.displayName}`, 'border-[#fcee0a] text-[#fcee0a]');
+    }
+
+    async function unlinkProvider(providerType) {
+      if (!currentAccount?.providers) return;
+      const hasTg = !!currentAccount.providers.telegram;
+      const hasGoogle = !!currentAccount.providers.google;
+      if ((providerType === 'telegram' && !hasGoogle) || (providerType === 'google' && !hasTg)) {
+        showToast('⚠️ Нельзя отключить единственный канал связи!', 'border-[#ff0055] text-rose-300');
+        return;
+      }
+      currentAccount.providers[providerType] = null;
+      await saveProgress(true);
+      updateAuthUI();
+      showToast(`🔓 Канал ${providerType.toUpperCase()} отвязан`, 'border-slate-400 text-slate-300');
+    }
+
+    function logoutAccount() {
+      currentAccount = null;
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      updateAuthUI();
+      showToast('🚪 НЕЙРО-СВЯЗЬ РАЗОРВАНА', 'border-[#ff0055] text-rose-300');
+    }
+
+    function updateAuthUI() {
+      const topLabel = document.getElementById('auth-top-label');
+      const topIcon = document.getElementById('auth-top-icon');
+      const outView = document.getElementById('account-logged-out-view');
+      const inView = document.getElementById('account-logged-in-view');
+      const nameEl = document.getElementById('account-user-name');
+      const idEl = document.getElementById('account-user-id');
+      const statusEl = document.getElementById('account-sync-status');
+
+      const modalProfileCard = document.getElementById('modal-profile-card');
+      const modalUserName = document.getElementById('modal-user-name');
+      const modalMasterId = document.getElementById('modal-user-master-id');
+      const modalLinkedBadge = document.getElementById('modal-linked-count-badge');
+      const modalAvatarImg = document.getElementById('modal-user-avatar');
+      const modalAvatarFallback = document.getElementById('modal-user-avatar-fallback');
+
+      const tgInfo = currentAccount?.providers?.telegram || null;
+      const googleInfo = currentAccount?.providers?.google || null;
+      const linkedCount = (tgInfo ? 1 : 0) + (googleInfo ? 1 : 0);
+
+      const tgPill = document.getElementById('tg-status-pill');
+      const btnUnlinkTg = document.getElementById('btn-unlink-tg');
+      const tabStatusTg = document.getElementById('tab-status-tg');
+      const tgWidgetBox = document.getElementById('telegram-widget-container');
+
+      if (tgInfo) {
+        if (tgPill) { tgPill.textContent = 'АКТИВЕН ✓'; tgPill.className = 'px-1.5 py-0.5 text-[8px] bg-cyan-500/20 text-cyan-300 font-bold'; }
+        tgWidgetBox?.classList.add('hidden');
+        btnUnlinkTg?.classList.toggle('hidden', linkedCount < 2);
+        if (tabStatusTg) { tabStatusTg.textContent = 'ONLINE ✓'; tabStatusTg.className = 'text-cyan-300'; }
+      } else {
+        if (tgPill) { tgPill.textContent = 'НЕ АКТИВЕН'; tgPill.className = 'px-1.5 py-0.5 text-[8px] bg-slate-900 text-slate-400 font-bold'; }
+        tgWidgetBox?.classList.remove('hidden');
+        btnUnlinkTg?.classList.add('hidden');
+        if (tabStatusTg) { tabStatusTg.textContent = 'НЕТ'; tabStatusTg.className = 'text-slate-500'; }
+      }
+
+      const gPill = document.getElementById('google-status-pill');
+      const btnUnlinkG = document.getElementById('btn-unlink-google');
+      const tabStatusG = document.getElementById('tab-status-google');
+      const gWidgetBox = document.getElementById('google-gsi-button');
+
+      if (googleInfo) {
+        if (gPill) { gPill.textContent = 'АКТИВЕН ✓'; gPill.className = 'px-1.5 py-0.5 text-[8px] bg-cyan-500/20 text-cyan-300 font-bold'; }
+        gWidgetBox?.classList.add('hidden');
+        btnUnlinkG?.classList.toggle('hidden', linkedCount < 2);
+        if (tabStatusG) { tabStatusG.textContent = 'ONLINE ✓'; tabStatusG.className = 'text-cyan-300'; }
+      } else {
+        if (gPill) { gPill.textContent = 'НЕ АКТИВЕН'; gPill.className = 'px-1.5 py-0.5 text-[8px] bg-slate-900 text-slate-400 font-bold'; }
+        gWidgetBox?.classList.remove('hidden');
+        btnUnlinkG?.classList.add('hidden');
+        if (tabStatusG) { tabStatusG.textContent = 'НЕТ'; tabStatusG.className = 'text-slate-500'; }
+      }
+
+      if (currentAccount) {
+        const icon = linkedCount === 2 ? '🔗' : tgInfo ? '✈️' : '🌐';
+        if (topIcon) topIcon.textContent = icon;
+        if (topLabel) topLabel.textContent = currentAccount.displayName;
+        outView?.classList.add('hidden');
+        inView?.classList.remove('hidden');
+        modalProfileCard?.classList.remove('hidden');
+
+        if (nameEl) nameEl.textContent = `${icon} ${currentAccount.displayName}`;
+        if (idEl) idEl.textContent = `CYBER-KEY: ${currentAccount.masterId}`;
+        if (modalUserName) modalUserName.textContent = currentAccount.displayName;
+        if (modalMasterId) modalMasterId.textContent = `MASTER-ID: ${currentAccount.masterId}`;
+        if (modalLinkedBadge) modalLinkedBadge.textContent = linkedCount >= 2 ? '2/2 СВЯЗАНО ✓' : `${linkedCount}/2 ЛИНК`;
+
+        if (currentAccount.avatarUrl && modalAvatarImg && modalAvatarFallback) {
+          modalAvatarImg.src = currentAccount.avatarUrl;
+          modalAvatarImg.classList.remove('hidden');
+          modalAvatarFallback.classList.add('hidden');
+        } else if (modalAvatarImg && modalAvatarFallback) {
+          modalAvatarImg.classList.add('hidden');
+          modalAvatarFallback.classList.remove('hidden');
+          modalAvatarFallback.textContent = (currentAccount.displayName || 'Ы').charAt(0).toUpperCase();
+        }
+        if (statusEl) statusEl.textContent = '☁ ARASAKA CLOUD (5S)';
+      } else {
+        if (topIcon) topIcon.textContent = '👤';
+        if (topLabel) topLabel.textContent = 'ПРОФИЛЬ';
+        outView?.classList.remove('hidden');
+        inView?.classList.add('hidden');
+        modalProfileCard?.classList.add('hidden');
+        if (statusEl) statusEl.textContent = 'ЛОКАЛЬНЫЙ (5С)';
+      }
+    }
+
+    window.__handleTelegramLogin = (tgUser) => {
+      if (!tgUser?.id) return;
+      const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || `TG_${tgUser.id}`;
+      authenticateOrLinkProvider('telegram', {
+        key: `tg_${tgUser.id}`,
+        id: String(tgUser.id),
+        name: fullName,
+        username: tgUser.username || '',
+        avatar: tgUser.photo_url || ''
+      });
+    };
+
+    if (window.__pendingTelegramUser) {
+      window.__handleTelegramLogin(window.__pendingTelegramUser);
+      window.__pendingTelegramUser = null;
+    }
+
+    let tgWidgetRendered = false;
+    let googleWidgetRendered = false;
+
+    function initAuthProviders() {
+      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+        window.__handleTelegramLogin(window.Telegram.WebApp.initDataUnsafe.user);
+      }
+
+      const tgContainer = document.getElementById('telegram-widget-container');
+      if (tgContainer && AUTH_CONFIG.TELEGRAM_BOT_USERNAME && !tgWidgetRendered) {
+        tgWidgetRendered = true;
+        tgContainer.innerHTML = '';
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://telegram.org/js/telegram-widget.js?22';
+        script.setAttribute('data-telegram-login', AUTH_CONFIG.TELEGRAM_BOT_USERNAME.replace(/^@/, ''));
+        script.setAttribute('data-size', 'large');
+        script.setAttribute('data-radius', '4');
+        script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+        script.setAttribute('data-request-access', 'write');
+        tgContainer.appendChild(script);
+      }
+
+      const gBtn = document.getElementById('google-gsi-button');
+      if (gBtn && AUTH_CONFIG.GOOGLE_CLIENT_ID && !googleWidgetRendered) {
+        if (window.google?.accounts?.id) {
+          googleWidgetRendered = true;
+          gBtn.innerHTML = '';
+          window.google.accounts.id.initialize({
+            client_id: AUTH_CONFIG.GOOGLE_CLIENT_ID,
+            callback: (response) => {
+              try {
+                const payload = JSON.parse(decodeURIComponent(escape(atob(response.credential.split('.')[1]))));
+                authenticateOrLinkProvider('google', {
+                  key: `google_${payload.sub}`,
+                  id: String(payload.sub),
+                  name: payload.name || payload.email || 'Google User',
+                  email: payload.email || '',
+                  avatar: payload.picture || ''
+                });
+              } catch (e) {}
+            }
+          });
+          window.google.accounts.id.renderButton(gBtn, { theme: 'filled_black', size: 'large', width: 280, shape: 'rectangular' });
+        } else {
+          setTimeout(initAuthProviders, 400);
+        }
+      }
+    }
+
+    /*************************************************************************
+     * 3. КИБЕРНЕТИЧЕСКИЙ ЗВУКОВОЙ СИНТЕЗАТОР
+     *************************************************************************/
+    let audioCtx = null;
+    function getAudio() {
+      if (!state.soundOn) return null;
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playPumpHitSound(growth) {
+      const ctx = getAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(Math.max(60, 160 - growth * 70), now);
+      osc.frequency.exponentialRampToValueAtTime(32, now + 0.12);
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.14);
+    }
+
+    function playUpgradeSound() {
+      const ctx = getAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      [440, 659.25, 880].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+        g.gain.setValueAtTime(0.12, now + idx * 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.15);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 0.16);
+      });
+    }
+
+    /*************************************************************************
+     * 4. THREE.JS 0.160.0 СЦЕНА // СЛЕЖЕНИЕ ГОЛОВЫ // GLTF MESHOPT
+     *************************************************************************/
     const container = document.getElementById('webgl-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -1023,7 +2126,7 @@
               float col = floor(vObjPos.x * 55.0);
               float rain = fract(vHeightNorm * 6.0 + uTime * (1.5 + fract(sin(col * 12.9898) * 43758.5453) * 2.0) + sin(col));
               float charMask = step(0.55, fract(vHeightNorm * 65.0)) * smoothstep(0.85, 0.0, rain);
-              gl_FragColor.rgb = darkBase = gl_FragColor.rgb * uSkinColorB * 0.9;
+              vec3 darkBase = gl_FragColor.rgb * uSkinColorB * 0.9;
               gl_FragColor.rgb = darkBase + uSkinColorA * (charMask * 0.95 + edgeFactor * 0.45);
             } else if (abs(uSkinMode - 5.0) < 0.2) {
               float nebula = 0.5 + 0.5 * sin(p.x * 0.8 + uTime) * cos(p.y * 0.9 - uTime * 0.7);
@@ -1218,47 +2321,69 @@
 
     async function loadGLBModelFromRepo() {
       document.getElementById('btn-retry-load')?.classList.add('hidden');
-      setLoaderProgress(20, 'Подключение Meshopt декодера...', 'ЗАГРУЗКА 3D-МОДЕЛИ...');
+      setLoaderProgress(20, 'Запуск WebAssembly декодера Meshopt...', 'ЗАГРУЗКА 3D-МОДЕЛИ...');
 
-      const gltfLoader = new GLTFLoader();
-      
-      // Надежное подключение MeshoptDecoder (из глобальной window.MeshoptDecoder)
-      if (window.MeshoptDecoder) {
-        gltfLoader.setMeshoptDecoder(window.MeshoptDecoder);
-        addLoaderLog('> MeshoptDecoder подключен');
+      try {
+        await MeshoptDecoder.ready;
+        addLoaderLog('> WASM-декодер Meshopt готов', 'text-emerald-400');
+      } catch (e) {
+        addLoaderLog('> Предупреждение WASM декодера: ' + e.message, 'text-[#ff0055]');
       }
 
-      // Строим точный абсолютный путь относительно текущей страницы
-      const targetModelUrl = new URL('model.glb', window.location.href).href;
-      addLoaderLog(`> Скачивание: ${targetModelUrl}`);
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+      gltfLoader.setDRACOLoader(dracoLoader);
 
-      gltfLoader.load(
-        targetModelUrl,
-        (gltf) => {
-          mountGLTFScene(gltf, 'model.glb');
-        },
-        (xhr) => {
-          if (xhr.total > 0) {
-            const pct = 20 + (xhr.loaded / xhr.total) * 75;
-            const mbLoaded = (xhr.loaded / 1048576).toFixed(1);
-            const mbTotal = (xhr.total / 1048576).toFixed(1);
-            setLoaderProgress(pct, `Загрузка: ${mbLoaded} / ${mbTotal} МБ`);
-          } else if (xhr.loaded > 0) {
-            const mbLoaded = (xhr.loaded / 1048576).toFixed(1);
-            setLoaderProgress(60, `Загрузка: ${mbLoaded} МБ...`);
-          }
-        },
-        (err) => {
-          console.error(err);
-          setLoaderProgress(100, 'Сбой загрузки model.glb. Проверьте сетевую консоль.', 'ОШИБКА СЕТИ', true);
-          addLoaderLog(`❌ Ошибка загрузки: ${err.message || '404 Not Found'}`, 'text-[#ff0055]');
-          document.getElementById('btn-retry-load')?.classList.remove('hidden');
+      const candidateUrls = [
+        new URL('./model.glb', window.location.href).href,
+        './model.glb',
+        'model.glb',
+        './tripo_pbr_model_752717f7-15bb-4d14-acc3-81fa60166f54_meshopt.glb'
+      ];
+
+      const tryLoadSingleUrl = (url) => {
+        return new Promise((resolve, reject) => {
+          addLoaderLog(`> Скачивание: ${url}...`, 'text-cyan-300');
+          gltfLoader.load(
+            url,
+            (gltf) => resolve({ gltf, url }),
+            (xhr) => {
+              if (xhr.total > 0) {
+                const pct = 20 + (xhr.loaded / xhr.total) * 78;
+                const mbLoaded = (xhr.loaded / 1048576).toFixed(1);
+                const mbTotal = (xhr.total / 1048576).toFixed(1);
+                setLoaderProgress(pct, `Скачано: ${mbLoaded} / ${mbTotal} МБ`);
+              } else if (xhr.loaded > 0) {
+                const mbLoaded = (xhr.loaded / 1048576).toFixed(1);
+                setLoaderProgress(65, `Скачано ${mbLoaded} МБ...`);
+              }
+            },
+            (err) => reject(err)
+          );
+        });
+      };
+
+      for (const url of candidateUrls) {
+        try {
+          const { gltf } = await tryLoadSingleUrl(url);
+          mountGLTFScene(gltf, url);
+          return;
+        } catch (err) {
+          addLoaderLog(`> Канал недоступен: ${url}`, 'text-slate-500');
         }
-      );
+      }
+
+      setLoaderProgress(100, 'Не удалось загрузить model.glb.', 'СБОЙ НЕЙРО-КАНАЛА', true);
+      document.getElementById('btn-retry-load')?.classList.remove('hidden');
     }
 
     document.getElementById('btn-retry-load')?.addEventListener('click', loadGLBModelFromRepo);
 
+    /*************************************************************************
+     * 5. СКИНЫ, СВЕТ И ПРОГРЕССИЯ 1000 ФАЗ
+     *************************************************************************/
     function applyActiveSkinTo3D() {
       const skin = SKINS_DATA.find(s => s.id === state.equippedSkin) || SKINS_DATA[1];
 
@@ -1311,6 +2436,9 @@
         if (btn) btn.textContent = '☀ СВЕТ: МЯГКИЙ';
       }
     }
+
+    let pumpImpulse = 0;
+    let shockwaveProgress = 0;
 
     function update3DAnatomyAndHUD() {
       const { clickPower, passivePower, maxEnergy, regenRate, mult, pInfo } = getStats();
@@ -1394,6 +2522,27 @@
         card.classList.toggle('disabled', state.score < cost);
       });
     }
+
+    /*************************************************************************
+     * 6. ПАРАЛЛАКС ЭФФЕКТ (КАМЕРА + ПАНЕЛИ + ГОЛОВА + ФОН)
+     *************************************************************************/
+    let targetYaw = 0;
+    let currentYaw = 0;
+    let targetPitch = 0.05;
+    let currentPitch = 0.05;
+    let cameraZoomOffset = 0;
+
+    let mouseNormX = 0;
+    let mouseNormY = 0;
+    let smoothParallaxX = 0;
+    let smoothParallaxY = 0;
+    let smoothHeadYaw = 0;
+    let smoothHeadPitch = 0;
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let totalDragDist = 0;
 
     function triggerPumpClick(clientX, clientY) {
       const { clickPower, pInfo } = getStats();
@@ -1481,6 +2630,9 @@
       }
     });
 
+    /*************************************************************************
+     * 7. ПОДСВЕТКА И ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+     *************************************************************************/
     function updateExclusiveCountdown() {
       const el = document.getElementById('exclusive-countdown-timer');
       if (!el) return;
@@ -1497,6 +2649,20 @@
     }
     setInterval(updateExclusiveCountdown, 1000);
     setTimeout(updateExclusiveCountdown, 100);
+
+    function setupPanelSpotlight(cardId, glareId) {
+      const card = document.getElementById(cardId);
+      const glare = document.getElementById(glareId);
+      if (!card || !glare) return;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        glare.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(0, 240, 255, 0.18) 0%, transparent 60%)`;
+      });
+    }
+    setupPanelSpotlight('holo-card-left', 'glare-left');
+    setupPanelSpotlight('holo-card-right', 'glare-right');
 
     let baseCameraY = -0.25;
     let baseLookAtY = -0.35;
@@ -1741,7 +2907,7 @@
       });
     }
 
-    // Привязка событий интерфейса
+    // Привязка UI событий
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
@@ -1888,6 +3054,7 @@
       showToast('🗑 ПРОГРЕСС СБРОШЕН', 'border-amber-400 text-amber-300');
     });
 
+    // Осциллограф
     const ecgCanvas = document.getElementById('ecg-canvas');
     const ecgCtx = ecgCanvas ? ecgCanvas.getContext('2d') : null;
     let ecgPhase = 0;
@@ -1915,6 +3082,7 @@
     const bgGridEl = document.getElementById('parallax-bg-grid');
     const topBarEl = document.getElementById('hud-top-bar');
 
+    // Главный цикл 60 FPS
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
@@ -1928,27 +3096,42 @@
       characterPivot.rotation.y = currentYaw;
       characterPivot.rotation.x = currentPitch;
 
+      // ГЛУБОКИЙ ПАРАЛЛАКС: плавное отслеживание курсора
       smoothParallaxX += (mouseNormX - smoothParallaxX) * 0.08;
       smoothParallaxY += (mouseNormY - smoothParallaxY) * 0.08;
 
+      // Слежение головы 3D-модели за курсором
       const targetHeadYaw = headTrackingEnabled ? Math.max(-0.48, Math.min(0.48, mouseNormX * 0.44)) : 0;
       const targetHeadPitch = headTrackingEnabled ? Math.max(-0.28, Math.min(0.28, mouseNormY * 0.25)) : 0;
       smoothHeadYaw += (targetHeadYaw - smoothHeadYaw) * 0.12;
       smoothHeadPitch += (targetHeadPitch - smoothHeadPitch) * 0.12;
 
+      // 1. Параллакс 3D-камеры
       camera.position.x = smoothParallaxX * 0.35;
       camera.position.y = baseCameraY - smoothParallaxY * 0.22;
       camera.position.z = baseCameraZ;
       camera.lookAt(0, baseLookAtY, 0);
 
+      // 2. Параллакс боковых кибер-панелей и HUD
       if (currentDeviceMode === 'pc') {
-        if (leftCardEl) leftCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
-        if (rightCardEl) rightCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
-        if (topBarEl) topBarEl.style.transform = `translate3d(${(smoothParallaxX * -6).toFixed(1)}px, ${(smoothParallaxY * -4).toFixed(1)}px, 0)`;
+        if (leftCardEl) {
+          leftCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
+        }
+        if (rightCardEl) {
+          rightCardEl.style.transform = `translate3d(${(smoothParallaxX * -14).toFixed(1)}px, ${(smoothParallaxY * -10).toFixed(1)}px, 0)`;
+        }
+        if (topBarEl) {
+          topBarEl.style.transform = `translate3d(${(smoothParallaxX * -6).toFixed(1)}px, ${(smoothParallaxY * -4).toFixed(1)}px, 0)`;
+        }
       }
 
-      if (bgGridEl) bgGridEl.style.transform = `translate3d(${(smoothParallaxX * 22).toFixed(1)}px, ${(smoothParallaxY * 22).toFixed(1)}px, 0)`;
-      if (bgStarsEl) bgStarsEl.style.transform = `translate3d(${(smoothParallaxX * 10).toFixed(1)}px, ${(smoothParallaxY * 10).toFixed(1)}px, 0)`;
+      // 3. Параллакс фоновых слоев Найт-Сити
+      if (bgGridEl) {
+        bgGridEl.style.transform = `translate3d(${(smoothParallaxX * 22).toFixed(1)}px, ${(smoothParallaxY * 22).toFixed(1)}px, 0)`;
+      }
+      if (bgStarsEl) {
+        bgStarsEl.style.transform = `translate3d(${(smoothParallaxX * 10).toFixed(1)}px, ${(smoothParallaxY * 10).toFixed(1)}px, 0)`;
+      }
 
       if (pumpImpulse > 0.001) pumpImpulse *= Math.pow(0.04, dt);
       else pumpImpulse = 0;
@@ -1987,22 +3170,28 @@
       renderer.render(scene, camera);
     }
 
-    setupPWAManifestAndSW();
+    // ЗАПУСК: сначала загружаем 3D-модель и запускаем рендер, затем инициализируем UI
     loadProgress();
-    updateAuthUI();
-    setDeviceLayout(window.innerWidth < 1024 ? 'mobile' : 'pc');
-    applyStudioLightingPreset(0);
-    renderUpgradesList();
-    renderSkinsList();
-    renderEpochFilterBar();
-    renderPhasesList();
-    update3DAnatomyAndHUD();
     animate();
     loadGLBModelFromRepo();
-    setTimeout(initAuthProviders, 300);
 
-    if (currentAccount) {
-      pullStateFromCloud();
+    try {
+      setupPWAManifestAndSW();
+      updateAuthUI();
+      setDeviceLayout(window.innerWidth < 1024 ? 'mobile' : 'pc');
+      applyStudioLightingPreset(0);
+      renderUpgradesList();
+      renderSkinsList();
+      renderEpochFilterBar();
+      renderPhasesList();
+      update3DAnatomyAndHUD();
+      setTimeout(initAuthProviders, 300);
+
+      if (currentAccount) {
+        pullStateFromCloud();
+      }
+    } catch (uiErr) {
+      console.error('UI init warning:', uiErr);
     }
 
     setInterval(() => {
@@ -2018,6 +3207,7 @@
       update3DAnatomyAndHUD();
     }, 250);
 
+    // Автосохранение каждые 5 секунд
     setInterval(() => {
       saveProgress(true);
     }, 5000);
